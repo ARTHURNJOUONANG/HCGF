@@ -1,0 +1,14 @@
+import { headers } from "next/headers";
+
+export async function origine() {
+  const explicite = process.env.APP_URL?.replace(/\/$/, "");
+  if (explicite) return explicite;
+  try {
+    const h = await headers();
+    const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
+    const proto = h.get("x-forwarded-proto") ?? "http";
+    return `${proto}://${host}`;
+  } catch {
+    return "http://localhost:3000";
+  }
+}

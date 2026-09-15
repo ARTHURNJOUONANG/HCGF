@@ -1,0 +1,804 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Utilisateur {
+  id                   String                  @id @default(cuid())
+  email                String                  @unique
+  motDePasseHash       String
+  typeCompte           String                  @default("candidat")
+  role                 String                  @default("")
+  langue               String                  @default("fr")
+  statut               String                  @default("actif")
+  echecsConnexion      Int                     @default(0)
+  verrouilleJusqua     DateTime?
+  mfaSecret            String?
+  mfaActive            Boolean                 @default(false)
+  derniereConnexion    DateTime?
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  profil               ProfilCandidat?
+  demandes             Demande[]
+  documents            Document[]
+  messages             Message[]
+  notifications        Notification[]
+  taches               TacheInterne[]
+  audits               JournalAudit[]
+  signatures           Signature[]
+  reservationsVol      ReservationVol[]
+  idPartenaire         String?
+  partenaire           Partenaire?             @relation(fields: [idPartenaire], references: [id])
+  acceptations         Acceptation[]
+  delegationsAccordees Delegation[]            @relation("Mandant")
+  delegationsRecues    Delegation[]            @relation("Mandataire")
+  reclamations         Reclamation[]           @relation("AuteurReclamation")
+  reclamationsSuivies  Reclamation[]           @relation("ResponsableReclamation")
+  messagesSav          MessageSav[]
+  jetonsReinit         JetonReinitialisation[]
+  sessions             SessionAuth[]
+  evenementsAuth       EvenementAuth[]
+  verifications        DoubleValidation[]      @relation("Verificateur")
+  validations          DoubleValidation[]      @relation("Validateur")
+}
+
+model SessionAuth {
+  id            String      @id @default(cuid())
+  idUtilisateur String
+  utilisateur   Utilisateur @relation(fields: [idUtilisateur], references: [id], onDelete: Cascade)
+  expireAt      DateTime
+  revoqueeAt    DateTime?
+  ip            String?
+  userAgent     String?
+  createdAt     DateTime    @default(now())
+
+  @@index([idUtilisateur])
+  @@index([expireAt])
+}
+
+model EvenementAuth {
+  id            String       @id @default(cuid())
+  idUtilisateur String?
+  utilisateur   Utilisateur? @relation(fields: [idUtilisateur], references: [id])
+  email         String
+  type          String
+  ip            String?
+  createdAt     DateTime     @default(now())
+
+  @@index([email, createdAt])
+  @@index([ip, createdAt])
+}
+
+model ProfilCandidat {
+  idUtilisateur String      @id
+  utilisateur   Utilisateur @relation(fields: [idUtilisateur], references: [id], onDelete: Cascade)
+  nom           String
+  prenom        String
+  dateNaissance String?
+  telephone     String?
+  adresse       String?
+  nationalite   String?
+  paysResidence String?
+}
+
+model Pays {
+  code    String         @id
+  libelle String
+  actif   Boolean        @default(true)
+  offres  OffreService[]
+}
+
+model Service {
+  code    String         @id
+  libelle String
+  actif   Boolean        @default(true)
+  offres  OffreService[]
+}
+
+model OffreService {
+  id              String            @id @default(cuid())
+  codePays        String
+  codeService     String
+  actif           Boolean           @default(true)
+  texteExplicatif String
+  etapesParcours  String
+  pays            Pays              @relation(fields: [codePays], references: [code])
+  service         Service           @relation(fields: [codeService], references: [code])
+  formulaire      Formulaire?
+  pieces          PieceRequise[]
+  demandes        Demande[]
+  baremes         BaremeTarifaire[]
+
+  @@unique([codePays, codeService])
+}
+
+model Formulaire {
+  id      String            @id @default(cuid())
+  idOffre String            @unique
+  offre   OffreService      @relation(fields: [idOffre], references: [id])
+  code    String
+  version String
+  actif   Boolean           @default(true)
+  champs  ChampFormulaire[]
+}
+
+model ChampFormulaire {
+  id              String              @id @default(cuid())
+  idFormulaire    String
+  formulaire      Formulaire          @relation(fields: [idFormulaire], references: [id], onDelete: Cascade)
+  code            String
+  typeSaisie      String
+  obligatoire     Boolean
+  ordre           Int
+  libelle         String
+  aide            String?
+  optionsJson     String?
+  conditionChamp  String?
+  conditionOp     String?
+  conditionValeur String?
+  prefillDepuis   String?
+  reponses        ReponseFormulaire[]
+}
+
+model PieceRequise {
+  id          String       @id @default(cuid())
+  idOffre     String
+  offre       OffreService @relation(fields: [idOffre], references: [id])
+  typePiece   String
+  obligatoire Boolean
+  ordreFusion Int
+  libelle     String
+  documents   Document[]
+}
+
+model Demande {
+  id                    String                 @id @default(cuid())
+  reference             String                 @unique
+  idUtilisateur         String
+  utilisateur           Utilisateur            @relation(fields: [idUtilisateur], references: [id])
+  idOffre               String
+  offre                 OffreService           @relation(fields: [idOffre], references: [id])
+  statut                String                 @default("brouillon")
+  priorite              String                 @default("normal")
+  pourcentageAvancement Int                    @default(0)
+  etapeCourante         String                 @default("formulaire")
+  dateDerniereActivite  DateTime               @default(now())
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  reponses              ReponseFormulaire[]
+  checklist             ItemChecklist[]
+  documents             Document[]
+  conversation          Conversation?
+  notifications         Notification[]
+  taches                TacheInterne[]
+  audits                JournalAudit[]
+  jetons                JetonVerification[]
+  tarif                 TarifApplique?
+  espaceFinancier       EspaceFinancier?
+  remboursements        DemandeRemboursement[]
+  piecesComptables      PieceComptable[]
+  idOrigine             String?
+  origine               Demande?               @relation("VenteCroisee", fields: [idOrigine], references: [id])
+  derivees              Demande[]              @relation("VenteCroisee")
+  police                PoliceAssurance?
+  reservationsVol       ReservationVol[]
+  idEtablissement       String?
+  etablissement         Etablissement?         @relation(fields: [idEtablissement], references: [id])
+  affectation           Affectation?
+  listeAttente          ListeAttente?
+  idPartenaire          String?
+  partenaire            Partenaire?            @relation(fields: [idPartenaire], references: [id])
+  commission            Commission?
+  slaCode               String                 @default("standard")
+  delegations           Delegation[]
+  acceptations          Acceptation[]
+  relances              Relance[]
+  echeances             Echeance[]
+  reclamations          Reclamation[]
+  controleRenforce      Boolean                @default(false)
+  alertesFraude         AlerteFraude[]
+  operationsApi         OperationApi[]
+  validations           DoubleValidation[]
+}
+
+model ReponseFormulaire {
+  id          String          @id @default(cuid())
+  idDemande   String
+  idChamp     String
+  valeur      String
+  dateSaisie  DateTime        @default(now())
+  verrouillee Boolean         @default(false)
+  demande     Demande         @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  champ       ChampFormulaire @relation(fields: [idChamp], references: [id])
+
+  @@unique([idDemande, idChamp])
+}
+
+model ItemChecklist {
+  id        String  @id @default(cuid())
+  idDemande String
+  libelle   String
+  statut    String  @default("a_venir")
+  ordre     Int
+  demande   Demande @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id             String              @id @default(cuid())
+  idDemande      String
+  demande        Demande             @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  idPieceRequise String?
+  piece          PieceRequise?       @relation(fields: [idPieceRequise], references: [id])
+  idAuteur       String?
+  auteur         Utilisateur?        @relation(fields: [idAuteur], references: [id])
+  type           String
+  nom            String
+  format         String
+  storagePath    String
+  hash           String              @default("")
+  statut         String              @default("recu")
+  origine        String              @default("candidat")
+  ocrStatut      String              @default("")
+  ocrTexte       String              @default("")
+  ocrJson        String              @default("")
+  createdAt      DateTime            @default(now())
+  signatures     Signature[]
+  jetons         JetonVerification[]
+
+  @@index([hash])
+}
+
+model Conversation {
+  id        String    @id @default(cuid())
+  idDemande String    @unique
+  demande   Demande   @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  messages  Message[]
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  idConversation String
+  conversation   Conversation @relation(fields: [idConversation], references: [id], onDelete: Cascade)
+  idAuteur       String
+  auteur         Utilisateur  @relation(fields: [idAuteur], references: [id])
+  contenu        String
+  createdAt      DateTime     @default(now())
+}
+
+model Notification {
+  id            String      @id @default(cuid())
+  idUtilisateur String
+  utilisateur   Utilisateur @relation(fields: [idUtilisateur], references: [id], onDelete: Cascade)
+  idDemande     String?
+  demande       Demande?    @relation(fields: [idDemande], references: [id])
+  evenement     String
+  titre         String
+  corps         String
+  statut        String      @default("non_lue")
+  createdAt     DateTime    @default(now())
+}
+
+model TacheInterne {
+  id           String       @id @default(cuid())
+  idDemande    String
+  demande      Demande      @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  idAssignee   String?
+  assignee     Utilisateur? @relation(fields: [idAssignee], references: [id])
+  action       String
+  priorite     String       @default("normal")
+  statut       String       @default("a_faire")
+  dateEcheance DateTime?
+  createdAt    DateTime     @default(now())
+}
+
+model JournalAudit {
+  id        String       @id @default(cuid())
+  idActeur  String?
+  acteur    Utilisateur? @relation(fields: [idActeur], references: [id])
+  action    String
+  objetType String
+  objetId   String
+  idDemande String?
+  demande   Demande?     @relation(fields: [idDemande], references: [id])
+  detail    String
+  createdAt DateTime     @default(now())
+}
+
+model JetonVerification {
+  id         String    @id @default(cuid())
+  token      String    @unique
+  idDemande  String
+  demande    Demande   @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  idDocument String?
+  document   Document? @relation(fields: [idDocument], references: [id])
+  statut     String    @default("valide")
+  createdAt  DateTime  @default(now())
+}
+
+model JetonReinitialisation {
+  id            String      @id @default(cuid())
+  token         String      @unique
+  idUtilisateur String
+  utilisateur   Utilisateur @relation(fields: [idUtilisateur], references: [id], onDelete: Cascade)
+  expireAt      DateTime
+  utiliseAt     DateTime?
+  createdAt     DateTime    @default(now())
+}
+
+model Signature {
+  id            String      @id @default(cuid())
+  idDocument    String
+  document      Document    @relation(fields: [idDocument], references: [id], onDelete: Cascade)
+  idSignataire  String
+  signataire    Utilisateur @relation(fields: [idSignataire], references: [id])
+  dateSignature DateTime    @default(now())
+}
+
+model BaremeTarifaire {
+  id        String          @id @default(cuid())
+  idOffre   String
+  offre     OffreService    @relation(fields: [idOffre], references: [id], onDelete: Cascade)
+  version   String
+  montant   Int
+  frais     Int
+  devise    String          @default("EUR")
+  actif     Boolean         @default(true)
+  dateEffet DateTime        @default(now())
+  tarifs    TarifApplique[]
+}
+
+model TarifApplique {
+  idDemande       String          @id
+  demande         Demande         @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  idBareme        String
+  bareme          BaremeTarifaire @relation(fields: [idBareme], references: [id])
+  montantAccepte  Int
+  frais           Int
+  versionBareme   String
+  dateAcceptation DateTime        @default(now())
+}
+
+model EspaceFinancier {
+  idDemande      String                @id
+  demande        Demande               @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  montantAttendu Int
+  montantRecu    Int                   @default(0)
+  frais          Int
+  devise         String                @default("EUR")
+  statutFonds    String                @default("en_attente")
+  operations     OperationFinanciere[]
+}
+
+model OperationFinanciere {
+  id              String                @id @default(cuid())
+  idEspace        String
+  espace          EspaceFinancier       @relation(fields: [idEspace], references: [idDemande], onDelete: Cascade)
+  idRemboursement String?
+  remboursement   DemandeRemboursement? @relation(fields: [idRemboursement], references: [id])
+  type            String
+  montant         Int
+  devise          String                @default("EUR")
+  reference       String                @default("")
+  idTransaction   String                @default("")
+  cleIdempotence  String?               @unique
+  iban            String                @default("")
+  source          String
+  statut          String
+  createdAt       DateTime              @default(now())
+}
+
+model DemandeRemboursement {
+  id          String                @id @default(cuid())
+  idDemande   String
+  demande     Demande               @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  motif       String
+  coordonnees String
+  statut      String                @default("recue")
+  createdAt   DateTime              @default(now())
+  operations  OperationFinanciere[]
+}
+
+model PieceComptable {
+  id           String   @id @default(cuid())
+  idDemande    String
+  demande      Demande  @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  numero       String   @unique
+  type         String
+  montant      Int
+  dateEmission DateTime @default(now())
+  storagePath  String
+  nom          String
+}
+
+model FormuleAssurance {
+  id          String            @id @default(cuid())
+  code        String            @unique
+  libelle     String
+  description String
+  supplement  Int
+  active      Boolean           @default(true)
+  garanties   GarantieFormule[]
+  polices     PoliceAssurance[]
+}
+
+model Garantie {
+  id       String            @id @default(cuid())
+  code     String            @unique
+  libelle  String
+  plafond  String
+  formules GarantieFormule[]
+}
+
+model GarantieFormule {
+  idFormule  String
+  idGarantie String
+  formule    FormuleAssurance @relation(fields: [idFormule], references: [id], onDelete: Cascade)
+  garantie   Garantie         @relation(fields: [idGarantie], references: [id], onDelete: Cascade)
+
+  @@id([idFormule, idGarantie])
+}
+
+model PoliceAssurance {
+  id          String           @id @default(cuid())
+  idDemande   String           @unique
+  demande     Demande          @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  idFormule   String
+  formule     FormuleAssurance @relation(fields: [idFormule], references: [id])
+  dateDebut   String
+  dateFin     String
+  idExterne   String           @default("")
+  statut      String           @default("tarifee")
+  storagePath String           @default("")
+  createdAt   DateTime         @default(now())
+}
+
+model ReservationVol {
+  id                      String           @id @default(cuid())
+  idUtilisateur           String
+  utilisateur             Utilisateur      @relation(fields: [idUtilisateur], references: [id])
+  idDemande               String?
+  demande                 Demande?         @relation(fields: [idDemande], references: [id])
+  offreCode               String
+  provider                String           @default("AVI-AIR")
+  providerOrderId         String           @default("")
+  bookingReference        String           @default("")
+  airlineName             String
+  totalAmount             Int
+  currency                String           @default("EUR")
+  paymentRequiredBy       DateTime?
+  priceGuaranteeExpiresAt DateTime?
+  requiresInstantPayment  Boolean          @default(false)
+  timezone                String           @default("Europe/Paris")
+  cleIdempotence          String           @unique
+  statut                  String           @default("SEARCHED")
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+  segments                SegmentVol[]
+  passagers               PassagerVol[]
+  justificatif            JustificatifVol?
+}
+
+model SegmentVol {
+  id                     String         @id @default(cuid())
+  idReservation          String
+  reservation            ReservationVol @relation(fields: [idReservation], references: [id], onDelete: Cascade)
+  ordre                  Int
+  aeroportDepart         String
+  aeroportArrivee        String
+  depart                 String
+  arrivee                String
+  transporteurCommercial String
+  transporteurOperant    String
+  classe                 String         @default("M")
+  escales                Int            @default(0)
+}
+
+model PassagerVol {
+  id             String         @id @default(cuid())
+  idReservation  String
+  reservation    ReservationVol @relation(fields: [idReservation], references: [id], onDelete: Cascade)
+  nom            String
+  prenom         String
+  dateNaissance  String
+  sexe           String         @default("")
+  nationalite    String         @default("")
+  documentVoyage String         @default("")
+}
+
+model JustificatifVol {
+  idReservation  String         @id
+  reservation    ReservationVol @relation(fields: [idReservation], references: [id], onDelete: Cascade)
+  mention        String
+  dateGeneration DateTime       @default(now())
+  storagePath    String
+  nom            String
+}
+
+model Bailleur {
+  id               String     @id @default(cuid())
+  nom              String
+  coordonnees      String
+  statutValidation String     @default("valide")
+  logements        Logement[]
+}
+
+model Logement {
+  id                String        @id @default(cuid())
+  idBailleur        String
+  bailleur          Bailleur      @relation(fields: [idBailleur], references: [id], onDelete: Cascade)
+  titre             String
+  adresse           String
+  ville             String
+  type              String
+  capacite          Int
+  statut            String        @default("disponible")
+  dateDisponibilite String
+  matchings         Matching[]
+  affectations      Affectation[]
+}
+
+model Etablissement {
+  id        String     @id @default(cuid())
+  nom       String
+  ville     String
+  adresse   String
+  demandes  Demande[]
+  matchings Matching[]
+}
+
+model Matching {
+  id                String        @id @default(cuid())
+  idEtablissement   String
+  etablissement     Etablissement @relation(fields: [idEtablissement], references: [id], onDelete: Cascade)
+  idLogement        String
+  logement          Logement      @relation(fields: [idLogement], references: [id], onDelete: Cascade)
+  dureeVoitureMin   Int
+  dureeTransportMin Int
+  heureReference    String        @default("08:30")
+  statut            String
+  dateCalcul        DateTime      @default(now())
+
+  @@unique([idEtablissement, idLogement])
+}
+
+model Affectation {
+  idDemande  String   @id
+  demande    Demande  @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  idLogement String
+  logement   Logement @relation(fields: [idLogement], references: [id])
+  dateChoix  DateTime @default(now())
+  statut     String   @default("choisi")
+}
+
+model ListeAttente {
+  idDemande       String   @id
+  demande         Demande  @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  criteres        String
+  statut          String   @default("inscrit")
+  dateInscription DateTime @default(now())
+}
+
+model Partenaire {
+  id       String            @id @default(cuid())
+  nom      String
+  type     String
+  statut   String            @default("actif")
+  agents   Utilisateur[]
+  demandes Demande[]
+  regles   RegleCommission[]
+}
+
+model RegleCommission {
+  id           String       @id @default(cuid())
+  idPartenaire String
+  partenaire   Partenaire   @relation(fields: [idPartenaire], references: [id], onDelete: Cascade)
+  taux         Int          @default(0)
+  montantFixe  Int          @default(0)
+  dateDebut    String
+  dateFin      String?
+  actif        Boolean      @default(true)
+  commissions  Commission[]
+}
+
+model Commission {
+  id                String          @id @default(cuid())
+  idDemande         String          @unique
+  demande           Demande         @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  idRegleCommission String
+  regle             RegleCommission @relation(fields: [idRegleCommission], references: [id])
+  montantCalcule    Int
+  statut            String          @default("calculee")
+  datePaiement      DateTime?
+  createdAt         DateTime        @default(now())
+}
+
+model DocumentContractuel {
+  id              String        @id @default(cuid())
+  type            String
+  numeroVersion   String
+  datePublication DateTime      @default(now())
+  contenu         String
+  actif           Boolean       @default(true)
+  acceptations    Acceptation[]
+
+  @@unique([type, numeroVersion])
+}
+
+model Acceptation {
+  id                    String              @id @default(cuid())
+  idUtilisateur         String
+  utilisateur           Utilisateur         @relation(fields: [idUtilisateur], references: [id], onDelete: Cascade)
+  idDocumentContractuel String
+  document              DocumentContractuel @relation(fields: [idDocumentContractuel], references: [id])
+  idDemande             String?
+  demande               Demande?            @relation(fields: [idDemande], references: [id])
+  dateAcceptation       DateTime            @default(now())
+  adresseIp             String              @default("")
+  preuve                String              @default("")
+}
+
+model Delegation {
+  id              String            @id @default(cuid())
+  idMandant       String
+  mandant         Utilisateur       @relation("Mandant", fields: [idMandant], references: [id], onDelete: Cascade)
+  idMandataire    String
+  mandataire      Utilisateur       @relation("Mandataire", fields: [idMandataire], references: [id], onDelete: Cascade)
+  idDemande       String?
+  demande         Demande?          @relation(fields: [idDemande], references: [id])
+  dateDebut       String
+  dateFin         String?
+  statut          String            @default("active")
+  motifRevocation String?
+  revokedAt       DateTime?
+  createdAt       DateTime          @default(now())
+  droits          DelegationDroit[]
+}
+
+model DelegationDroit {
+  idDelegation String
+  codeDroit    String
+  delegation   Delegation @relation(fields: [idDelegation], references: [id], onDelete: Cascade)
+
+  @@id([idDelegation, codeDroit])
+}
+
+model ConfigSla {
+  code        String @id
+  libelle     String
+  delaiHeures Int
+  supplement  Int    @default(0)
+}
+
+model RegleRelance {
+  id          String    @id @default(cuid())
+  delaiJours  Int
+  typeRelance String
+  creerTache  Boolean   @default(false)
+  actif       Boolean   @default(true)
+  relances    Relance[]
+}
+
+model Relance {
+  id         String       @id @default(cuid())
+  idDemande  String
+  demande    Demande      @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  idRegle    String
+  regle      RegleRelance @relation(fields: [idRegle], references: [id])
+  datePrevue DateTime
+  dateEnvoi  DateTime?
+  statut     String       @default("planifiee")
+  createdAt  DateTime     @default(now())
+
+  @@unique([idDemande, idRegle])
+}
+
+model Echeance {
+  id            String   @id @default(cuid())
+  idDemande     String
+  demande       Demande  @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  type          String
+  dateEcheance  DateTime
+  alerteGeneree Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model Reclamation {
+  id            String       @id @default(cuid())
+  numero        String       @unique
+  idDemande     String
+  demande       Demande      @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  idAuteur      String
+  auteur        Utilisateur  @relation("AuteurReclamation", fields: [idAuteur], references: [id])
+  idResponsable String?
+  responsable   Utilisateur? @relation("ResponsableReclamation", fields: [idResponsable], references: [id])
+  categorie     String
+  objet         String
+  statut        String       @default("ouverte")
+  priorite      String       @default("normal")
+  createdAt     DateTime     @default(now())
+  messages      MessageSav[]
+}
+
+model MessageSav {
+  id            String      @id @default(cuid())
+  idReclamation String
+  reclamation   Reclamation @relation(fields: [idReclamation], references: [id], onDelete: Cascade)
+  idAuteur      String
+  auteur        Utilisateur @relation(fields: [idAuteur], references: [id])
+  contenu       String
+  createdAt     DateTime    @default(now())
+}
+
+model FournisseurExterne {
+  code       String         @id
+  libelle    String
+  actif      Boolean        @default(true)
+  operations OperationApi[]
+}
+
+model OperationApi {
+  id              String             @id @default(cuid())
+  codeFournisseur String
+  fournisseur     FournisseurExterne @relation(fields: [codeFournisseur], references: [code])
+  idDemande       String?
+  demande         Demande?           @relation(fields: [idDemande], references: [id])
+  action          String
+  statut          String             @default("en_cours")
+  cleIdempotence  String             @unique
+  nbTentatives    Int                @default(0)
+  derniereErreur  String             @default("")
+  payloadJson     String             @default("")
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  tentatives      TentativeApi[]
+
+  @@index([statut])
+}
+
+model TentativeApi {
+  id            String       @id @default(cuid())
+  idOperation   String
+  operation     OperationApi @relation(fields: [idOperation], references: [id], onDelete: Cascade)
+  dateTentative DateTime     @default(now())
+  codeHttp      Int          @default(0)
+  reponse       String       @default("")
+}
+
+model AlerteFraude {
+  id         String   @id @default(cuid())
+  idDemande  String
+  demande    Demande  @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  typeSignal String
+  niveau     String   @default("moyen")
+  statut     String   @default("ouverte")
+  detail     String
+  createdAt  DateTime @default(now())
+
+  @@index([idDemande, statut])
+}
+
+model DoubleValidation {
+  id             String       @id @default(cuid())
+  idDemande      String
+  demande        Demande      @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  typeOperation  String
+  idVerificateur String
+  verificateur   Utilisateur  @relation("Verificateur", fields: [idVerificateur], references: [id])
+  idValidateur   String?
+  validateur     Utilisateur? @relation("Validateur", fields: [idValidateur], references: [id])
+  statut         String       @default("verifie")
+  createdAt      DateTime     @default(now())
+
+  @@index([idDemande, typeOperation])
+}
+
+model SecretInterne {
+  cle       String   @id
+  valeur    String
+  createdAt DateTime @default(now())
+}
