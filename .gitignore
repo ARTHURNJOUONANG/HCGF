@@ -7,3 +7,5 @@ prisma/code-acces-pd.txt
 .env
 storage/uploads
 storage/mail-journal.jsonl
+
+.vercel
