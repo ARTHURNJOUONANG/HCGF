@@ -16,16 +16,21 @@ export type MailResult = {
 };
 
 async function journaliser(mail: Mail) {
-  const ligne = JSON.stringify({
-    at: new Date().toISOString(),
-    to: mail.to,
-    subject: mail.subject,
-    texte: mail.texte.slice(0, 2000),
-  });
-  const dossier = path.join(process.cwd(), "storage");
-  await mkdir(dossier, { recursive: true });
-  await appendFile(path.join(dossier, "mail-journal.jsonl"), `${ligne}\n`, "utf8");
   console.info(`[mailer:journal] ${mail.subject} → ${mail.to}`);
+  if (process.env.VERCEL) return;
+  try {
+    const ligne = JSON.stringify({
+      at: new Date().toISOString(),
+      to: mail.to,
+      subject: mail.subject,
+      texte: mail.texte.slice(0, 2000),
+    });
+    const dossier = path.join(process.cwd(), "storage");
+    await mkdir(dossier, { recursive: true });
+    await appendFile(path.join(dossier, "mail-journal.jsonl"), `${ligne}\n`, "utf8");
+  } catch (erreur) {
+    console.info("[mailer:journal] fichier indisponible", erreur);
+  }
 }
 
 export async function envoyerMail(mail: Mail): Promise<MailResult> {

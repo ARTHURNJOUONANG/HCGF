@@ -38,6 +38,25 @@ export async function terminerIntro(vers?: string) {
 }
 
 export async function inscrire(formData: FormData) {
+  try {
+    return await inscrireCompte(formData);
+  } catch (error) {
+    if (estRedirection(error)) throw error;
+    console.error("inscription", error);
+    return { error: "Impossible de créer le compte pour le moment. Réessayez dans une minute." };
+  }
+}
+
+function estRedirection(error: unknown) {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "digest" in error &&
+    String((error as { digest?: string }).digest).includes("NEXT_REDIRECT")
+  );
+}
+
+async function inscrireCompte(formData: FormData) {
   const quota = await limiterAction("inscription", 8);
   if ("error" in quota) return quota;
 
@@ -118,20 +137,42 @@ export async function inscrire(formData: FormData) {
   redirect(accueilPour(user));
 }
 
-export async function connecter(formData: FormData) {
+export async function connecter(identifiants: {
+  email: string;
+  password: string;
+  role: string;
+  codeAcces: string;
+}) {
+  try {
+    return await connecterCompte(identifiants);
+  } catch (error) {
+    if (estRedirection(error)) throw error;
+    console.error("connexion", error);
+    return { error: "Connexion indisponible pour le moment. Réessayez dans une minute." };
+  }
+}
+
+async function connecterCompte(identifiants: {
+  email: string;
+  password: string;
+  role: string;
+  codeAcces: string;
+}) {
   const quota = await limiterAction("connexion", 25);
   if ("error" in quota) return quota;
 
-  const email = formString(formData, "email").toLowerCase();
-  const password = formString(formData, "password");
+  const email = identifiants.email.trim().toLowerCase();
+  const password = identifiants.password;
   const emailInvalide = validerEmail(email);
   if (emailInvalide) return { error: emailInvalide };
   const resultat = await tenterConnexion(email, password);
   if ("error" in resultat) return { error: resultat.error };
 
   if (resultat.user.typeCompte === "collaborateur") {
-    const codeOk = await verifierCodeAccesRoles(formString(formData, "codeAcces"));
-    if (!codeOk) return { error: "Code d’accès requis pour ce compte." };
+    const codeOk = await verifierCodeAccesRoles(identifiants.codeAcces);
+    if (!codeOk) {
+      return { error: "Le code d’accès n’est pas reconnu. Recopiez-le depuis le champ sous le mot de passe." };
+    }
   }
 
   await prisma.utilisateur.update({

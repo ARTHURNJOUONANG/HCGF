@@ -9,3 +9,9 @@ storage/uploads
 storage/mail-journal.jsonl
 
 .vercel
+prisma/schema.postgres.prisma
+.env.local
+.env.vercel
+src/generated/prisma/*.tmp*
+.agents/
+skills-lock.json

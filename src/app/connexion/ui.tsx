@@ -5,8 +5,12 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { connecter } from "@/lib/actions";
 import { RolePicker } from "@/components/RolePicker";
-import { ChampCodeAcces } from "@/components/ChampCodeAcces";
 import { espaceParId, roleExigeCode, type EspaceId } from "@/lib/espaces";
+
+function valeurChamp(form: HTMLFormElement, nom: string) {
+  const champ = form.elements.namedItem(nom);
+  return champ instanceof HTMLInputElement ? champ.value : "";
+}
 
 export function LoginForm({ roleInitial }: { roleInitial?: string }) {
   const [role, setRole] = useState<EspaceId>(espaceParId(roleInitial).id);
@@ -24,7 +28,13 @@ export function LoginForm({ roleInitial }: { roleInitial?: string }) {
           event.preventDefault();
           setPending(true);
           setError(null);
-          const result = await connecter(new FormData(event.currentTarget));
+          const form = event.currentTarget;
+          const result = await connecter({
+            email: valeurChamp(form, "email"),
+            password: valeurChamp(form, "password"),
+            role,
+            codeAcces: valeurChamp(form, "codeAcces"),
+          });
           if (result?.error) {
             setError(result.error);
             setPending(false);
@@ -40,7 +50,18 @@ export function LoginForm({ roleInitial }: { roleInitial?: string }) {
           Mot de passe
           <input name="password" type="password" required autoComplete="current-password" />
         </label>
-        {roleExigeCode(espace.id) ? <ChampCodeAcces /> : null}
+        <label className="field">
+          Code d’accès PD
+          <input
+            name="codeAcces"
+            type="text"
+            className="input"
+            required={roleExigeCode(espace.id)}
+            autoComplete="off"
+            spellCheck={false}
+            autoCapitalize="characters"
+          />
+        </label>
         <p className="-mt-1 text-right">
           <Link href="/mot-de-passe" className="link-blue text-sm">
             Mot de passe oublié ?

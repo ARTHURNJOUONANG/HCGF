@@ -51,6 +51,15 @@ async function creerInvite(params: {
 }
 
 export async function creerCollaborateur(formData: FormData) {
+  try {
+    return await inviterCollaborateur(formData);
+  } catch (erreur) {
+    console.error("creerCollaborateur", erreur);
+    return { error: "Impossible de créer le compte pour le moment. Réessayez." };
+  }
+}
+
+async function inviterCollaborateur(formData: FormData) {
   const acteur = await reserviste();
   if (!acteur) return { error: "Réservé à l’équipe." };
   if (!peutInviterEquipe(acteur)) return { error: "Seul un signataire peut inviter l’équipe." };

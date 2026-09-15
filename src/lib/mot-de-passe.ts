@@ -65,11 +65,15 @@ export async function envoyerLienAcces(idUtilisateur: string, email: string, act
   const base = await origine();
   const lien = `${base}/mot-de-passe/${token}`;
   await ecrireAudit(idUtilisateur, action, "utilisateur", idUtilisateur, null, email);
-  await envoyerMail({
-    to: email,
-    subject: "Accéder à votre espace HCGF",
-    texte: `Bonjour,\n\nPour choisir votre mot de passe, ouvrez ce lien (valable 1 heure) :\n${lien}\n\nSi vous n’êtes pas à l’origine de cette demande, ignorez ce message.\n`,
-  });
+  try {
+    await envoyerMail({
+      to: email,
+      subject: "Accéder à votre espace HCGF",
+      texte: `Bonjour,\n\nPour choisir votre mot de passe, ouvrez ce lien (valable 1 heure) :\n${lien}\n\nSi vous n’êtes pas à l’origine de cette demande, ignorez ce message.\n`,
+    });
+  } catch (erreur) {
+    console.error("envoyerLienAcces", erreur);
+  }
   return lien;
 }
 
