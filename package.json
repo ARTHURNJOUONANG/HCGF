@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "cron:local": "node scripts/cron-local.mjs",
-    "db:setup": "prisma migrate dev --name init && prisma db seed"
+    "db:setup": "prisma migrate dev --name init && prisma db seed",
+    "db:status": "node scripts/db-status.mjs",
+    "db:prod": "node scripts/sync-prod-schema.mjs",
+    "docker:up": "docker compose up --build"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"

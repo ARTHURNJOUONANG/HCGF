@@ -4,21 +4,31 @@ import { useState } from "react";
 import { creerCollaborateur, creerComptePartenaire } from "@/lib/equipe";
 import { pushToast } from "@/components/Feedback";
 
-function LienAcces({ lien }: { lien: string | null }) {
-  if (!lien) return null;
+function LienAcces({ lien, codeAcces }: { lien: string | null; codeAcces: string | null }) {
+  if (!lien && !codeAcces) return null;
   return (
-    <p className="muted mt-3 text-sm break-all">
-      Lien d’accès (valable 1 heure) :{" "}
-      <a href={lien} className="link-blue">
-        {lien}
-      </a>
-    </p>
+    <div className="muted mt-3 space-y-2 text-sm">
+      {lien ? (
+        <p className="break-all">
+          Lien d’accès (valable 1 heure) :{" "}
+          <a href={lien} className="link-blue">
+            {lien}
+          </a>
+        </p>
+      ) : null}
+      {codeAcces ? (
+        <p>
+          Nouveau code d’accès PD (l’ancien ne fonctionne plus) : <strong className="text-[var(--navy)]">{codeAcces}</strong>
+        </p>
+      ) : null}
+    </div>
   );
 }
 
 export function CreerCollaborateurForm() {
   const [error, setError] = useState<string | null>(null);
   const [lien, setLien] = useState<string | null>(null);
+  const [codeAcces, setCodeAcces] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
   return (
@@ -26,17 +36,20 @@ export function CreerCollaborateurForm() {
       className="space-y-4"
       onSubmit={async (event) => {
         event.preventDefault();
+        const form = event.currentTarget;
         setPending(true);
         setError(null);
         setLien(null);
-        const result = await creerCollaborateur(new FormData(event.currentTarget));
+        setCodeAcces(null);
+        const result = await creerCollaborateur(new FormData(form));
         if (result?.error) {
           setError(result.error);
           pushToast(result.error, "hot");
         } else {
           setLien(result.lien);
-          event.currentTarget.reset();
-          pushToast("Compte équipe créé");
+          setCodeAcces(result.codeAcces);
+          form.reset();
+          pushToast("Compte équipe créé — le code PD a changé");
         }
         setPending(false);
       }}
@@ -66,7 +79,7 @@ export function CreerCollaborateurForm() {
       <button type="submit" disabled={pending} className="btn btn-primary">
         {pending ? "Création…" : "Créer le compte"}
       </button>
-      <LienAcces lien={lien} />
+      <LienAcces lien={lien} codeAcces={codeAcces} />
     </form>
   );
 }
@@ -74,6 +87,7 @@ export function CreerCollaborateurForm() {
 export function CreerPartenaireForm() {
   const [error, setError] = useState<string | null>(null);
   const [lien, setLien] = useState<string | null>(null);
+  const [codeAcces, setCodeAcces] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
   return (
@@ -81,17 +95,20 @@ export function CreerPartenaireForm() {
       className="space-y-4"
       onSubmit={async (event) => {
         event.preventDefault();
+        const form = event.currentTarget;
         setPending(true);
         setError(null);
         setLien(null);
-        const result = await creerComptePartenaire(new FormData(event.currentTarget));
+        setCodeAcces(null);
+        const result = await creerComptePartenaire(new FormData(form));
         if (result?.error) {
           setError(result.error);
           pushToast(result.error, "hot");
         } else {
           setLien(result.lien);
-          event.currentTarget.reset();
-          pushToast("Compte partenaire créé");
+          setCodeAcces(result.codeAcces);
+          form.reset();
+          pushToast("Compte partenaire créé — le code PD a changé");
         }
         setPending(false);
       }}
@@ -136,7 +153,7 @@ export function CreerPartenaireForm() {
       <button type="submit" disabled={pending} className="btn btn-primary">
         {pending ? "Création…" : "Créer le partenaire"}
       </button>
-      <LienAcces lien={lien} />
+      <LienAcces lien={lien} codeAcces={codeAcces} />
     </form>
   );
 }

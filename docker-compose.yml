@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: hcgf
+      POSTGRES_PASSWORD: hcgf
+      POSTGRES_DB: hcgf
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hcgf -d hcgf"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  app:
+    build: .
+    ports:
+      - "3010:3000"
+    environment:
+      DATABASE_URL: postgresql://hcgf:hcgf@db:5432/hcgf
+      AUTH_SECRET: docker-dev-secret-change-me
+      APP_URL: http://localhost:3010
+      CODE_ACCES_FICHIER: /data/code-acces-pd.txt
+    volumes:
+      - ./data:/data
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

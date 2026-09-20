@@ -46,7 +46,7 @@ export default async function BureauPartenairesPage() {
         <PageIntro
           kicker="Back-office"
           title="Partenaires"
-          text="Réseau, règles de commission et paiements à déclencher."
+          text="Réseau, règles de commission et paiements. Après chaque nouveau compte partenaire, le code PD change."
         />
 
         <section className="stagger mt-10 grid gap-3 sm:grid-cols-2">

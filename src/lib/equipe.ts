@@ -6,6 +6,7 @@ import { prisma } from "./prisma";
 import { hashPassword, requireUser, validerEmail } from "./auth";
 import { envoyerLienAcces } from "./mot-de-passe";
 import { ecrireAudit } from "./lot2";
+import { renouvelerCodeAccesRoles } from "./code-acces";
 
 function champ(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
@@ -84,11 +85,21 @@ async function inviterCollaborateur(formData: FormData) {
   if ("error" in resultat) return resultat;
 
   await ecrireAudit(acteur.id, "compte_equipe_cree", "utilisateur", resultat.utilisateur.id, null, `${role}:${email}`);
+  const code = await renouvelerCodeAccesRoles();
   revalidatePath("/bureau/equipe");
-  return { ok: true as const, lien: resultat.lien };
+  return { ok: true as const, lien: resultat.lien, codeAcces: code.brut };
 }
 
 export async function creerComptePartenaire(formData: FormData) {
+  try {
+    return await inviterPartenaire(formData);
+  } catch (erreur) {
+    console.error("creerComptePartenaire", erreur);
+    return { error: "Impossible de créer le partenaire pour le moment. Réessayez." };
+  }
+}
+
+async function inviterPartenaire(formData: FormData) {
   const acteur = await reserviste();
   if (!acteur) return { error: "Réservé à l’équipe." };
 
@@ -144,5 +155,6 @@ export async function creerComptePartenaire(formData: FormData) {
     `${organisme}:${email}`,
   );
   revalidatePath("/bureau/partenaires");
-  return { ok: true as const, lien: resultat.lien };
+  const code = await renouvelerCodeAccesRoles();
+  return { ok: true as const, lien: resultat.lien, codeAcces: code.brut };
 }

@@ -204,6 +204,11 @@ model Demande {
   alertesFraude         AlerteFraude[]
   operationsApi         OperationApi[]
   validations           DoubleValidation[]
+
+  @@index([idUtilisateur])
+  @@index([statut, dateDerniereActivite])
+  @@index([idOffre])
+  @@index([idPartenaire])
 }
 
 model ReponseFormulaire {
@@ -226,6 +231,8 @@ model ItemChecklist {
   statut    String  @default("a_venir")
   ordre     Int
   demande   Demande @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+
+  @@index([idDemande])
 }
 
 model Document {
@@ -251,6 +258,8 @@ model Document {
   jetons         JetonVerification[]
 
   @@index([hash])
+  @@index([idDemande])
+  @@index([idAuteur])
 }
 
 model Conversation {
@@ -268,6 +277,8 @@ model Message {
   auteur         Utilisateur  @relation(fields: [idAuteur], references: [id])
   contenu        String
   createdAt      DateTime     @default(now())
+
+  @@index([idConversation])
 }
 
 model Notification {
@@ -281,6 +292,9 @@ model Notification {
   corps         String
   statut        String      @default("non_lue")
   createdAt     DateTime    @default(now())
+
+  @@index([idUtilisateur, statut])
+  @@index([idDemande])
 }
 
 model TacheInterne {
@@ -294,6 +308,10 @@ model TacheInterne {
   statut       String       @default("a_faire")
   dateEcheance DateTime?
   createdAt    DateTime     @default(now())
+
+  @@index([idDemande])
+  @@index([statut])
+  @@index([idAssignee])
 }
 
 model JournalAudit {
@@ -307,6 +325,9 @@ model JournalAudit {
   demande   Demande?     @relation(fields: [idDemande], references: [id])
   detail    String
   createdAt DateTime     @default(now())
+
+  @@index([idDemande])
+  @@index([createdAt])
 }
 
 model JetonVerification {

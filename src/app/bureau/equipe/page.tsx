@@ -33,7 +33,7 @@ export default async function BureauEquipePage() {
           title="Équipe"
           text={
             session.role === "signataire"
-              ? "Créez un conseiller ou un signataire. La personne choisit son mot de passe via le lien d’accès."
+              ? "Créez un conseiller ou un signataire. Après chaque compte, un nouveau code PD s’affiche : l’ancien ne sert plus."
               : "Consultez les comptes équipe. Seul un signataire peut inviter un collaborateur."
           }
         />
