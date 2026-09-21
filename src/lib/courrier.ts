@@ -37,7 +37,7 @@ export function texteRelance(opts: {
 }) {
   const ton =
     opts.delaiJours >= 10
-      ? "Un conseiller va maintenant suivre ce dossier avec vous."
+      ? "Un contrôleur va maintenant suivre ce dossier avec vous."
       : opts.delaiJours >= 7
         ? "Sans suite de votre part, l’équipe prendra le relais."
         : opts.delaiJours >= 5

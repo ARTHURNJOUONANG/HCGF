@@ -103,7 +103,7 @@ export async function initierDossierPartenaire(formData: FormData) {
     });
   }
 
-  const apporteur = [user.profil?.prenom, user.profil?.nom].filter(Boolean).join(" ") || "Votre conseiller";
+  const apporteur = [user.profil?.prenom, user.profil?.nom].filter(Boolean).join(" ") || "Votre contrôleur";
   const lien = `${await origine()}/demandes/${demande.id}`;
   await notifierEtMailer({
     idUtilisateur: candidat.id,

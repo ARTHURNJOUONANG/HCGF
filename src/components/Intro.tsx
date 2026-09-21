@@ -38,11 +38,11 @@ const ETAPES = [
   },
   {
     image: "/intro/equipe.png",
-    alt: "Conseillère qui contrôle un dossier sur son écran",
+    alt: "Contrôleur qui vérifie un dossier sur son écran",
     kicker: "L’équipe AVI",
     titre: "On vérifie.\nOn signe.\nOn vous prévient.",
     texte:
-      "Un conseiller contrôle chaque pièce. Un signataire valide. Vous recevez un message à chaque étape, sans relancer personne.",
+      "Un contrôleur contrôle chaque pièce. Un administrateur valide. Vous recevez un message à chaque étape, sans relancer personne.",
     jetons: ["Contrôle", "Signature", "Notifications"],
   },
   {

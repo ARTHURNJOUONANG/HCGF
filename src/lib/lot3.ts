@@ -14,6 +14,7 @@ import {
 } from "./moyens-paiement";
 import { ecrireStockage } from "./fichiers";
 import { validerIban } from "./validation";
+import { estAdministrateur } from "./espaces";
 
 const IBAN_AVI = IBAN_PLATEFORME;
 
@@ -590,8 +591,8 @@ export async function traiterRemboursement(formData: FormData) {
   };
   const suivant = suite[action];
   if (!suivant) return { error: "Action inconnue." };
-  if (action === "payer" && user.role !== "signataire" && user.role !== "administrateur") {
-    return { error: "Seul un signataire peut marquer un remboursement comme payé." };
+  if (action === "payer" && !estAdministrateur(user.role)) {
+    return { error: "Seul un administrateur peut marquer un remboursement comme payé." };
   }
 
   await prisma.demandeRemboursement.update({ where: { id }, data: { statut: suivant } });

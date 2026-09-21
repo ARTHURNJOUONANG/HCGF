@@ -368,8 +368,8 @@ async function assurerComptesDemo() {
   console.log("Compte démo candidat.demo@avi.test");
 
   for (const staff of [
-    { email: "conseiller.demo@avi.test", role: "conseiller", nom: "Martin", prenom: "Claire" },
-    { email: "signataire.demo@avi.test", role: "signataire", nom: "Morel", prenom: "Julien" },
+    { email: "conseiller.demo@avi.test", role: "controleur", nom: "Martin", prenom: "Claire" },
+    { email: "signataire.demo@avi.test", role: "administrateur", nom: "Morel", prenom: "Julien" },
   ]) {
     await assurerCompte({
       email: staff.email,
@@ -441,6 +441,21 @@ async function main() {
 
   await assurerCatalogue();
   await assurerComptesDemo();
+
+  // Migration des anciens rôles (conseiller → contrôleur, signataire → administrateur).
+  const migControleur = await prisma.utilisateur.updateMany({
+    where: { role: "conseiller" },
+    data: { role: "controleur" },
+  });
+  const migAdmin = await prisma.utilisateur.updateMany({
+    where: { role: "signataire" },
+    data: { role: "administrateur" },
+  });
+  if (migControleur.count + migAdmin.count > 0) {
+    console.log(
+      `Rôles migrés: ${migControleur.count} contrôleur(s), ${migAdmin.count} administrateur(s).`,
+    );
+  }
 
   const fichierCode = process.env.CODE_ACCES_FICHIER;
   const codeRoles = await assurerCodeAccesRoles(prisma);

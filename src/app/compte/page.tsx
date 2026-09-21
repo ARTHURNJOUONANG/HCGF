@@ -77,7 +77,7 @@ export default async function ComptePage() {
               <p className="kicker">Clôture</p>
               <h2 className="form-desk-title">Compte équipe</h2>
               <p className="muted mt-3 text-sm">
-                Un compte conseiller ou signataire se ferme depuis le bureau, pas ici.
+                Un compte contrôleur ou administrateur se ferme depuis le bureau, pas ici.
               </p>
             </section>
           ) : (

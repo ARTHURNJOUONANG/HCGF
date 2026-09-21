@@ -111,7 +111,7 @@ export async function analyserDossier(demandeId: string): Promise<{
               {
                 role: "system",
                 content:
-                  "Tu aides un conseiller AVI. Tu ne signes pas, tu ne paies pas, tu ne valides pas à 4 yeux, tu ne rembourses pas. Réponds JSON {suggestions:[{code,titre,detail}]}.",
+                  "Tu aides un contrôleur AVI. Tu ne signes pas, tu ne paies pas, tu ne valides pas à 4 yeux, tu ne rembourses pas. Réponds JSON {suggestions:[{code,titre,detail}]}.",
               },
               {
                 role: "user",

@@ -30,8 +30,18 @@ async function upsertStaff(
 }
 
 async function main() {
-  await upsertStaff("conseiller.demo@avi.test", "conseiller", "Martin", "Claire");
-  await upsertStaff("signataire.demo@avi.test", "signataire", "Morel", "Julien");
+  await upsertStaff("conseiller.demo@avi.test", "controleur", "Martin", "Claire");
+  await upsertStaff("signataire.demo@avi.test", "administrateur", "Morel", "Julien");
+
+  // Migration des anciens libellés de rôle encore présents en base.
+  await prisma.utilisateur.updateMany({
+    where: { role: "conseiller" },
+    data: { role: "controleur" },
+  });
+  await prisma.utilisateur.updateMany({
+    where: { role: "signataire" },
+    data: { role: "administrateur" },
+  });
 
   let partenaire = await prisma.partenaire.findFirst({ where: { nom: "Campus Horizon" } });
   if (!partenaire) {

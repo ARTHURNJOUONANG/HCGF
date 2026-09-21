@@ -122,13 +122,13 @@ async function main() {
   ok("candidat /partenaire renvoyé", pageRole(partCand.text) !== "partenaire", `${partCand.status} page=${pageRole(partCand.text)}`);
 
   const bureauCons = await hit("/bureau", cons, true);
-  ok("conseiller file du jour", bureauCons.status === 200 && pageRole(bureauCons.text) === "bureau", `status ${bureauCons.status}`);
+  ok("controleur file du jour", bureauCons.status === 200 && pageRole(bureauCons.text) === "bureau", `status ${bureauCons.status}`);
 
   const tdbCons = await hit("/tableau-de-bord", cons, true);
-  ok("conseiller /tableau-de-bord → bureau", pageRole(tdbCons.text) === "bureau", `${tdbCons.status} page=${pageRole(tdbCons.text)}`);
+  ok("controleur /tableau-de-bord → bureau", pageRole(tdbCons.text) === "bureau", `${tdbCons.status} page=${pageRole(tdbCons.text)}`);
 
   const bureauSign = await hit("/bureau", sign, true);
-  ok("signataire bureau", bureauSign.status === 200 && pageRole(bureauSign.text) === "bureau", `status ${bureauSign.status}`);
+  ok("administrateur bureau", bureauSign.status === 200 && pageRole(bureauSign.text) === "bureau", `status ${bureauSign.status}`);
 
   const partHome = await hit("/partenaire", part, true);
   ok("partenaire espace", partHome.status === 200 && pageRole(partHome.text) === "partenaire", `status ${partHome.status} page=${pageRole(partHome.text)}`);
@@ -161,13 +161,13 @@ async function main() {
 
     const pageCons = await hit(`/demandes/${d0.id}`, cons, true);
     ok(
-      "conseiller /demandes/[id] bloqué (espace candidat)",
+      "controleur /demandes/[id] bloqué (espace candidat)",
       !pageCons.text.includes(d0.reference) || pageRole(pageCons.text) === "bureau" || pageRole(pageCons.text) === "connexion",
       `${pageCons.status} page=${pageRole(pageCons.text)}`,
     );
 
     const fiche = await hit(`/bureau/demandes/${d0.id}`, cons, true);
-    ok("conseiller fiche bureau", fiche.status === 200 && !fiche.text.includes("Application error"), `status ${fiche.status}`);
+    ok("controleur fiche bureau", fiche.status === 200 && !fiche.text.includes("Application error"), `status ${fiche.status}`);
 
     const ficheCand = await hit(`/bureau/demandes/${d0.id}`, cand, true);
     ok("candidat fiche bureau refusée", pageRole(ficheCand.text) !== "bureau" && !ficheCand.text.includes("Back-office"), `${ficheCand.status} page=${pageRole(ficheCand.text)}`);
@@ -179,7 +179,7 @@ async function main() {
   const routesStaff = ["/bureau/taches", "/bureau/finance", "/bureau/partenaires", "/bureau/exploitation", "/bureau/audit"];
   for (const p of routesStaff) {
     const r = await hit(p, cons, true);
-    ok(`conseiller ${p}`, r.status === 200 && !r.text.includes("Application error") && !r.text.includes("Parsing CSS"), `status ${r.status}`);
+    ok(`controleur ${p}`, r.status === 200 && !r.text.includes("Application error") && !r.text.includes("Parsing CSS"), `status ${r.status}`);
   }
 
   const routesCand = ["/demandes/nouvelle", "/delegations", "/vols", "/notifications", "/mot-de-passe"];

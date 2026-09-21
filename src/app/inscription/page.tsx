@@ -12,7 +12,7 @@ export default async function InscriptionPage({
     <AuthLayout
       kicker="Inscription"
       title="Choisissez le rôle du compte à créer."
-      lead="Candidat, conseiller, signataire, partenaire ou délégataire — le bureau ouvert dépend de ce choix."
+      lead="Candidat, contrôleur, administrateur, partenaire ou délégataire — le bureau ouvert dépend de ce choix."
     >
       <RegisterForm roleInitial={role} />
       <p className="mt-8 text-sm text-[var(--muted)]">

@@ -150,7 +150,7 @@ export function SignatureForm({ demandeId, autorise }: { demandeId: string; auto
   const [pending, setPending] = useState(false);
 
   if (!autorise) {
-    return <p className="text-sm text-[#6e6e73]">La signature est réservée au signataire.</p>;
+    return <p className="text-sm text-[#6e6e73]">La signature est réservée à l’administrateur.</p>;
   }
 
   return (

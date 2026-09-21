@@ -1,4 +1,4 @@
-# Plateforme AVI — LOT 1 à 8 + 3B
+﻿# Plateforme AVI — LOT 1 à 8 + 3B
 
 Application web du cahier des charges V9.
 
@@ -90,7 +90,7 @@ Mot de passe démo : `Demo2026!`
 | Rôle | E-mail |
 |---|---|
 | Candidat | `candidat.demo@avi.test` |
-| Conseiller | `conseiller.demo@avi.test` |
-| Signataire | `signataire.demo@avi.test` |
+| Contrôleur | `conseiller.demo@avi.test` |
+| Administrateur | `signataire.demo@avi.test` |
 | Partenaire | `partenaire.demo@avi.test` |
 | Délégataire | `delegue.demo@avi.test` |

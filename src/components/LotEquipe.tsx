@@ -70,9 +70,9 @@ export function CreerCollaborateurForm() {
       </label>
       <label className="field">
         Rôle
-        <select name="role" className="input" defaultValue="conseiller">
-          <option value="conseiller">Conseiller</option>
-          <option value="signataire">Signataire</option>
+        <select name="role" className="input" defaultValue="controleur">
+          <option value="controleur">Contrôleur</option>
+          <option value="administrateur">Administrateur</option>
         </select>
       </label>
       {error ? <p className="text-sm text-[#c93400]">{error}</p> : null}

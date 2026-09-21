@@ -7,12 +7,13 @@ import { hashPassword, requireUser, validerEmail } from "./auth";
 import { envoyerLienAcces } from "./mot-de-passe";
 import { ecrireAudit } from "./lot2";
 import { renouvelerCodeAccesRoles } from "./code-acces";
+import { estAdministrateur, normaliserRoleCollaborateur } from "./espaces";
 
 function champ(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
 }
 
-const ROLES_EQUIPE = new Set(["conseiller", "signataire"]);
+const ROLES_EQUIPE = new Set(["controleur", "administrateur"]);
 const TYPES_PARTENAIRE = new Set(["agence", "ecole", "apporteur"]);
 
 async function reserviste() {
@@ -22,7 +23,7 @@ async function reserviste() {
 }
 
 function peutInviterEquipe(user: { role: string }) {
-  return user.role === "signataire";
+  return estAdministrateur(user.role);
 }
 
 async function creerInvite(params: {
@@ -63,17 +64,17 @@ export async function creerCollaborateur(formData: FormData) {
 async function inviterCollaborateur(formData: FormData) {
   const acteur = await reserviste();
   if (!acteur) return { error: "Réservé à l’équipe." };
-  if (!peutInviterEquipe(acteur)) return { error: "Seul un signataire peut inviter l’équipe." };
+  if (!peutInviterEquipe(acteur)) return { error: "Seul un administrateur peut inviter l’équipe." };
 
   const email = champ(formData, "email").toLowerCase();
   const nom = champ(formData, "nom");
   const prenom = champ(formData, "prenom");
-  const role = champ(formData, "role");
+  const role = normaliserRoleCollaborateur(champ(formData, "role"));
 
   if (!email || !nom || !prenom) return { error: "Identité incomplète." };
   const emailInvalide = validerEmail(email);
   if (emailInvalide) return { error: emailInvalide };
-  if (!ROLES_EQUIPE.has(role)) return { error: "Choisissez conseiller ou signataire." };
+  if (!ROLES_EQUIPE.has(role)) return { error: "Choisissez contrôleur ou administrateur." };
 
   const resultat = await creerInvite({
     email,

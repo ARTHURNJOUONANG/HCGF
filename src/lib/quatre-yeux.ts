@@ -27,10 +27,10 @@ export async function exigerQuatreYeuxSignature(idDemande: string, idSignataire:
     orderBy: { createdAt: "desc" },
   });
   if (!dv) {
-    return { error: "Un conseiller distinct doit d’abord marquer les pièces conformes (quatre yeux)." };
+    return { error: "Un contrôleur distinct doit d’abord marquer les pièces conformes (quatre yeux)." };
   }
   if (dv.idVerificateur === idSignataire) {
-    return { error: "Le signataire ne peut pas être la personne qui a contrôlé le dossier." };
+    return { error: "L’administrateur ne peut pas être la personne qui a contrôlé le dossier." };
   }
   return { ok: true as const, validation: dv };
 }
@@ -39,7 +39,7 @@ export async function cloreQuatreYeux(id: string, idValidateur: string) {
   const dv = await prisma.doubleValidation.findUnique({ where: { id } });
   if (!dv) return { error: "Validation introuvable." };
   if (dv.idVerificateur === idValidateur) {
-    return { error: "Le signataire ne peut pas être la personne qui a contrôlé le dossier." };
+    return { error: "L’administrateur ne peut pas être la personne qui a contrôlé le dossier." };
   }
   await prisma.doubleValidation.update({
     where: { id },

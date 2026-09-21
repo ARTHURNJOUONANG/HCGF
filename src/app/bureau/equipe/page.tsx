@@ -6,16 +6,19 @@ import { CreerCollaborateurForm } from "@/components/LotEquipe";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { unreadCount } from "@/lib/shell";
+import { estAdministrateur } from "@/lib/espaces";
 
 const ROLES: Record<string, string> = {
-  conseiller: "Conseiller",
-  signataire: "Signataire",
+  controleur: "Contrôleur",
+  administrateur: "Administrateur",
+  conseiller: "Contrôleur",
+  signataire: "Administrateur",
 };
 
 export default async function BureauEquipePage() {
   const session = await getSession();
-  if (!session) redirect("/connexion?role=conseiller");
-  if (session.typeCompte !== "collaborateur") redirect("/connexion?role=conseiller");
+  if (!session) redirect("/connexion?role=controleur");
+  if (session.typeCompte !== "collaborateur") redirect("/connexion?role=controleur");
   const unread = await unreadCount(session);
 
   const equipe = await prisma.utilisateur.findMany({
@@ -23,6 +26,8 @@ export default async function BureauEquipePage() {
     include: { profil: true },
     orderBy: { createdAt: "asc" },
   });
+
+  const admin = estAdministrateur(session.role);
 
   return (
     <div className="min-h-screen">
@@ -32,13 +37,13 @@ export default async function BureauEquipePage() {
           kicker="Back-office"
           title="Équipe"
           text={
-            session.role === "signataire"
-              ? "Créez un conseiller ou un signataire. Après chaque compte, un nouveau code PD s’affiche : l’ancien ne sert plus."
-              : "Consultez les comptes équipe. Seul un signataire peut inviter un collaborateur."
+            admin
+              ? "Créez un contrôleur ou un administrateur. Après chaque compte, un nouveau code PD s’affiche : l’ancien ne sert plus."
+              : "Consultez les comptes équipe. Seul un administrateur peut inviter un collaborateur."
           }
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          {session.role === "signataire" ? (
+          {admin ? (
             <section className="card p-6 sm:p-8">
               <p className="kicker">Nouveau compte</p>
               <h2 className="form-desk-title">Inviter un collaborateur</h2>
@@ -49,9 +54,9 @@ export default async function BureauEquipePage() {
           ) : (
             <section className="card p-6 sm:p-8">
               <p className="kicker">Invitation</p>
-              <h2 className="form-desk-title">Réservé au signataire</h2>
+              <h2 className="form-desk-title">Réservé à l’administrateur</h2>
               <p className="muted mt-3 text-sm">
-                Un conseiller consulte l’équipe. L’invitation d’un nouveau compte se fait par un signataire.
+                Un contrôleur consulte l’équipe. L’invitation d’un nouveau compte se fait par un administrateur.
               </p>
             </section>
           )}
@@ -60,7 +65,7 @@ export default async function BureauEquipePage() {
               <EmptyHint
                 icon={<Users size={26} strokeWidth={1.5} />}
                 title="Aucun collaborateur"
-                text="Invitez le premier conseiller depuis le formulaire."
+                text="Invitez le premier contrôleur depuis le formulaire."
               />
             ) : (
               equipe.map((membre) => (

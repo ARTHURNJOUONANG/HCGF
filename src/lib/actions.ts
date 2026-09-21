@@ -82,7 +82,7 @@ async function inscrireCompte(formData: FormData) {
 
   const espace = espaceParId(formString(formData, "role"));
   if (espace.typeCompte === "collaborateur") {
-    return { error: "Un conseiller ou un signataire s’invite depuis le bureau." };
+    return { error: "Un contrôleur ou un administrateur s’invite depuis le bureau." };
   }
   if (roleExigeCode(espace.id)) {
     const codeOk = await verifierCodeAccesRoles(formString(formData, "codeAcces"));

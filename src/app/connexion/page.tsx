@@ -12,7 +12,7 @@ export default async function ConnexionPage({
     <AuthLayout
       kicker="Connexion"
       title="Choisissez votre espace, puis ouvrez votre compte."
-      lead="Candidat, conseiller, signataire, partenaire ou délégataire — chaque rôle ouvre son propre bureau."
+      lead="Candidat, contrôleur, administrateur, partenaire ou délégataire — chaque rôle ouvre son propre bureau."
     >
       <LoginForm roleInitial={role} />
       <p className="mt-8 text-sm text-[var(--muted)]">

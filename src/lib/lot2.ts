@@ -10,6 +10,7 @@ import { signalerPiecePartagee, leverAlerteFraude } from "./fraude";
 import { validerLongueur } from "./validation";
 import { cloreQuatreYeux, enregistrerControleQuatreYeux, exigerQuatreYeuxSignature } from "./quatre-yeux";
 import { creerProcedureSignature, modeEsign } from "./esign";
+import { estAdministrateur } from "./espaces";
 
 async function acteur() {
   const user = await requireUser();
@@ -47,7 +48,7 @@ function peutTraiter(user: { typeCompte: string; role: string }) {
 }
 
 function peutSigner(user: { role: string }) {
-  return user.role === "signataire" || user.role === "administrateur";
+  return estAdministrateur(user.role);
 }
 
 async function accesDemande(userId: string, typeCompte: string, demandeId: string) {
@@ -304,7 +305,7 @@ export async function terminerTache(formData: FormData) {
 export async function signerEtValider(formData: FormData) {
   const user = await acteur();
   if (!user || !peutSigner(user)) {
-    return { error: "Seul un signataire habilité peut signer une attestation." };
+    return { error: "Seul un administrateur habilité peut signer une attestation." };
   }
 
   const demandeId = String(formData.get("demandeId") ?? "");

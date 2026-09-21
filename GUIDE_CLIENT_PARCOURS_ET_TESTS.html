@@ -1,0 +1,350 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>HCGF — Guide client parcours et tests (tous services)</title>
+  <style>
+    @page { size: A4; margin: 15mm; }
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 10pt;
+      line-height: 1.42;
+      color: #152238;
+      max-width: 190mm;
+      margin: 0 auto;
+    }
+    h1 { font-size: 17pt; color: #0b3a66; margin: 0 0 8px; }
+    h2 {
+      font-size: 12.5pt;
+      color: #0b3a66;
+      margin: 18px 0 6px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid #d8d0c4;
+      page-break-after: avoid;
+    }
+    h3 { font-size: 11pt; color: #1a4a73; margin: 12px 0 5px; page-break-after: avoid; }
+    p, li { margin: 3px 0; }
+    ul, ol { padding-left: 1.15em; margin: 5px 0; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 8px 0 12px;
+      font-size: 9pt;
+      page-break-inside: avoid;
+    }
+    th, td {
+      border: 1px solid #c9c1b5;
+      padding: 5px 7px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #f0ebe3; color: #0b3a66; }
+    code {
+      background: #f4f1ea;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-family: Consolas, monospace;
+      font-size: 8.5pt;
+    }
+    pre {
+      background: #f7f5f0;
+      border: 1px solid #e5dfd4;
+      padding: 8px 10px;
+      font-size: 8pt;
+      white-space: pre-wrap;
+      page-break-inside: avoid;
+    }
+    .meta { color: #5a534a; font-size: 9.5pt; margin-bottom: 12px; }
+    .box {
+      background: #f8f5ef;
+      border-left: 4px solid #0b3a66;
+      padding: 8px 10px;
+      margin: 10px 0;
+      page-break-inside: avoid;
+    }
+    .warn {
+      background: #fff6ed;
+      border-left: 4px solid #c45c16;
+      padding: 8px 10px;
+      margin: 10px 0;
+      page-break-inside: avoid;
+    }
+    .svc {
+      background: #faf8f4;
+      border: 1px solid #e5dfd4;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin: 10px 0 14px;
+      page-break-inside: avoid;
+    }
+    .svc h3 { margin-top: 0; }
+    .footer {
+      margin-top: 22px;
+      padding-top: 8px;
+      border-top: 1px solid #d8d0c4;
+      font-size: 8.5pt;
+      color: #6a6258;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>HCGF — Guide client : parcours et tests</h1>
+  <p class="meta">
+    <strong>Site :</strong> https://plateforme-avi.vercel.app<br />
+    Tous les services : AVI, Assurance, Hébergement, Vol — identifiants, code PD, tests.
+  </p>
+
+  <h2>0. Identifiants d’accès (démonstration)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Espace</th>
+        <th>Connexion</th>
+        <th>E-mail</th>
+        <th>Mot de passe</th>
+        <th>Code PD</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Candidat</strong></td>
+        <td>→ Candidat</td>
+        <td><code>candidat.demo@avi.test</code></td>
+        <td><code>Demo2026!</code></td>
+        <td>Aucun — laisser vide</td>
+      </tr>
+      <tr>
+        <td><strong>Contrôleur</strong></td>
+        <td>→ Contrôleur</td>
+        <td><code>conseiller.demo@avi.test</code></td>
+        <td><code>Demo2026!</code></td>
+        <td><code>PD-4F2D8F97</code></td>
+      </tr>
+      <tr>
+        <td><strong>Administrateur</strong></td>
+        <td>→ Administrateur</td>
+        <td><code>signataire.demo@avi.test</code></td>
+        <td><code>Demo2026!</code></td>
+        <td><code>PD-4F2D8F97</code></td>
+      </tr>
+      <tr>
+        <td><strong>Partenaire</strong></td>
+        <td>→ Partenaire</td>
+        <td><code>partenaire.demo@avi.test</code></td>
+        <td><code>Demo2026!</code></td>
+        <td>Aucun — laisser vide</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="warn">
+    <strong>Important.</strong> Même code PD pour Contrôleur et Administrateur.
+    S’il a changé après une création de compte équipe / partenaire, utilisez le dernier code affiché à l’écran.
+    Document réservé au cercle de test HCGF.
+  </div>
+
+  <h2>1. Code de sécurité PD — pourquoi et comment</h2>
+  <p>
+    Le <strong>code PD</strong> est un second secret (en plus du mot de passe), demandé seulement pour
+    <strong>Contrôleur</strong> et <strong>Administrateur</strong>.
+  </p>
+  <p><strong>Pourquoi :</strong> protéger le bureau si un mot de passe fuit ; ne pas le mettre dans le mail ;
+  rotation automatique à chaque nouveau compte équipe ou partenaire (l’ancien code meurt).</p>
+  <table>
+    <thead><tr><th>Étape</th><th>Qui</th><th>Quoi</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Administrateur</td><td>Crée un compte équipe / partenaire</td></tr>
+      <tr><td>2</td><td>Plateforme</td><td>Affiche lien (1 h) + <strong>nouveau code PD</strong></td></tr>
+      <tr><td>3</td><td>Plateforme</td><td>Envoie le <strong>lien</strong> par e-mail (si Resend OK)</td></tr>
+      <tr><td>4</td><td>Administrateur</td><td>Note le code PD (jamais dans le mail)</td></tr>
+      <tr><td>5–6</td><td>Nouveau compte</td><td>Lien → mot de passe → connexion avec le <strong>nouveau</strong> PD</td></tr>
+      <tr><td>7</td><td>—</td><td>Ancien code invalide pour tout le monde</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2. Commun à tous les services</h2>
+  <div class="box">
+    Chaque service ouvre un <strong>dossier isolé</strong> (référence, pièces, paiement, messages séparés).
+    Le candidat ouvre via <strong>Nouvelle</strong> ; le partenaire via <strong>Initier</strong>.
+    L’équipe suit dans le <strong>bureau</strong>. Ce qui change, ce sont les <strong>étapes</strong> et le
+    <strong>document final</strong>.
+  </div>
+  <table>
+    <thead>
+      <tr><th>Service</th><th>Étapes du parcours</th><th>Document / résultat final</th><th>Rôle signature / validation clé</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>AVI</strong></td>
+        <td>Formulaire → Documents → Paiement → Validation</td>
+        <td>Dossier final signé (PDF / HTML)</td>
+        <td>Contrôleur (conformes) puis <strong>Administrateur</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Assurance</strong></td>
+        <td>Formulaire → Tarification → Paiement → Attestation</td>
+        <td>Attestation / police d’assurance</td>
+        <td>Candidat souscrit ; attestation après paiement</td>
+      </tr>
+      <tr>
+        <td><strong>Hébergement</strong></td>
+        <td>Formulaire → Matching → Documents → Signature</td>
+        <td>Choix de logement + suite documentaire</td>
+        <td>Matching ≤ 40 min ; pièces ; signature logement</td>
+      </tr>
+      <tr>
+        <td><strong>Vol</strong></td>
+        <td>Recherche → Passager → Hold → Justificatif</td>
+        <td>Justificatif Hold (billet non émis)</td>
+        <td>Hold avec date limite ; pas de signature AVI</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3. Parcours détaillé par service</h2>
+
+  <div class="svc">
+    <h3>3.1 AVI / justificatif financier</h3>
+    <p><strong>Pays ouverts (démo) :</strong> France, Allemagne, Belgique, Canada.</p>
+    <pre>Candidat → formulaire + pièces + paiement
+Contrôleur → pièces « Conformes »
+Administrateur → rapproche fonds → Signer
+Candidat → Document final</pre>
+    <ol>
+      <li>Nouvelle → <strong>AVI</strong> → pays → Continuer.</li>
+      <li>Formulaire (identité, établissement, dates, montant AVI).</li>
+      <li>Pièces : passeport, admission, justificatifs financiers.</li>
+      <li>Paiement : virement déclaré (référence).</li>
+      <li>Bureau contrôleur : ✓ Conforme sur chaque pièce.</li>
+      <li>Bureau administrateur : rapprochement fonds puis <strong>Signer</strong>.</li>
+      <li>Candidat : bandeau <strong>Document final</strong> → télécharger.</li>
+    </ol>
+    <p><strong>Quatre yeux :</strong> la personne qui contrôle ≠ celle qui signe.</p>
+    <p><strong>Vente croisée :</strong> sur un dossier AVI, bandeau pour ouvrir une <strong>assurance</strong> isolée (identité / dates reprises).</p>
+  </div>
+
+  <div class="svc">
+    <h3>3.2 Assurance voyage</h3>
+    <p><strong>Pays ouverts (démo) :</strong> France, Allemagne.</p>
+    <pre>Formulaire → choisir formule → payer → émettre / télécharger l’attestation</pre>
+    <ol>
+      <li>Nouvelle → <strong>Assurance voyage</strong> → pays → Continuer
+        <em>ou</em> depuis un AVI : « Ajouter une couverture voyage ».</li>
+      <li>Formulaire : identité + dates de séjour + formule (essentielle / confort / premium).</li>
+      <li>Onglet <strong>Assurance</strong> : choisir une formule → souscrire.</li>
+      <li>Onglet <strong>Paiement</strong> : régler / déclarer le virement (rapprochement bureau si besoin).</li>
+      <li>Émettre l’attestation (bouton) puis télécharger la police.</li>
+      <li>Pièce passeport si demandée dans l’onglet Pièces.</li>
+    </ol>
+    <p>Pas le bouton « Signer » AVI de l’administrateur : ici c’est l’<strong>attestation assurance</strong>.</p>
+  </div>
+
+  <div class="svc">
+    <h3>3.3 Hébergement</h3>
+    <p><strong>Pays ouvert (démo) :</strong> France.</p>
+    <pre>Formulaire → Matching (≤ 40 min) → choisir logement → documents → signature</pre>
+    <ol>
+      <li>Nouvelle → <strong>Attestation d’hébergement</strong> → France → Continuer.</li>
+      <li>Formulaire : identité, établissement, date de rentrée.</li>
+      <li>Onglet <strong>Logement</strong> : lancer le <strong>Matching</strong> (logement à ≤ 40 min de l’établissement).</li>
+      <li>Choisir un logement proposé (ou liste d’attente si besoin).</li>
+      <li>Onglet <strong>Pièces</strong> : déposer le passeport (et autres pièces si demandées).</li>
+      <li>Suivre l’étape signature / validation prévue pour le logement.</li>
+      <li>Bureau : contrôle des pièces et suivi du dossier comme pour les autres services.</li>
+    </ol>
+  </div>
+
+  <div class="svc">
+    <h3>3.4 Vol (Hold / Pay Later)</h3>
+    <p><strong>Pays ouvert (démo) :</strong> France (offre vol).</p>
+    <pre>Recherche d’offres → passager → Hold → justificatif (billet non émis)</pre>
+    <ol>
+      <li>Nouvelle → <strong>Réservation de vol</strong> → Continuer.</li>
+      <li>Formulaire : identité + aéroports / dates.</li>
+      <li>Onglet <strong>Vol</strong> : consulter les offres ; si Hold autorisé → <strong>Hold</strong>.</li>
+      <li>Compléter le passager si demandé.</li>
+      <li>Noter la <strong>date limite</strong> de paiement (Hold).</li>
+      <li>Générer / télécharger le <strong>justificatif</strong> « Réservation confirmée – billet non émis ».</li>
+      <li>Suivi aussi dans <strong>Mes réservations de vol</strong> (menu Vols).</li>
+    </ol>
+    <p>Ce n’est <strong>pas</strong> une signature AVI. Le Hold peut expirer si non payé à temps.</p>
+  </div>
+
+  <h2>4. Bureau (commun) — ce que fait l’équipe</h2>
+  <table>
+    <thead><tr><th>Action</th><th>Qui</th><th>Où</th><th>Services concernés</th></tr></thead>
+    <tbody>
+      <tr><td>Contrôler pièces (✓ Conforme)</td><td>Contrôleur / Administrateur</td><td>Dossier bureau → Pièces</td><td>Tous (quand il y a des pièces)</td></tr>
+      <tr><td>Rapprocher un virement</td><td>Équipe</td><td>Finance du dossier</td><td>Tous avec paiement</td></tr>
+      <tr><td>Signer l’attestation AVI</td><td><strong>Administrateur seul</strong></td><td>Bloc Signature</td><td><strong>AVI</strong></td></tr>
+      <tr><td>Messages / tâches / SAV</td><td>Équipe</td><td>Dossier / Exploitation</td><td>Tous</td></tr>
+      <tr><td>Inviter équipe / partenaire</td><td>Administrateur</td><td>Équipe / Partenaires</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h2>5. Comment tester (checklist)</h2>
+
+  <h3>Test A — AVI jusqu’au document final</h3>
+  <ol>
+    <li>Candidat : AVI France → formulaire → 3 pièces → virement <code>VIR-DEMO-1</code>.</li>
+    <li>Contrôleur : ✓ Conforme sur chaque pièce.</li>
+    <li>Administrateur : rapprocher → Signer.</li>
+    <li>Candidat : télécharger Document final.</li>
+  </ol>
+
+  <h3>Test B — Assurance</h3>
+  <ol>
+    <li>Candidat : Nouvelle → Assurance → France (ou vente croisée depuis AVI).</li>
+    <li>Remplir dates + choisir formule → souscrire.</li>
+    <li>Paiement (virement + rapprochement si besoin).</li>
+    <li>Émettre / télécharger l’attestation.</li>
+  </ol>
+
+  <h3>Test C — Hébergement</h3>
+  <ol>
+    <li>Candidat : Nouvelle → Hébergement → France.</li>
+    <li>Formulaire établissement + date.</li>
+    <li>Matching → choisir un logement.</li>
+    <li>Déposer le passeport ; suivre la suite documents / signature.</li>
+  </ol>
+
+  <h3>Test D — Vol</h3>
+  <ol>
+    <li>Candidat : Nouvelle → Vol.</li>
+    <li>Renseigner départ / arrivée / dates.</li>
+    <li>Onglet Vol → Hold sur une offre éligible.</li>
+    <li>Justificatif + page <strong>Vols</strong>.</li>
+  </ol>
+
+  <h3>Test E — Messages / partenaire</h3>
+  <ul>
+    <li>Message candidat ↔ contrôleur sur un dossier.</li>
+    <li>Partenaire Initier un AVI pour <code>candidat.demo@avi.test</code> → commission visible au bureau.</li>
+  </ul>
+
+  <h2>6. Points d’attention</h2>
+  <ol>
+    <li>AVI = seul parcours avec <strong>Signer</strong> administrateur + quatre yeux.</li>
+    <li>Assurance / Hébergement / Vol = étapes propres ; dossiers toujours isolés.</li>
+    <li>Fonds reçus avant signature AVI.</li>
+    <li>Code PD change à chaque invitation équipe / partenaire.</li>
+    <li>Paiements externes (PayPal, Mobile Money…) encore souvent en démo.</li>
+  </ol>
+
+  <h2>7. Checklist globale</h2>
+  <ul>
+    <li>☐ AVI : document final candidat</li>
+    <li>☐ Assurance : attestation téléchargeable</li>
+    <li>☐ Hébergement : matching + logement choisi</li>
+    <li>☐ Vol : Hold + justificatif</li>
+    <li>☐ Messages bureau</li>
+    <li>☐ (Option) apport partenaire</li>
+  </ul>
+
+  <p class="footer">
+    Document HCGF — plateforme AVI (production). Usage interne / tests client.
+    Ne pas republier les identifiants hors cercle autorisé.
+  </p>
+
+</body>
+</html>

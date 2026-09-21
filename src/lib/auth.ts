@@ -2,6 +2,7 @@ import { cookies, headers } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import { compare, hash } from "bcryptjs";
 import { prisma } from "./prisma";
+import { normaliserRoleCollaborateur } from "./espaces";
 
 const COOKIE = "avi_session";
 const DUREE_JOURS = 14;
@@ -105,7 +106,7 @@ function versSessionUser(user: {
     nom: user.profil?.nom ?? "",
     prenom: user.profil?.prenom ?? "",
     typeCompte: user.typeCompte,
-    role: user.role,
+    role: user.typeCompte === "collaborateur" ? normaliserRoleCollaborateur(user.role) : user.role,
   };
 }
 

@@ -12,6 +12,7 @@ import { PrioriteForm } from "@/components/Lot68";
 import { assurerEspaceFinancier } from "@/lib/lot3";
 import { assurerEcheanceSla } from "@/lib/lot8";
 import { euros } from "@/lib/finance";
+import { estAdministrateur } from "@/lib/espaces";
 
 export default async function BureauDemandePage({
   params,
@@ -47,7 +48,7 @@ export default async function BureauDemandePage({
 
   const finance = await assurerEspaceFinancier(demande.id);
   await assurerEcheanceSla(demande.id);
-  const peutSigner = session.role === "signataire" || session.role === "administrateur";
+  const peutSigner = estAdministrateur(session.role);
   const unread = await unreadCount(session);
   const transmis = demande.documents.filter((d) => d.type === "transmis");
   const dejaSigne = demande.documents.some((d) => d.type === "genere" && d.statut === "signe");

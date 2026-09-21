@@ -7,7 +7,7 @@ export default function MotDePassePage() {
     <AuthLayout
       kicker="Accès"
       title="Un lien pour rouvrir votre espace, sans rien perdre."
-      lead="Candidat, conseiller, partenaire ou délégataire : le parcours est le même."
+      lead="Candidat, contrôleur, partenaire ou délégataire : le parcours est le même."
     >
       <DemandeResetForm />
       <p className="mt-8 text-sm text-[var(--muted)]">

@@ -131,7 +131,7 @@ const DOSSIERS = [
 ];
 
 const PROMESSES = [
-  { icon: Shield, title: "Accompagnement humain", text: "Un conseiller nommé, du premier échange à la validation." },
+  { icon: Shield, title: "Accompagnement humain", text: "Un contrôleur nommé, du premier échange à la validation." },
   { icon: Wallet, title: "Paiements isolés", text: "Tarif figé, fonds rattachés au dossier, reçu et rapprochement." },
   { icon: Building2, title: "Dossiers structurés", text: "Pièces, messages et historique restent dans leur demande." },
 ];
@@ -276,7 +276,7 @@ export function LandingHome() {
               <span> étudiants internationaux</span>
             </h1>
             <p className="vz-lead is-light">
-              AVI, assurance, hébergement et vol : des dossiers isolés, un conseiller, un seul espace. Faites défiler
+              AVI, assurance, hébergement et vol : des dossiers isolés, un contrôleur, un seul espace. Faites défiler
               pour parcourir l’offre, puis ouvrez votre compte.
             </p>
             <div className="vz-actions">
@@ -327,7 +327,7 @@ export function LandingHome() {
               <span> votre dossier.</span>
             </h2>
             <p className="vz-lead is-light">
-              Créez un compte pour déposer vos pièces, suivre chaque demande et échanger avec un conseiller nommé.
+              Créez un compte pour déposer vos pièces, suivre chaque demande et échanger avec un contrôleur nommé.
             </p>
             <div className="vz-actions">
               <Link href="/inscription" className="btn btn-orange">

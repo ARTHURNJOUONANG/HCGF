@@ -7,18 +7,18 @@ export const ESPACES = [
     role: "",
   },
   {
-    id: "conseiller",
-    label: "Conseiller",
+    id: "controleur",
+    label: "Contrôleur",
     texte: "File, contrôles et back-office",
     typeCompte: "collaborateur",
-    role: "conseiller",
+    role: "controleur",
   },
   {
-    id: "signataire",
-    label: "Signataire",
-    texte: "Validation à quatre yeux",
+    id: "administrateur",
+    label: "Administrateur",
+    texte: "Signature et administration de l’équipe",
     typeCompte: "collaborateur",
-    role: "signataire",
+    role: "administrateur",
   },
   {
     id: "partenaire",
@@ -38,17 +38,40 @@ export const ESPACES = [
 
 export type EspaceId = (typeof ESPACES)[number]["id"];
 
+const ALIAS_ESPACE: Record<string, EspaceId> = {
+  conseiller: "controleur",
+  signataire: "administrateur",
+};
+
 export function espaceParId(id: string | undefined) {
-  return ESPACES.find((espace) => espace.id === id) ?? ESPACES[0];
+  const cle = id ? ALIAS_ESPACE[id] ?? id : undefined;
+  return ESPACES.find((espace) => espace.id === cle) ?? ESPACES[0];
 }
 
 export function roleExigeCode(espaceId: string) {
-  return espaceId === "conseiller" || espaceId === "signataire";
+  const id = ALIAS_ESPACE[espaceId] ?? espaceId;
+  return id === "controleur" || id === "administrateur";
 }
 
 export function rolePublic(espaceId: string) {
   const espace = espaceParId(espaceId);
   return espace.typeCompte !== "collaborateur";
+}
+
+/** Anciens libellés encore acceptés en lecture (migration). */
+export function normaliserRoleCollaborateur(role: string) {
+  if (role === "conseiller") return "controleur";
+  if (role === "signataire") return "administrateur";
+  return role;
+}
+
+export function estAdministrateur(role: string) {
+  const r = normaliserRoleCollaborateur(role);
+  return r === "administrateur";
+}
+
+export function estControleur(role: string) {
+  return normaliserRoleCollaborateur(role) === "controleur";
 }
 
 export const ESPACES_INSCRIPTION = ESPACES.filter((espace) => espace.typeCompte !== "collaborateur");
