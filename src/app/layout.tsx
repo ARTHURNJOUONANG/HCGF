@@ -3,6 +3,7 @@ import { Inter, Newsreader } from "next/font/google";
 import { Ambient } from "@/components/Surface";
 import { ToastHost } from "@/components/Feedback";
 import { InstallerApp } from "@/components/InstallerApp";
+import { CookieNotice } from "@/components/CookieNotice";
 import "./globals.css";
 
 const sans = Inter({
@@ -47,11 +48,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="fr" className={`${sans.variable} ${display.variable} h-full`}>
-      <body className="min-h-full antialiased">
+    <html lang="fr" className={`${sans.variable} ${display.variable} h-full`} suppressHydrationWarning>
+      <body className="min-h-full antialiased" suppressHydrationWarning>
         <Ambient />
         {children}
         <InstallerApp />
+        <CookieNotice />
         <ToastHost />
       </body>
     </html>

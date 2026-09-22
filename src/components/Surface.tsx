@@ -246,7 +246,7 @@ export function DossierHero({
       <div className="dossier-hero reveal">
         <div className="min-w-0">
           <p className="kicker">{reference}</p>
-          <h1 className="display dossier-hero-title">{title}</h1>
+          <h1 className="dossier-hero-title">{title}</h1>
           {country ? <p className="dossier-hero-country">{country}</p> : null}
           {meta ? <p className="dossier-hero-meta">{meta}</p> : null}
         </div>

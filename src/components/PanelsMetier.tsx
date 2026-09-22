@@ -2,7 +2,8 @@ import { CheckCircle2, Clock, Home, Plane, Shield } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { euros, jour } from "@/lib/finance";
 import { assurerCatalogueAssurance, libelleStatutVol } from "@/lib/catalogues";
-import { rechercherOffresVol } from "@/lib/duffel";
+import { rechercherOffresVol, modeVol } from "@/lib/duffel";
+import { suggestionsTrajetsVol } from "@/lib/aeroports";
 import { reponsesVersMap } from "@/lib/metier";
 import {
   AttestationAssuranceBtn,
@@ -11,6 +12,7 @@ import {
   JustificatifVolBtn,
   ListeAttenteBtn,
   MatchingBtn,
+  PayerBilletBtn,
   SouscrireFormule,
   VenteCroiseeAvi,
 } from "@/components/LotServices";
@@ -53,17 +55,29 @@ export async function AssurancePanel({ demandeId }: { demandeId: string }) {
   });
   if (!demande) return null;
   const map = reponsesVersMap(demande.reponses);
-  const base = demande.espaceFinancier?.montantAttendu ?? 9800;
+  const supplementActuel = demande.police?.formule.supplement ?? 0;
+  const baseBareme = (demande.espaceFinancier?.montantAttendu ?? 9800) - supplementActuel;
+  const { modeAssureur } = await import("@/lib/assureur");
+  const mode = modeAssureur();
+  const fondsOk = demande.espaceFinancier?.statutFonds === "fonds_recus";
 
   return (
     <section className="offer-desk">
       <header className="piece-desk-head card">
         <div>
           <p className="kicker">Couverture</p>
-          <h2 className="form-desk-title">Assurance</h2>
+          <h2 className="form-desk-title">Assurance voyage</h2>
           <p className="muted mt-2 text-sm">
             Séjour {dateFr(map.date_debut)} → {dateFr(map.date_fin)}
             {demande.origine ? ` · Prérempli depuis ${demande.origine.reference}` : ""}
+          </p>
+          <p className="muted mt-1 text-sm">
+            Formulaire → formule → paiement → attestation.
+            {mode === "api" ? (
+              <span className="pill pill-ok ml-2">Assureur API</span>
+            ) : (
+              <span className="pill ml-2">Mode démo — branchez ASSUREUR_API_*</span>
+            )}
           </p>
         </div>
         <span className="rail-ico" aria-hidden>
@@ -84,17 +98,29 @@ export async function AssurancePanel({ demandeId }: { demandeId: string }) {
                 {dateFr(demande.police.dateDebut)} → {dateFr(demande.police.dateFin)}
                 {demande.police.idExterne ? ` · ${demande.police.idExterne}` : ""}
               </p>
+              <p className="muted mt-1 text-sm">
+                Montant dossier : {euros(demande.espaceFinancier?.montantAttendu ?? baseBareme + demande.police.formule.supplement)}
+                {!fondsOk ? " · paiement en attente" : " · fonds reçus"}
+              </p>
             </div>
           </div>
           {demande.police.storagePath ? (
             <a className="link-blue mt-4 inline-block" href={`/api/police/${demande.id}`}>
               Télécharger l’attestation
             </a>
-          ) : (
+          ) : fondsOk ? (
             <AttestationAssuranceBtn demandeId={demandeId} />
+          ) : (
+            <p className="muted mt-4 text-sm">
+              Après le paiement (onglet Paiement), vous pourrez émettre l’attestation.
+            </p>
           )}
         </article>
-      ) : null}
+      ) : (
+        <p className="muted text-sm">
+          Renseignez les dates du séjour dans le formulaire, puis choisissez une formule ci-dessous.
+        </p>
+      )}
 
       <div className="offer-grid">
         {formules.map((f) => {
@@ -103,7 +129,7 @@ export async function AssurancePanel({ demandeId }: { demandeId: string }) {
             <article key={f.id} className="offer-card card" data-on={String(retenue)}>
               <p className="kicker">{f.code}</p>
               <h3>{f.libelle}</h3>
-              <p className="offer-price">{euros(base + f.supplement)}</p>
+              <p className="offer-price">{euros(baseBareme + f.supplement)}</p>
               <p className="muted text-sm">{f.description}</p>
               <ul className="offer-points">
                 {f.garanties.map((g) => (
@@ -113,7 +139,11 @@ export async function AssurancePanel({ demandeId }: { demandeId: string }) {
                   </li>
                 ))}
               </ul>
-              {retenue ? <p className="pill pill-ok mt-4">Formule retenue</p> : <SouscrireFormule demandeId={demandeId} formule={f.code} />}
+              {retenue ? (
+                <p className="pill pill-ok mt-4">Formule retenue</p>
+              ) : (
+                <SouscrireFormule demandeId={demandeId} formule={f.code} />
+              )}
             </article>
           );
         })}
@@ -133,9 +163,11 @@ export async function VolPanel({ demandeId }: { demandeId: string }) {
     origin: map.aeroport_depart || "",
     destination: map.aeroport_arrivee || "",
     date: map.date_depart,
+    dateRetour: map.date_retour,
     idDemande: demande.id,
   });
   const liste = offres;
+  const mode = modeVol();
 
   return (
     <section className="offer-desk">
@@ -145,10 +177,29 @@ export async function VolPanel({ demandeId }: { demandeId: string }) {
           <h2 className="form-desk-title">Vol</h2>
           <p className="muted mt-2 text-sm">
             {map.aeroport_depart && map.aeroport_arrivee
-              ? `${map.aeroport_depart} → ${map.aeroport_arrivee}${map.date_depart ? ` · ${dateFr(map.date_depart)}` : ""}`
+              ? `${map.aeroport_depart} → ${map.aeroport_arrivee}${map.date_depart ? ` · ${dateFr(map.date_depart)}` : ""}${map.date_retour ? ` · retour ${dateFr(map.date_retour)}` : ""}`
               : "Renseignez le trajet dans le formulaire pour lancer une recherche."}
           </p>
-          <p className="muted mt-1 text-sm">Hold seulement si le paiement immédiat n’est pas exigé. PNR réel, billet non émis.</p>
+          <p className="muted mt-1 text-sm">
+            Liaisons Afrique ↔ France, Allemagne, Belgique, Canada (Air France, Brussels Airlines,
+            Lufthansa, Air Canada, Ethiopian, Royal Air Maroc…).
+            {mode === "duffel" ? (
+              <span className="pill pill-ok ml-2">Duffel live</span>
+            ) : (
+              <span className="pill ml-2">Catalogue démo</span>
+            )}
+          </p>
+          {!map.aeroport_depart || !map.aeroport_arrivee ? (
+            <ul className="mt-3 flex flex-wrap gap-2 text-[11px] text-[var(--muted)]">
+              {suggestionsTrajetsVol()
+                .slice(0, 8)
+                .map((s) => (
+                  <li key={s.label} className="rounded border border-[var(--line)] px-2 py-1">
+                    {s.label} ({s.from}→{s.to})
+                  </li>
+                ))}
+            </ul>
+          ) : null}
         </div>
         <span className="rail-ico" aria-hidden>
           <Plane size={16} />
@@ -156,7 +207,7 @@ export async function VolPanel({ demandeId }: { demandeId: string }) {
       </header>
 
       {demande.reservationsVol.map((r) => (
-        <article key={r.id} className="status-card card" data-state="hold">
+        <article key={r.id} className="status-card card" data-state={r.statut === "TICKETED" ? "ok" : "hold"}>
           <div className="status-card-top">
             <span className="piece-ico">
               <Clock size={18} />
@@ -165,24 +216,38 @@ export async function VolPanel({ demandeId }: { demandeId: string }) {
               <p className="kicker">{libelleStatutVol(r.statut)}</p>
               <h3 className="piece-name">PNR {r.bookingReference || "—"}</h3>
               <p className="muted mt-1 text-sm">
-                {r.airlineName} · limite{" "}
-                {r.paymentRequiredBy?.toLocaleString("fr-FR", { timeZone: r.timezone })} ({r.timezone})
+                {r.airlineName} · {r.provider} · {euros(r.totalAmount)}
+                {r.paymentRequiredBy && r.statut !== "TICKETED"
+                  ? ` · limite ${r.paymentRequiredBy.toLocaleString("fr-FR", { timeZone: r.timezone })}`
+                  : ""}
               </p>
-              <p className="hold-warn">Réservation confirmée – billet non émis</p>
+              {r.statut === "TICKETED" ? (
+                <p className="mt-1 text-sm font-medium text-[var(--ink)]">Billet émis</p>
+              ) : (
+                <p className="hold-warn">Réservation confirmée – billet non émis</p>
+              )}
             </div>
           </div>
-          {r.justificatif ? (
-            <a className="link-blue mt-4 inline-block" href={`/api/justificatif-vol/${r.id}`}>
-              {r.justificatif.nom}
-            </a>
-          ) : (
-            <JustificatifVolBtn reservationId={r.id} />
-          )}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {r.statut === "HELD" || r.statut === "EXPIRING_SOON" ? (
+              <PayerBilletBtn reservationId={r.id} />
+            ) : null}
+            {r.justificatif ? (
+              <a className="link-blue inline-block self-center" href={`/api/justificatif-vol/${r.id}`}>
+                {r.justificatif.nom}
+              </a>
+            ) : r.statut === "HELD" || r.statut === "EXPIRING_SOON" ? (
+              <JustificatifVolBtn reservationId={r.id} />
+            ) : null}
+          </div>
         </article>
       ))}
 
       {liste.length === 0 ? (
-        <p className="muted text-sm">Aucun vol n’est proposé tant que le service aérien n’est pas branché, ou tant que le trajet n’est pas renseigné.</p>
+        <p className="muted text-sm">
+          Aucune offre pour ce trajet. Indiquez des codes IATA (ex. CDG → FRA) ou une ville reconnue
+          (Paris, Lyon, Berlin…).
+        </p>
       ) : null}
       <ul className="flight-list">
         {liste.map((o) => (
@@ -201,9 +266,11 @@ export async function VolPanel({ demandeId }: { demandeId: string }) {
             <div className="flight-meta">
               <p className="flight-cities">
                 {o.fromNom} → {o.toNom}
+                {o.retourDepart ? ` · retour ${o.retourDepart}` : ""}
               </p>
               <p className="muted text-sm">
                 {o.airline} · {euros(o.prix)}
+                {o.code.startsWith("off_") ? " · live" : " · démo"}
               </p>
               <span className={`pill ${o.hold ? "pill-ok" : "pill-hot"}`}>
                 {o.hold ? `Hold ${o.garantieHeures} h` : "Paiement immédiat"}

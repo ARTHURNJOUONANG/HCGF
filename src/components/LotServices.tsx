@@ -9,6 +9,7 @@ import {
   inscrireListeAttente,
   lancerMatching,
   ouvrirAssuranceDepuisAvi,
+  payerBilletVol,
   poserHold,
   souscrirePolice,
 } from "@/lib/services-metier";
@@ -96,6 +97,14 @@ export function HoldBtn({ demandeId, offreCode }: { demandeId: string; offreCode
 export function JustificatifVolBtn({ reservationId }: { reservationId: string }) {
   return (
     <ActionForm action={emettreJustificatifVol} label="Justificatif « billet non émis »">
+      <input type="hidden" name="reservationId" value={reservationId} />
+    </ActionForm>
+  );
+}
+
+export function PayerBilletBtn({ reservationId }: { reservationId: string }) {
+  return (
+    <ActionForm action={payerBilletVol} label="Payer et émettre le billet" compact>
       <input type="hidden" name="reservationId" value={reservationId} />
     </ActionForm>
   );

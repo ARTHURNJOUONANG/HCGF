@@ -30,13 +30,13 @@ export default async function PartenaireCommissionsPage() {
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <PageIntro
           kicker="Rémunération"
           title="Commissions"
           text="Calculée à l’ouverture, acquise à la signature, payée par l’équipe."
         />
-        <section className="stagger mt-10 grid gap-3 sm:grid-cols-3">
+        <section className="stagger mt-6 grid gap-3 sm:grid-cols-3">
           <StatTile label="Total" value={euros(total)} hint="Toutes étapes" />
           <StatTile label="Acquises" value={euros(acquises)} hint="À encaisser" />
           <StatTile label="Payées" value={euros(payees)} hint="Déjà versées" />
@@ -46,13 +46,13 @@ export default async function PartenaireCommissionsPage() {
         ) : (
         <ul className="stagger mt-8 space-y-3">
           {commissions.map((c) => (
-            <li key={c.id} className="card p-5">
+            <li key={c.id} className="card p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <Link href={`/partenaire/demandes/${c.demande.id}`} className="kicker link-blue">
                     {c.demande.reference}
                   </Link>
-                  <p className="mt-1 text-[17px] font-semibold tracking-tight">
+                  <p className="mt-1 text-[15px] font-semibold tracking-tight">
                     {c.demande.offre.service.libelle} · {euros(c.montantCalcule)}
                   </p>
                   <p className="muted mt-1 text-sm">

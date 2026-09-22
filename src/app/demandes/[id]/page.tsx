@@ -104,7 +104,7 @@ export default async function DemandePage({
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <DossierHero
           backHref={session.typeCompte === "delegataire" ? "/delegue" : "/tableau-de-bord"}
           backLabel="Dossiers"
@@ -132,7 +132,7 @@ export default async function DemandePage({
               </span>
               <div>
                 <p className="kicker">Document final</p>
-                <p className="text-[17px] font-semibold tracking-tight">Formulaire signé + pièces</p>
+                <p className="text-[15px] font-semibold tracking-tight">Formulaire signé + pièces</p>
               </div>
             </div>
             <div className="flex gap-2">

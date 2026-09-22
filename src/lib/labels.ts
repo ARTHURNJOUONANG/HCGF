@@ -94,3 +94,30 @@ export function libelleCategorieSav(categorie: string) {
   };
   return labels[categorie] ?? categorie;
 }
+
+export function libelleTypeFraude(type: string) {
+  const labels: Record<string, string> = {
+    document_partage: "Pièce partagée",
+    identite_instable: "Identité instable",
+    paiement_incoherent: "Paiement incohérent",
+  };
+  return labels[type] ?? type;
+}
+
+export function libelleNiveauFraude(niveau: string) {
+  const labels: Record<string, string> = {
+    faible: "Faible",
+    moyen: "Moyen",
+    eleve: "Élevé",
+  };
+  return labels[niveau] ?? niveau;
+}
+
+export function libelleStatutFraude(statut: string) {
+  const labels: Record<string, string> = {
+    ouverte: "Ouverte",
+    confirmee: "Confirmée",
+    levee: "Levée",
+  };
+  return labels[statut] ?? statut;
+}

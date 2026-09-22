@@ -33,14 +33,14 @@ export default async function DelegationsPage() {
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <PageIntro
           kicker="Compte"
           title="Délégations"
           text="Un parent ou un garant agit avec son propre accès. Signature, identité et suppression restent à vous."
         />
-        <div className="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <section className="card p-6 sm:p-8">
+        <div className="mt-6 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <section className="card p-4 sm:p-5">
             <p className="kicker">Nouveau mandat</p>
             <h2 className="form-desk-title">Autoriser un tiers</h2>
             <div className="mt-6">
@@ -56,7 +56,7 @@ export default async function DelegationsPage() {
               />
             ) : (
               delegations.map((d) => (
-                <article key={d.id} className="card p-5">
+                <article key={d.id} className="card p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="kicker">

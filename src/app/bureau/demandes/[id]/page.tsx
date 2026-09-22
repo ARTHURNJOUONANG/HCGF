@@ -3,7 +3,9 @@ import { AppHeader, StatusPill } from "@/components/Chrome";
 import { DossierHero } from "@/components/Surface";
 import { Thread } from "@/components/DossierDesk";
 import { BureauAudit, BureauFinance, BureauPieces, BureauSignature, BureauTaches } from "@/components/BureauDesk";
-import { MessageBox, CloturerDossierForm, LeverAlerteForm } from "@/components/Lot2";
+import { MessageBox, CloturerDossierForm } from "@/components/Lot2";
+import { AnalyserFraudeForm, ConfirmerAlerteForm, LeverAlerteForm } from "@/components/LotFraude";
+import { libelleTypeFraude, libelleNiveauFraude, libelleStatutFraude } from "@/lib/labels";
 import { unreadCount } from "@/lib/shell";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -41,6 +43,7 @@ export default async function BureauDemandePage({
       audits: { orderBy: { createdAt: "desc" }, take: 8, include: { acteur: true } },
       partenaire: true,
       commission: true,
+      police: { include: { formule: true } },
       alertesFraude: { where: { statut: { not: "levee" } }, orderBy: { createdAt: "desc" } },
     },
   });
@@ -48,7 +51,7 @@ export default async function BureauDemandePage({
 
   const finance = await assurerEspaceFinancier(demande.id);
   await assurerEcheanceSla(demande.id);
-  const peutSigner = estAdministrateur(session.role);
+  const peutSigner = estAdministrateur(session.role) && demande.offre.codeService === "AVI";
   const unread = await unreadCount(session);
   const transmis = demande.documents.filter((d) => d.type === "transmis");
   const dejaSigne = demande.documents.some((d) => d.type === "genere" && d.statut === "signe");
@@ -56,7 +59,7 @@ export default async function BureauDemandePage({
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <DossierHero
           backHref="/bureau"
           backLabel="File"
@@ -119,28 +122,65 @@ export default async function BureauDemandePage({
                 pieces={finance.demande.piecesComptables}
               />
             ) : null}
-            <BureauSignature
-              demandeId={demande.id}
-              autorise={peutSigner}
-              dejaSigne={dejaSigne}
-              controleRenforce={demande.controleRenforce}
-            />
-            {demande.alertesFraude.length > 0 ? (
+            {demande.offre.codeService === "AVI" ? (
+              <BureauSignature
+                demandeId={demande.id}
+                autorise={peutSigner}
+                dejaSigne={dejaSigne}
+                controleRenforce={demande.controleRenforce}
+              />
+            ) : null}
+            {demande.offre.codeService === "ASSURANCE" && demande.police ? (
               <section className="rail-card card">
-                <p className="kicker">Fraude</p>
-                <h2 className="rail-title">Alertes ouvertes</h2>
-                <ul className="mt-3 space-y-3">
+                <p className="kicker">Assurance</p>
+                <h2 className="rail-title">{demande.police.formule.libelle}</h2>
+                <p className="muted mt-2 text-sm">
+                  Police {demande.police.statut}
+                  {demande.police.idExterne ? ` · ${demande.police.idExterne}` : ""}
+                </p>
+                <p className="muted mt-1 text-sm">
+                  {demande.police.dateDebut} → {demande.police.dateFin}
+                </p>
+                {demande.police.storagePath ? (
+                  <a className="link-blue mt-3 inline-block text-sm" href={`/api/police/${demande.id}`}>
+                    Voir l’attestation
+                  </a>
+                ) : null}
+              </section>
+            ) : null}
+            <section className="rail-card card">
+              <p className="kicker">LOT 9</p>
+              <h2 className="rail-title">Fraude</h2>
+              <p className="muted mt-2 text-sm">
+                {demande.controleRenforce
+                  ? "Contrôle renforcé actif — signature bloquée."
+                  : "Aucun contrôle renforcé en cours."}
+              </p>
+              <div className="mt-3">
+                <AnalyserFraudeForm demandeId={demande.id} />
+              </div>
+              {demande.alertesFraude.length > 0 ? (
+                <ul className="mt-4 space-y-3">
                   {demande.alertesFraude.map((alerte) => (
-                    <li key={alerte.id}>
-                      <p className="text-sm">{alerte.detail}</p>
-                      <div className="mt-2">
-                        <LeverAlerteForm alerteId={alerte.id} />
-                      </div>
+                    <li key={alerte.id} className="rounded-lg border border-[var(--line)] p-3">
+                      <p className="kicker">
+                        {libelleTypeFraude(alerte.typeSignal)} · {libelleNiveauFraude(alerte.niveau)} ·{" "}
+                        {libelleStatutFraude(alerte.statut)}
+                      </p>
+                      <p className="mt-1 text-sm">{alerte.detail}</p>
+                      {alerte.statut !== "levee" ? (
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {alerte.statut !== "confirmee" ? (
+                            <ConfirmerAlerteForm alerteId={alerte.id} />
+                          ) : null}
+                          <LeverAlerteForm alerteId={alerte.id} />
+                        </div>
+                      ) : null}
                     </li>
                   ))}
                 </ul>
-              </section>
-            ) : null}
+              ) : null}
+            </section>
             {demande.statut === "validee" || demande.statut === "abandonnee" ? (
               <CloturerDossierForm demandeId={demande.id} />
             ) : null}

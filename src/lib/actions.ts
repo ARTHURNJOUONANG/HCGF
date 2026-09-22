@@ -142,6 +142,7 @@ export async function connecter(identifiants: {
   password: string;
   role: string;
   codeAcces: string;
+  acceptConfidentialite?: boolean;
 }) {
   try {
     return await connecterCompte(identifiants);
@@ -157,7 +158,12 @@ async function connecterCompte(identifiants: {
   password: string;
   role: string;
   codeAcces: string;
+  acceptConfidentialite?: boolean;
 }) {
+  if (!identifiants.acceptConfidentialite) {
+    return { error: "Acceptez la politique de confidentialité pour continuer." };
+  }
+
   const quota = await limiterAction("connexion", 25);
   if ("error" in quota) return quota;
 
@@ -179,6 +185,8 @@ async function connecterCompte(identifiants: {
     where: { id: resultat.user.id },
     data: { derniereConnexion: new Date() },
   });
+  const { enregistrerAcceptations } = await import("./lot6");
+  await enregistrerAcceptations(resultat.user.id);
   await createSession(resultat.user);
   const { ecrireAudit } = await import("./lot2");
   await ecrireAudit(resultat.user.id, "connexion", "utilisateur", resultat.user.id, null, email);
@@ -319,5 +327,15 @@ export async function sauvegarderReponses(demandeId: string, valeurs: Record<str
 
   revalidatePath(`/demandes/${demande.id}`);
   revalidatePath("/tableau-de-bord");
-  return { ok: true, avancement };
+
+  try {
+    const { signalerIdentiteInstable } = await import("./fraude");
+    const alerte = await signalerIdentiteInstable(demande.id);
+    revalidatePath("/bureau/fraude");
+    return { ok: true, avancement, fraudeDetectee: Boolean(alerte) };
+  } catch (erreur) {
+    console.error("signalerIdentiteInstable", erreur);
+  }
+
+  return { ok: true, avancement, fraudeDetectee: false };
 }

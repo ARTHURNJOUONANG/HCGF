@@ -10,8 +10,8 @@ Tous les services : AVI, Assurance, Hébergement, Vol.
 | Espace | Connexion | E-mail | Mot de passe | Code PD |
 |--------|-----------|--------|--------------|---------|
 | **Candidat** | → Candidat | `candidat.demo@avi.test` | `Demo2026!` | Aucun |
-| **Contrôleur** | → Contrôleur | `conseiller.demo@avi.test` | `Demo2026!` | `PD-4F2D8F97` |
-| **Administrateur** | → Administrateur | `signataire.demo@avi.test` | `Demo2026!` | `PD-4F2D8F97` |
+| **Contrôleur** | → Contrôleur | `conseiller.demo@avi.test` | `Demo2026!` | `PD-1F77724A` |
+| **Administrateur** | → Administrateur | `signataire.demo@avi.test` | `Demo2026!` | `PD-1F77724A` |
 | **Partenaire** | → Partenaire | `partenaire.demo@avi.test` | `Demo2026!` | Aucun |
 
 Si un compte équipe / partenaire a déjà été créé, le code PD a peut‑être changé : utiliser le dernier code affiché à l’écran.

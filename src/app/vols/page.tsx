@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { unreadCount } from "@/lib/shell";
 import { euros } from "@/lib/finance";
 import { libelleStatutVol } from "@/lib/catalogues";
-import { JustificatifVolBtn } from "@/components/LotServices";
+import { JustificatifVolBtn, PayerBilletBtn } from "@/components/LotServices";
 
 function statutEffectif(r: { statut: string; paymentRequiredBy: Date | null }) {
   if (r.statut === "HELD" && r.paymentRequiredBy && r.paymentRequiredBy.getTime() < Date.now()) {
@@ -37,11 +37,11 @@ export default async function VolsPage() {
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <PageIntro
           kicker="Hold / Pay Later"
           title="Mes vols"
-          text="PNR réel, date limite affichée, jamais un billet électronique tant qu’il n’est pas émis."
+          text="Posez un Hold, puis payez avant la date limite pour émettre le billet."
         />
 
         {reservations.length === 0 ? (
@@ -88,9 +88,15 @@ export default async function VolsPage() {
                     <p className="muted text-sm">
                       {r.airlineName} · {euros(r.totalAmount)}
                     </p>
-                    <span className={`pill ${statut === "HELD" ? "pill-ok" : "pill-hot"}`}>{libelleStatutVol(statut)}</span>
-                    <p className="hold-warn">Réservation confirmée – billet non émis</p>
-                    {r.paymentRequiredBy ? (
+                    <span className={`pill ${statut === "TICKETED" || statut === "HELD" ? "pill-ok" : "pill-hot"}`}>
+                      {libelleStatutVol(statut)}
+                    </span>
+                    {statut === "TICKETED" ? (
+                      <p className="mt-1 text-sm font-medium">Billet émis</p>
+                    ) : (
+                      <p className="hold-warn">Réservation confirmée – billet non émis</p>
+                    )}
+                    {r.paymentRequiredBy && statut !== "TICKETED" ? (
                       <p className="muted mt-1 text-sm">
                         Limite {r.paymentRequiredBy.toLocaleString("fr-FR", { timeZone: r.timezone })} ({r.timezone})
                       </p>
@@ -102,11 +108,14 @@ export default async function VolsPage() {
                         Dossier
                       </Link>
                     ) : null}
+                    {statut === "HELD" || statut === "EXPIRING_SOON" ? (
+                      <PayerBilletBtn reservationId={r.id} />
+                    ) : null}
                     {r.justificatif ? (
                       <a href={`/api/justificatif-vol/${r.id}`} className="btn btn-ghost !min-h-10">
                         Justificatif
                       </a>
-                    ) : statut === "HELD" ? (
+                    ) : statut === "HELD" || statut === "EXPIRING_SOON" ? (
                       <JustificatifVolBtn reservationId={r.id} />
                     ) : null}
                   </div>

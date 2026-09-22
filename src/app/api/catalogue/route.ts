@@ -52,7 +52,9 @@ export async function GET(request: Request) {
       origin: url.searchParams.get("from") || "CDG",
       destination: url.searchParams.get("to") || "",
       date: url.searchParams.get("date") || undefined,
+      dateRetour: url.searchParams.get("return") || undefined,
     });
+    body.modeVol = (await import("@/lib/duffel")).modeVol();
   }
 
   return NextResponse.json(body);

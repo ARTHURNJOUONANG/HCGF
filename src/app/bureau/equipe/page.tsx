@@ -32,7 +32,7 @@ export default async function BureauEquipePage() {
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <PageIntro
           kicker="Back-office"
           title="Équipe"
@@ -42,9 +42,9 @@ export default async function BureauEquipePage() {
               : "Consultez les comptes équipe. Seul un administrateur peut inviter un collaborateur."
           }
         />
-        <div className="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="mt-6 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
           {admin ? (
-            <section className="card p-6 sm:p-8">
+            <section className="card p-4 sm:p-5">
               <p className="kicker">Nouveau compte</p>
               <h2 className="form-desk-title">Inviter un collaborateur</h2>
               <div className="mt-6">
@@ -52,7 +52,7 @@ export default async function BureauEquipePage() {
               </div>
             </section>
           ) : (
-            <section className="card p-6 sm:p-8">
+            <section className="card p-4 sm:p-5">
               <p className="kicker">Invitation</p>
               <h2 className="form-desk-title">Réservé à l’administrateur</h2>
               <p className="muted mt-3 text-sm">
@@ -69,7 +69,7 @@ export default async function BureauEquipePage() {
               />
             ) : (
               equipe.map((membre) => (
-                <article key={membre.id} className="card p-5">
+                <article key={membre.id} className="card p-4">
                   <p className="kicker">{ROLES[membre.role] || membre.role || "Collaborateur"}</p>
                   <h3 className="piece-name mt-1">
                     {membre.profil?.prenom} {membre.profil?.nom}

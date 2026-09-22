@@ -5,6 +5,7 @@ import { documentsActifs } from "@/lib/lot6";
 const TITRES: Record<string, string> = {
   cgv: "Conditions générales",
   confidentialite: "Politique de confidentialité",
+  mentions: "Mentions légales",
 };
 
 export default async function CgvPage() {
@@ -12,15 +13,15 @@ export default async function CgvPage() {
   return (
     <div className="min-h-screen">
       <PublicHeader />
-      <main className="shell max-w-3xl py-10 sm:py-14">
+      <main className="shell max-w-3xl py-6 sm:py-8">
         <p className="kicker">Documents contractuels</p>
         <h1 className="display mt-2 text-[40px] sm:text-[48px]">Versions en vigueur</h1>
         <p className="page-intro-text">
           L’acceptation enregistre <strong>cette</strong> version. Une nouvelle publication ne réécrit pas les dossiers déjà ouverts.
         </p>
-        <div className="mt-10 space-y-8">
+        <div className="mt-6 space-y-4">
           {docs.map((d) => (
-            <article key={d.id} className="card p-6 sm:p-8">
+            <article key={d.id} className="card p-4 sm:p-5">
               <p className="kicker">
                 {TITRES[d.type] ?? d.type} · {d.numeroVersion}
               </p>

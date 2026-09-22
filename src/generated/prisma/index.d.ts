@@ -6912,11 +6912,13 @@ export namespace Prisma {
   export type DocumentCountOutputType = {
     signatures: number
     jetons: number
+    alertesFraude: number
   }
 
   export type DocumentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     signatures?: boolean | DocumentCountOutputTypeCountSignaturesArgs
     jetons?: boolean | DocumentCountOutputTypeCountJetonsArgs
+    alertesFraude?: boolean | DocumentCountOutputTypeCountAlertesFraudeArgs
   }
 
   // Custom InputTypes
@@ -6942,6 +6944,13 @@ export namespace Prisma {
    */
   export type DocumentCountOutputTypeCountJetonsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JetonVerificationWhereInput
+  }
+
+  /**
+   * DocumentCountOutputType without action
+   */
+  export type DocumentCountOutputTypeCountAlertesFraudeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AlerteFraudeWhereInput
   }
 
 
@@ -23768,6 +23777,7 @@ export namespace Prisma {
     auteur?: boolean | Document$auteurArgs<ExtArgs>
     signatures?: boolean | Document$signaturesArgs<ExtArgs>
     jetons?: boolean | Document$jetonsArgs<ExtArgs>
+    alertesFraude?: boolean | Document$alertesFraudeArgs<ExtArgs>
     _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["document"]>
 
@@ -23838,6 +23848,7 @@ export namespace Prisma {
     auteur?: boolean | Document$auteurArgs<ExtArgs>
     signatures?: boolean | Document$signaturesArgs<ExtArgs>
     jetons?: boolean | Document$jetonsArgs<ExtArgs>
+    alertesFraude?: boolean | Document$alertesFraudeArgs<ExtArgs>
     _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DocumentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -23859,6 +23870,7 @@ export namespace Prisma {
       auteur: Prisma.$UtilisateurPayload<ExtArgs> | null
       signatures: Prisma.$SignaturePayload<ExtArgs>[]
       jetons: Prisma.$JetonVerificationPayload<ExtArgs>[]
+      alertesFraude: Prisma.$AlerteFraudePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -24275,6 +24287,7 @@ export namespace Prisma {
     auteur<T extends Document$auteurArgs<ExtArgs> = {}>(args?: Subset<T, Document$auteurArgs<ExtArgs>>): Prisma__UtilisateurClient<$Result.GetResult<Prisma.$UtilisateurPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     signatures<T extends Document$signaturesArgs<ExtArgs> = {}>(args?: Subset<T, Document$signaturesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SignaturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jetons<T extends Document$jetonsArgs<ExtArgs> = {}>(args?: Subset<T, Document$jetonsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JetonVerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    alertesFraude<T extends Document$alertesFraudeArgs<ExtArgs> = {}>(args?: Subset<T, Document$alertesFraudeArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlerteFraudePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -24796,6 +24809,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JetonVerificationScalarFieldEnum | JetonVerificationScalarFieldEnum[]
+  }
+
+  /**
+   * Document.alertesFraude
+   */
+  export type Document$alertesFraudeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlerteFraude
+     */
+    select?: AlerteFraudeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlerteFraude
+     */
+    omit?: AlerteFraudeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlerteFraudeInclude<ExtArgs> | null
+    where?: AlerteFraudeWhereInput
+    orderBy?: AlerteFraudeOrderByWithRelationInput | AlerteFraudeOrderByWithRelationInput[]
+    cursor?: AlerteFraudeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AlerteFraudeScalarFieldEnum | AlerteFraudeScalarFieldEnum[]
   }
 
   /**
@@ -73684,30 +73721,39 @@ export namespace Prisma {
   export type AlerteFraudeMinAggregateOutputType = {
     id: string | null
     idDemande: string | null
+    idDocument: string | null
     typeSignal: string | null
     niveau: string | null
     statut: string | null
     detail: string | null
+    idActeurTraitement: string | null
+    traiteAt: Date | null
     createdAt: Date | null
   }
 
   export type AlerteFraudeMaxAggregateOutputType = {
     id: string | null
     idDemande: string | null
+    idDocument: string | null
     typeSignal: string | null
     niveau: string | null
     statut: string | null
     detail: string | null
+    idActeurTraitement: string | null
+    traiteAt: Date | null
     createdAt: Date | null
   }
 
   export type AlerteFraudeCountAggregateOutputType = {
     id: number
     idDemande: number
+    idDocument: number
     typeSignal: number
     niveau: number
     statut: number
     detail: number
+    idActeurTraitement: number
+    traiteAt: number
     createdAt: number
     _all: number
   }
@@ -73716,30 +73762,39 @@ export namespace Prisma {
   export type AlerteFraudeMinAggregateInputType = {
     id?: true
     idDemande?: true
+    idDocument?: true
     typeSignal?: true
     niveau?: true
     statut?: true
     detail?: true
+    idActeurTraitement?: true
+    traiteAt?: true
     createdAt?: true
   }
 
   export type AlerteFraudeMaxAggregateInputType = {
     id?: true
     idDemande?: true
+    idDocument?: true
     typeSignal?: true
     niveau?: true
     statut?: true
     detail?: true
+    idActeurTraitement?: true
+    traiteAt?: true
     createdAt?: true
   }
 
   export type AlerteFraudeCountAggregateInputType = {
     id?: true
     idDemande?: true
+    idDocument?: true
     typeSignal?: true
     niveau?: true
     statut?: true
     detail?: true
+    idActeurTraitement?: true
+    traiteAt?: true
     createdAt?: true
     _all?: true
   }
@@ -73819,10 +73874,13 @@ export namespace Prisma {
   export type AlerteFraudeGroupByOutputType = {
     id: string
     idDemande: string
+    idDocument: string | null
     typeSignal: string
     niveau: string
     statut: string
     detail: string
+    idActeurTraitement: string | null
+    traiteAt: Date | null
     createdAt: Date
     _count: AlerteFraudeCountAggregateOutputType | null
     _min: AlerteFraudeMinAggregateOutputType | null
@@ -73846,69 +73904,91 @@ export namespace Prisma {
   export type AlerteFraudeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     idDemande?: boolean
+    idDocument?: boolean
     typeSignal?: boolean
     niveau?: boolean
     statut?: boolean
     detail?: boolean
+    idActeurTraitement?: boolean
+    traiteAt?: boolean
     createdAt?: boolean
     demande?: boolean | DemandeDefaultArgs<ExtArgs>
+    document?: boolean | AlerteFraude$documentArgs<ExtArgs>
   }, ExtArgs["result"]["alerteFraude"]>
 
   export type AlerteFraudeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     idDemande?: boolean
+    idDocument?: boolean
     typeSignal?: boolean
     niveau?: boolean
     statut?: boolean
     detail?: boolean
+    idActeurTraitement?: boolean
+    traiteAt?: boolean
     createdAt?: boolean
     demande?: boolean | DemandeDefaultArgs<ExtArgs>
+    document?: boolean | AlerteFraude$documentArgs<ExtArgs>
   }, ExtArgs["result"]["alerteFraude"]>
 
   export type AlerteFraudeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     idDemande?: boolean
+    idDocument?: boolean
     typeSignal?: boolean
     niveau?: boolean
     statut?: boolean
     detail?: boolean
+    idActeurTraitement?: boolean
+    traiteAt?: boolean
     createdAt?: boolean
     demande?: boolean | DemandeDefaultArgs<ExtArgs>
+    document?: boolean | AlerteFraude$documentArgs<ExtArgs>
   }, ExtArgs["result"]["alerteFraude"]>
 
   export type AlerteFraudeSelectScalar = {
     id?: boolean
     idDemande?: boolean
+    idDocument?: boolean
     typeSignal?: boolean
     niveau?: boolean
     statut?: boolean
     detail?: boolean
+    idActeurTraitement?: boolean
+    traiteAt?: boolean
     createdAt?: boolean
   }
 
-  export type AlerteFraudeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "idDemande" | "typeSignal" | "niveau" | "statut" | "detail" | "createdAt", ExtArgs["result"]["alerteFraude"]>
+  export type AlerteFraudeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "idDemande" | "idDocument" | "typeSignal" | "niveau" | "statut" | "detail" | "idActeurTraitement" | "traiteAt" | "createdAt", ExtArgs["result"]["alerteFraude"]>
   export type AlerteFraudeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     demande?: boolean | DemandeDefaultArgs<ExtArgs>
+    document?: boolean | AlerteFraude$documentArgs<ExtArgs>
   }
   export type AlerteFraudeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     demande?: boolean | DemandeDefaultArgs<ExtArgs>
+    document?: boolean | AlerteFraude$documentArgs<ExtArgs>
   }
   export type AlerteFraudeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     demande?: boolean | DemandeDefaultArgs<ExtArgs>
+    document?: boolean | AlerteFraude$documentArgs<ExtArgs>
   }
 
   export type $AlerteFraudePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AlerteFraude"
     objects: {
       demande: Prisma.$DemandePayload<ExtArgs>
+      document: Prisma.$DocumentPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       idDemande: string
+      idDocument: string | null
       typeSignal: string
       niveau: string
       statut: string
       detail: string
+      idActeurTraitement: string | null
+      traiteAt: Date | null
       createdAt: Date
     }, ExtArgs["result"]["alerteFraude"]>
     composites: {}
@@ -74305,6 +74385,7 @@ export namespace Prisma {
   export interface Prisma__AlerteFraudeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     demande<T extends DemandeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DemandeDefaultArgs<ExtArgs>>): Prisma__DemandeClient<$Result.GetResult<Prisma.$DemandePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    document<T extends AlerteFraude$documentArgs<ExtArgs> = {}>(args?: Subset<T, AlerteFraude$documentArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -74336,10 +74417,13 @@ export namespace Prisma {
   interface AlerteFraudeFieldRefs {
     readonly id: FieldRef<"AlerteFraude", 'String'>
     readonly idDemande: FieldRef<"AlerteFraude", 'String'>
+    readonly idDocument: FieldRef<"AlerteFraude", 'String'>
     readonly typeSignal: FieldRef<"AlerteFraude", 'String'>
     readonly niveau: FieldRef<"AlerteFraude", 'String'>
     readonly statut: FieldRef<"AlerteFraude", 'String'>
     readonly detail: FieldRef<"AlerteFraude", 'String'>
+    readonly idActeurTraitement: FieldRef<"AlerteFraude", 'String'>
+    readonly traiteAt: FieldRef<"AlerteFraude", 'DateTime'>
     readonly createdAt: FieldRef<"AlerteFraude", 'DateTime'>
   }
     
@@ -74732,6 +74816,25 @@ export namespace Prisma {
      * Limit how many AlerteFraudes to delete.
      */
     limit?: number
+  }
+
+  /**
+   * AlerteFraude.document
+   */
+  export type AlerteFraude$documentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    where?: DocumentWhereInput
   }
 
   /**
@@ -77602,10 +77705,13 @@ export namespace Prisma {
   export const AlerteFraudeScalarFieldEnum: {
     id: 'id',
     idDemande: 'idDemande',
+    idDocument: 'idDocument',
     typeSignal: 'typeSignal',
     niveau: 'niveau',
     statut: 'statut',
     detail: 'detail',
+    idActeurTraitement: 'idActeurTraitement',
+    traiteAt: 'traiteAt',
     createdAt: 'createdAt'
   };
 
@@ -78791,6 +78897,7 @@ export namespace Prisma {
     auteur?: XOR<UtilisateurNullableScalarRelationFilter, UtilisateurWhereInput> | null
     signatures?: SignatureListRelationFilter
     jetons?: JetonVerificationListRelationFilter
+    alertesFraude?: AlerteFraudeListRelationFilter
   }
 
   export type DocumentOrderByWithRelationInput = {
@@ -78814,6 +78921,7 @@ export namespace Prisma {
     auteur?: UtilisateurOrderByWithRelationInput
     signatures?: SignatureOrderByRelationAggregateInput
     jetons?: JetonVerificationOrderByRelationAggregateInput
+    alertesFraude?: AlerteFraudeOrderByRelationAggregateInput
   }
 
   export type DocumentWhereUniqueInput = Prisma.AtLeast<{
@@ -78840,6 +78948,7 @@ export namespace Prisma {
     auteur?: XOR<UtilisateurNullableScalarRelationFilter, UtilisateurWhereInput> | null
     signatures?: SignatureListRelationFilter
     jetons?: JetonVerificationListRelationFilter
+    alertesFraude?: AlerteFraudeListRelationFilter
   }, "id">
 
   export type DocumentOrderByWithAggregationInput = {
@@ -81809,23 +81918,31 @@ export namespace Prisma {
     NOT?: AlerteFraudeWhereInput | AlerteFraudeWhereInput[]
     id?: StringFilter<"AlerteFraude"> | string
     idDemande?: StringFilter<"AlerteFraude"> | string
+    idDocument?: StringNullableFilter<"AlerteFraude"> | string | null
     typeSignal?: StringFilter<"AlerteFraude"> | string
     niveau?: StringFilter<"AlerteFraude"> | string
     statut?: StringFilter<"AlerteFraude"> | string
     detail?: StringFilter<"AlerteFraude"> | string
+    idActeurTraitement?: StringNullableFilter<"AlerteFraude"> | string | null
+    traiteAt?: DateTimeNullableFilter<"AlerteFraude"> | Date | string | null
     createdAt?: DateTimeFilter<"AlerteFraude"> | Date | string
     demande?: XOR<DemandeScalarRelationFilter, DemandeWhereInput>
+    document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
   }
 
   export type AlerteFraudeOrderByWithRelationInput = {
     id?: SortOrder
     idDemande?: SortOrder
+    idDocument?: SortOrderInput | SortOrder
     typeSignal?: SortOrder
     niveau?: SortOrder
     statut?: SortOrder
     detail?: SortOrder
+    idActeurTraitement?: SortOrderInput | SortOrder
+    traiteAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     demande?: DemandeOrderByWithRelationInput
+    document?: DocumentOrderByWithRelationInput
   }
 
   export type AlerteFraudeWhereUniqueInput = Prisma.AtLeast<{
@@ -81834,21 +81951,28 @@ export namespace Prisma {
     OR?: AlerteFraudeWhereInput[]
     NOT?: AlerteFraudeWhereInput | AlerteFraudeWhereInput[]
     idDemande?: StringFilter<"AlerteFraude"> | string
+    idDocument?: StringNullableFilter<"AlerteFraude"> | string | null
     typeSignal?: StringFilter<"AlerteFraude"> | string
     niveau?: StringFilter<"AlerteFraude"> | string
     statut?: StringFilter<"AlerteFraude"> | string
     detail?: StringFilter<"AlerteFraude"> | string
+    idActeurTraitement?: StringNullableFilter<"AlerteFraude"> | string | null
+    traiteAt?: DateTimeNullableFilter<"AlerteFraude"> | Date | string | null
     createdAt?: DateTimeFilter<"AlerteFraude"> | Date | string
     demande?: XOR<DemandeScalarRelationFilter, DemandeWhereInput>
+    document?: XOR<DocumentNullableScalarRelationFilter, DocumentWhereInput> | null
   }, "id">
 
   export type AlerteFraudeOrderByWithAggregationInput = {
     id?: SortOrder
     idDemande?: SortOrder
+    idDocument?: SortOrderInput | SortOrder
     typeSignal?: SortOrder
     niveau?: SortOrder
     statut?: SortOrder
     detail?: SortOrder
+    idActeurTraitement?: SortOrderInput | SortOrder
+    traiteAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: AlerteFraudeCountOrderByAggregateInput
     _max?: AlerteFraudeMaxOrderByAggregateInput
@@ -81861,10 +81985,13 @@ export namespace Prisma {
     NOT?: AlerteFraudeScalarWhereWithAggregatesInput | AlerteFraudeScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"AlerteFraude"> | string
     idDemande?: StringWithAggregatesFilter<"AlerteFraude"> | string
+    idDocument?: StringNullableWithAggregatesFilter<"AlerteFraude"> | string | null
     typeSignal?: StringWithAggregatesFilter<"AlerteFraude"> | string
     niveau?: StringWithAggregatesFilter<"AlerteFraude"> | string
     statut?: StringWithAggregatesFilter<"AlerteFraude"> | string
     detail?: StringWithAggregatesFilter<"AlerteFraude"> | string
+    idActeurTraitement?: StringNullableWithAggregatesFilter<"AlerteFraude"> | string | null
+    traiteAt?: DateTimeNullableWithAggregatesFilter<"AlerteFraude"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"AlerteFraude"> | Date | string
   }
 
@@ -83168,6 +83295,7 @@ export namespace Prisma {
     auteur?: UtilisateurCreateNestedOneWithoutDocumentsInput
     signatures?: SignatureCreateNestedManyWithoutDocumentInput
     jetons?: JetonVerificationCreateNestedManyWithoutDocumentInput
+    alertesFraude?: AlerteFraudeCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateInput = {
@@ -83188,6 +83316,7 @@ export namespace Prisma {
     createdAt?: Date | string
     signatures?: SignatureUncheckedCreateNestedManyWithoutDocumentInput
     jetons?: JetonVerificationUncheckedCreateNestedManyWithoutDocumentInput
+    alertesFraude?: AlerteFraudeUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUpdateInput = {
@@ -83208,6 +83337,7 @@ export namespace Prisma {
     auteur?: UtilisateurUpdateOneWithoutDocumentsNestedInput
     signatures?: SignatureUpdateManyWithoutDocumentNestedInput
     jetons?: JetonVerificationUpdateManyWithoutDocumentNestedInput
+    alertesFraude?: AlerteFraudeUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateInput = {
@@ -83228,6 +83358,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signatures?: SignatureUncheckedUpdateManyWithoutDocumentNestedInput
     jetons?: JetonVerificationUncheckedUpdateManyWithoutDocumentNestedInput
+    alertesFraude?: AlerteFraudeUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentCreateManyInput = {
@@ -86277,17 +86408,23 @@ export namespace Prisma {
     niveau?: string
     statut?: string
     detail: string
+    idActeurTraitement?: string | null
+    traiteAt?: Date | string | null
     createdAt?: Date | string
     demande: DemandeCreateNestedOneWithoutAlertesFraudeInput
+    document?: DocumentCreateNestedOneWithoutAlertesFraudeInput
   }
 
   export type AlerteFraudeUncheckedCreateInput = {
     id?: string
     idDemande: string
+    idDocument?: string | null
     typeSignal: string
     niveau?: string
     statut?: string
     detail: string
+    idActeurTraitement?: string | null
+    traiteAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -86297,27 +86434,36 @@ export namespace Prisma {
     niveau?: StringFieldUpdateOperationsInput | string
     statut?: StringFieldUpdateOperationsInput | string
     detail?: StringFieldUpdateOperationsInput | string
+    idActeurTraitement?: NullableStringFieldUpdateOperationsInput | string | null
+    traiteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     demande?: DemandeUpdateOneRequiredWithoutAlertesFraudeNestedInput
+    document?: DocumentUpdateOneWithoutAlertesFraudeNestedInput
   }
 
   export type AlerteFraudeUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     idDemande?: StringFieldUpdateOperationsInput | string
+    idDocument?: NullableStringFieldUpdateOperationsInput | string | null
     typeSignal?: StringFieldUpdateOperationsInput | string
     niveau?: StringFieldUpdateOperationsInput | string
     statut?: StringFieldUpdateOperationsInput | string
     detail?: StringFieldUpdateOperationsInput | string
+    idActeurTraitement?: NullableStringFieldUpdateOperationsInput | string | null
+    traiteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AlerteFraudeCreateManyInput = {
     id?: string
     idDemande: string
+    idDocument?: string | null
     typeSignal: string
     niveau?: string
     statut?: string
     detail: string
+    idActeurTraitement?: string | null
+    traiteAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -86327,16 +86473,21 @@ export namespace Prisma {
     niveau?: StringFieldUpdateOperationsInput | string
     statut?: StringFieldUpdateOperationsInput | string
     detail?: StringFieldUpdateOperationsInput | string
+    idActeurTraitement?: NullableStringFieldUpdateOperationsInput | string | null
+    traiteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AlerteFraudeUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     idDemande?: StringFieldUpdateOperationsInput | string
+    idDocument?: NullableStringFieldUpdateOperationsInput | string | null
     typeSignal?: StringFieldUpdateOperationsInput | string
     niveau?: StringFieldUpdateOperationsInput | string
     statut?: StringFieldUpdateOperationsInput | string
     detail?: StringFieldUpdateOperationsInput | string
+    idActeurTraitement?: NullableStringFieldUpdateOperationsInput | string | null
+    traiteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -89199,30 +89350,39 @@ export namespace Prisma {
   export type AlerteFraudeCountOrderByAggregateInput = {
     id?: SortOrder
     idDemande?: SortOrder
+    idDocument?: SortOrder
     typeSignal?: SortOrder
     niveau?: SortOrder
     statut?: SortOrder
     detail?: SortOrder
+    idActeurTraitement?: SortOrder
+    traiteAt?: SortOrder
     createdAt?: SortOrder
   }
 
   export type AlerteFraudeMaxOrderByAggregateInput = {
     id?: SortOrder
     idDemande?: SortOrder
+    idDocument?: SortOrder
     typeSignal?: SortOrder
     niveau?: SortOrder
     statut?: SortOrder
     detail?: SortOrder
+    idActeurTraitement?: SortOrder
+    traiteAt?: SortOrder
     createdAt?: SortOrder
   }
 
   export type AlerteFraudeMinOrderByAggregateInput = {
     id?: SortOrder
     idDemande?: SortOrder
+    idDocument?: SortOrder
     typeSignal?: SortOrder
     niveau?: SortOrder
     statut?: SortOrder
     detail?: SortOrder
+    idActeurTraitement?: SortOrder
+    traiteAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -91802,6 +91962,13 @@ export namespace Prisma {
     connect?: JetonVerificationWhereUniqueInput | JetonVerificationWhereUniqueInput[]
   }
 
+  export type AlerteFraudeCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<AlerteFraudeCreateWithoutDocumentInput, AlerteFraudeUncheckedCreateWithoutDocumentInput> | AlerteFraudeCreateWithoutDocumentInput[] | AlerteFraudeUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: AlerteFraudeCreateOrConnectWithoutDocumentInput | AlerteFraudeCreateOrConnectWithoutDocumentInput[]
+    createMany?: AlerteFraudeCreateManyDocumentInputEnvelope
+    connect?: AlerteFraudeWhereUniqueInput | AlerteFraudeWhereUniqueInput[]
+  }
+
   export type SignatureUncheckedCreateNestedManyWithoutDocumentInput = {
     create?: XOR<SignatureCreateWithoutDocumentInput, SignatureUncheckedCreateWithoutDocumentInput> | SignatureCreateWithoutDocumentInput[] | SignatureUncheckedCreateWithoutDocumentInput[]
     connectOrCreate?: SignatureCreateOrConnectWithoutDocumentInput | SignatureCreateOrConnectWithoutDocumentInput[]
@@ -91814,6 +91981,13 @@ export namespace Prisma {
     connectOrCreate?: JetonVerificationCreateOrConnectWithoutDocumentInput | JetonVerificationCreateOrConnectWithoutDocumentInput[]
     createMany?: JetonVerificationCreateManyDocumentInputEnvelope
     connect?: JetonVerificationWhereUniqueInput | JetonVerificationWhereUniqueInput[]
+  }
+
+  export type AlerteFraudeUncheckedCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<AlerteFraudeCreateWithoutDocumentInput, AlerteFraudeUncheckedCreateWithoutDocumentInput> | AlerteFraudeCreateWithoutDocumentInput[] | AlerteFraudeUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: AlerteFraudeCreateOrConnectWithoutDocumentInput | AlerteFraudeCreateOrConnectWithoutDocumentInput[]
+    createMany?: AlerteFraudeCreateManyDocumentInputEnvelope
+    connect?: AlerteFraudeWhereUniqueInput | AlerteFraudeWhereUniqueInput[]
   }
 
   export type DemandeUpdateOneRequiredWithoutDocumentsNestedInput = {
@@ -91872,6 +92046,20 @@ export namespace Prisma {
     deleteMany?: JetonVerificationScalarWhereInput | JetonVerificationScalarWhereInput[]
   }
 
+  export type AlerteFraudeUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<AlerteFraudeCreateWithoutDocumentInput, AlerteFraudeUncheckedCreateWithoutDocumentInput> | AlerteFraudeCreateWithoutDocumentInput[] | AlerteFraudeUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: AlerteFraudeCreateOrConnectWithoutDocumentInput | AlerteFraudeCreateOrConnectWithoutDocumentInput[]
+    upsert?: AlerteFraudeUpsertWithWhereUniqueWithoutDocumentInput | AlerteFraudeUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: AlerteFraudeCreateManyDocumentInputEnvelope
+    set?: AlerteFraudeWhereUniqueInput | AlerteFraudeWhereUniqueInput[]
+    disconnect?: AlerteFraudeWhereUniqueInput | AlerteFraudeWhereUniqueInput[]
+    delete?: AlerteFraudeWhereUniqueInput | AlerteFraudeWhereUniqueInput[]
+    connect?: AlerteFraudeWhereUniqueInput | AlerteFraudeWhereUniqueInput[]
+    update?: AlerteFraudeUpdateWithWhereUniqueWithoutDocumentInput | AlerteFraudeUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: AlerteFraudeUpdateManyWithWhereWithoutDocumentInput | AlerteFraudeUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: AlerteFraudeScalarWhereInput | AlerteFraudeScalarWhereInput[]
+  }
+
   export type SignatureUncheckedUpdateManyWithoutDocumentNestedInput = {
     create?: XOR<SignatureCreateWithoutDocumentInput, SignatureUncheckedCreateWithoutDocumentInput> | SignatureCreateWithoutDocumentInput[] | SignatureUncheckedCreateWithoutDocumentInput[]
     connectOrCreate?: SignatureCreateOrConnectWithoutDocumentInput | SignatureCreateOrConnectWithoutDocumentInput[]
@@ -91898,6 +92086,20 @@ export namespace Prisma {
     update?: JetonVerificationUpdateWithWhereUniqueWithoutDocumentInput | JetonVerificationUpdateWithWhereUniqueWithoutDocumentInput[]
     updateMany?: JetonVerificationUpdateManyWithWhereWithoutDocumentInput | JetonVerificationUpdateManyWithWhereWithoutDocumentInput[]
     deleteMany?: JetonVerificationScalarWhereInput | JetonVerificationScalarWhereInput[]
+  }
+
+  export type AlerteFraudeUncheckedUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<AlerteFraudeCreateWithoutDocumentInput, AlerteFraudeUncheckedCreateWithoutDocumentInput> | AlerteFraudeCreateWithoutDocumentInput[] | AlerteFraudeUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: AlerteFraudeCreateOrConnectWithoutDocumentInput | AlerteFraudeCreateOrConnectWithoutDocumentInput[]
+    upsert?: AlerteFraudeUpsertWithWhereUniqueWithoutDocumentInput | AlerteFraudeUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: AlerteFraudeCreateManyDocumentInputEnvelope
+    set?: AlerteFraudeWhereUniqueInput | AlerteFraudeWhereUniqueInput[]
+    disconnect?: AlerteFraudeWhereUniqueInput | AlerteFraudeWhereUniqueInput[]
+    delete?: AlerteFraudeWhereUniqueInput | AlerteFraudeWhereUniqueInput[]
+    connect?: AlerteFraudeWhereUniqueInput | AlerteFraudeWhereUniqueInput[]
+    update?: AlerteFraudeUpdateWithWhereUniqueWithoutDocumentInput | AlerteFraudeUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: AlerteFraudeUpdateManyWithWhereWithoutDocumentInput | AlerteFraudeUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: AlerteFraudeScalarWhereInput | AlerteFraudeScalarWhereInput[]
   }
 
   export type DemandeCreateNestedOneWithoutConversationInput = {
@@ -93780,12 +93982,28 @@ export namespace Prisma {
     connect?: DemandeWhereUniqueInput
   }
 
+  export type DocumentCreateNestedOneWithoutAlertesFraudeInput = {
+    create?: XOR<DocumentCreateWithoutAlertesFraudeInput, DocumentUncheckedCreateWithoutAlertesFraudeInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutAlertesFraudeInput
+    connect?: DocumentWhereUniqueInput
+  }
+
   export type DemandeUpdateOneRequiredWithoutAlertesFraudeNestedInput = {
     create?: XOR<DemandeCreateWithoutAlertesFraudeInput, DemandeUncheckedCreateWithoutAlertesFraudeInput>
     connectOrCreate?: DemandeCreateOrConnectWithoutAlertesFraudeInput
     upsert?: DemandeUpsertWithoutAlertesFraudeInput
     connect?: DemandeWhereUniqueInput
     update?: XOR<XOR<DemandeUpdateToOneWithWhereWithoutAlertesFraudeInput, DemandeUpdateWithoutAlertesFraudeInput>, DemandeUncheckedUpdateWithoutAlertesFraudeInput>
+  }
+
+  export type DocumentUpdateOneWithoutAlertesFraudeNestedInput = {
+    create?: XOR<DocumentCreateWithoutAlertesFraudeInput, DocumentUncheckedCreateWithoutAlertesFraudeInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutAlertesFraudeInput
+    upsert?: DocumentUpsertWithoutAlertesFraudeInput
+    disconnect?: DocumentWhereInput | boolean
+    delete?: DocumentWhereInput | boolean
+    connect?: DocumentWhereUniqueInput
+    update?: XOR<XOR<DocumentUpdateToOneWithWhereWithoutAlertesFraudeInput, DocumentUpdateWithoutAlertesFraudeInput>, DocumentUncheckedUpdateWithoutAlertesFraudeInput>
   }
 
   export type DemandeCreateNestedOneWithoutValidationsInput = {
@@ -94145,6 +94363,7 @@ export namespace Prisma {
     piece?: PieceRequiseCreateNestedOneWithoutDocumentsInput
     signatures?: SignatureCreateNestedManyWithoutDocumentInput
     jetons?: JetonVerificationCreateNestedManyWithoutDocumentInput
+    alertesFraude?: AlerteFraudeCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutAuteurInput = {
@@ -94164,6 +94383,7 @@ export namespace Prisma {
     createdAt?: Date | string
     signatures?: SignatureUncheckedCreateNestedManyWithoutDocumentInput
     jetons?: JetonVerificationUncheckedCreateNestedManyWithoutDocumentInput
+    alertesFraude?: AlerteFraudeUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutAuteurInput = {
@@ -96551,6 +96771,7 @@ export namespace Prisma {
     auteur?: UtilisateurCreateNestedOneWithoutDocumentsInput
     signatures?: SignatureCreateNestedManyWithoutDocumentInput
     jetons?: JetonVerificationCreateNestedManyWithoutDocumentInput
+    alertesFraude?: AlerteFraudeCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutPieceInput = {
@@ -96570,6 +96791,7 @@ export namespace Prisma {
     createdAt?: Date | string
     signatures?: SignatureUncheckedCreateNestedManyWithoutDocumentInput
     jetons?: JetonVerificationUncheckedCreateNestedManyWithoutDocumentInput
+    alertesFraude?: AlerteFraudeUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutPieceInput = {
@@ -96805,6 +97027,7 @@ export namespace Prisma {
     auteur?: UtilisateurCreateNestedOneWithoutDocumentsInput
     signatures?: SignatureCreateNestedManyWithoutDocumentInput
     jetons?: JetonVerificationCreateNestedManyWithoutDocumentInput
+    alertesFraude?: AlerteFraudeCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutDemandeInput = {
@@ -96824,6 +97047,7 @@ export namespace Prisma {
     createdAt?: Date | string
     signatures?: SignatureUncheckedCreateNestedManyWithoutDocumentInput
     jetons?: JetonVerificationUncheckedCreateNestedManyWithoutDocumentInput
+    alertesFraude?: AlerteFraudeUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutDemandeInput = {
@@ -97590,15 +97814,21 @@ export namespace Prisma {
     niveau?: string
     statut?: string
     detail: string
+    idActeurTraitement?: string | null
+    traiteAt?: Date | string | null
     createdAt?: Date | string
+    document?: DocumentCreateNestedOneWithoutAlertesFraudeInput
   }
 
   export type AlerteFraudeUncheckedCreateWithoutDemandeInput = {
     id?: string
+    idDocument?: string | null
     typeSignal: string
     niveau?: string
     statut?: string
     detail: string
+    idActeurTraitement?: string | null
+    traiteAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -98487,10 +98717,13 @@ export namespace Prisma {
     NOT?: AlerteFraudeScalarWhereInput | AlerteFraudeScalarWhereInput[]
     id?: StringFilter<"AlerteFraude"> | string
     idDemande?: StringFilter<"AlerteFraude"> | string
+    idDocument?: StringNullableFilter<"AlerteFraude"> | string | null
     typeSignal?: StringFilter<"AlerteFraude"> | string
     niveau?: StringFilter<"AlerteFraude"> | string
     statut?: StringFilter<"AlerteFraude"> | string
     detail?: StringFilter<"AlerteFraude"> | string
+    idActeurTraitement?: StringNullableFilter<"AlerteFraude"> | string | null
+    traiteAt?: DateTimeNullableFilter<"AlerteFraude"> | Date | string | null
     createdAt?: DateTimeFilter<"AlerteFraude"> | Date | string
   }
 
@@ -99248,6 +99481,39 @@ export namespace Prisma {
     data: JetonVerificationCreateManyDocumentInput | JetonVerificationCreateManyDocumentInput[]
   }
 
+  export type AlerteFraudeCreateWithoutDocumentInput = {
+    id?: string
+    typeSignal: string
+    niveau?: string
+    statut?: string
+    detail: string
+    idActeurTraitement?: string | null
+    traiteAt?: Date | string | null
+    createdAt?: Date | string
+    demande: DemandeCreateNestedOneWithoutAlertesFraudeInput
+  }
+
+  export type AlerteFraudeUncheckedCreateWithoutDocumentInput = {
+    id?: string
+    idDemande: string
+    typeSignal: string
+    niveau?: string
+    statut?: string
+    detail: string
+    idActeurTraitement?: string | null
+    traiteAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AlerteFraudeCreateOrConnectWithoutDocumentInput = {
+    where: AlerteFraudeWhereUniqueInput
+    create: XOR<AlerteFraudeCreateWithoutDocumentInput, AlerteFraudeUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type AlerteFraudeCreateManyDocumentInputEnvelope = {
+    data: AlerteFraudeCreateManyDocumentInput | AlerteFraudeCreateManyDocumentInput[]
+  }
+
   export type DemandeUpsertWithoutDocumentsInput = {
     update: XOR<DemandeUpdateWithoutDocumentsInput, DemandeUncheckedUpdateWithoutDocumentsInput>
     create: XOR<DemandeCreateWithoutDocumentsInput, DemandeUncheckedCreateWithoutDocumentsInput>
@@ -99491,6 +99757,22 @@ export namespace Prisma {
   export type JetonVerificationUpdateManyWithWhereWithoutDocumentInput = {
     where: JetonVerificationScalarWhereInput
     data: XOR<JetonVerificationUpdateManyMutationInput, JetonVerificationUncheckedUpdateManyWithoutDocumentInput>
+  }
+
+  export type AlerteFraudeUpsertWithWhereUniqueWithoutDocumentInput = {
+    where: AlerteFraudeWhereUniqueInput
+    update: XOR<AlerteFraudeUpdateWithoutDocumentInput, AlerteFraudeUncheckedUpdateWithoutDocumentInput>
+    create: XOR<AlerteFraudeCreateWithoutDocumentInput, AlerteFraudeUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type AlerteFraudeUpdateWithWhereUniqueWithoutDocumentInput = {
+    where: AlerteFraudeWhereUniqueInput
+    data: XOR<AlerteFraudeUpdateWithoutDocumentInput, AlerteFraudeUncheckedUpdateWithoutDocumentInput>
+  }
+
+  export type AlerteFraudeUpdateManyWithWhereWithoutDocumentInput = {
+    where: AlerteFraudeScalarWhereInput
+    data: XOR<AlerteFraudeUpdateManyMutationInput, AlerteFraudeUncheckedUpdateManyWithoutDocumentInput>
   }
 
   export type DemandeCreateWithoutConversationInput = {
@@ -101102,6 +101384,7 @@ export namespace Prisma {
     piece?: PieceRequiseCreateNestedOneWithoutDocumentsInput
     auteur?: UtilisateurCreateNestedOneWithoutDocumentsInput
     signatures?: SignatureCreateNestedManyWithoutDocumentInput
+    alertesFraude?: AlerteFraudeCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutJetonsInput = {
@@ -101121,6 +101404,7 @@ export namespace Prisma {
     ocrJson?: string
     createdAt?: Date | string
     signatures?: SignatureUncheckedCreateNestedManyWithoutDocumentInput
+    alertesFraude?: AlerteFraudeUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutJetonsInput = {
@@ -101255,6 +101539,7 @@ export namespace Prisma {
     piece?: PieceRequiseUpdateOneWithoutDocumentsNestedInput
     auteur?: UtilisateurUpdateOneWithoutDocumentsNestedInput
     signatures?: SignatureUpdateManyWithoutDocumentNestedInput
+    alertesFraude?: AlerteFraudeUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutJetonsInput = {
@@ -101274,6 +101559,7 @@ export namespace Prisma {
     ocrJson?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signatures?: SignatureUncheckedUpdateManyWithoutDocumentNestedInput
+    alertesFraude?: AlerteFraudeUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type UtilisateurCreateWithoutJetonsReinitInput = {
@@ -101457,6 +101743,7 @@ export namespace Prisma {
     piece?: PieceRequiseCreateNestedOneWithoutDocumentsInput
     auteur?: UtilisateurCreateNestedOneWithoutDocumentsInput
     jetons?: JetonVerificationCreateNestedManyWithoutDocumentInput
+    alertesFraude?: AlerteFraudeCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateWithoutSignaturesInput = {
@@ -101476,6 +101763,7 @@ export namespace Prisma {
     ocrJson?: string
     createdAt?: Date | string
     jetons?: JetonVerificationUncheckedCreateNestedManyWithoutDocumentInput
+    alertesFraude?: AlerteFraudeUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentCreateOrConnectWithoutSignaturesInput = {
@@ -101590,6 +101878,7 @@ export namespace Prisma {
     piece?: PieceRequiseUpdateOneWithoutDocumentsNestedInput
     auteur?: UtilisateurUpdateOneWithoutDocumentsNestedInput
     jetons?: JetonVerificationUpdateManyWithoutDocumentNestedInput
+    alertesFraude?: AlerteFraudeUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutSignaturesInput = {
@@ -101609,6 +101898,7 @@ export namespace Prisma {
     ocrJson?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jetons?: JetonVerificationUncheckedUpdateManyWithoutDocumentNestedInput
+    alertesFraude?: AlerteFraudeUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type UtilisateurUpsertWithoutSignaturesInput = {
@@ -108644,6 +108934,51 @@ export namespace Prisma {
     create: XOR<DemandeCreateWithoutAlertesFraudeInput, DemandeUncheckedCreateWithoutAlertesFraudeInput>
   }
 
+  export type DocumentCreateWithoutAlertesFraudeInput = {
+    id?: string
+    type: string
+    nom: string
+    format: string
+    storagePath: string
+    hash?: string
+    statut?: string
+    origine?: string
+    ocrStatut?: string
+    ocrTexte?: string
+    ocrJson?: string
+    createdAt?: Date | string
+    demande: DemandeCreateNestedOneWithoutDocumentsInput
+    piece?: PieceRequiseCreateNestedOneWithoutDocumentsInput
+    auteur?: UtilisateurCreateNestedOneWithoutDocumentsInput
+    signatures?: SignatureCreateNestedManyWithoutDocumentInput
+    jetons?: JetonVerificationCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentUncheckedCreateWithoutAlertesFraudeInput = {
+    id?: string
+    idDemande: string
+    idPieceRequise?: string | null
+    idAuteur?: string | null
+    type: string
+    nom: string
+    format: string
+    storagePath: string
+    hash?: string
+    statut?: string
+    origine?: string
+    ocrStatut?: string
+    ocrTexte?: string
+    ocrJson?: string
+    createdAt?: Date | string
+    signatures?: SignatureUncheckedCreateNestedManyWithoutDocumentInput
+    jetons?: JetonVerificationUncheckedCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentCreateOrConnectWithoutAlertesFraudeInput = {
+    where: DocumentWhereUniqueInput
+    create: XOR<DocumentCreateWithoutAlertesFraudeInput, DocumentUncheckedCreateWithoutAlertesFraudeInput>
+  }
+
   export type DemandeUpsertWithoutAlertesFraudeInput = {
     update: XOR<DemandeUpdateWithoutAlertesFraudeInput, DemandeUncheckedUpdateWithoutAlertesFraudeInput>
     create: XOR<DemandeCreateWithoutAlertesFraudeInput, DemandeUncheckedCreateWithoutAlertesFraudeInput>
@@ -108741,6 +109076,57 @@ export namespace Prisma {
     reclamations?: ReclamationUncheckedUpdateManyWithoutDemandeNestedInput
     operationsApi?: OperationApiUncheckedUpdateManyWithoutDemandeNestedInput
     validations?: DoubleValidationUncheckedUpdateManyWithoutDemandeNestedInput
+  }
+
+  export type DocumentUpsertWithoutAlertesFraudeInput = {
+    update: XOR<DocumentUpdateWithoutAlertesFraudeInput, DocumentUncheckedUpdateWithoutAlertesFraudeInput>
+    create: XOR<DocumentCreateWithoutAlertesFraudeInput, DocumentUncheckedCreateWithoutAlertesFraudeInput>
+    where?: DocumentWhereInput
+  }
+
+  export type DocumentUpdateToOneWithWhereWithoutAlertesFraudeInput = {
+    where?: DocumentWhereInput
+    data: XOR<DocumentUpdateWithoutAlertesFraudeInput, DocumentUncheckedUpdateWithoutAlertesFraudeInput>
+  }
+
+  export type DocumentUpdateWithoutAlertesFraudeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    nom?: StringFieldUpdateOperationsInput | string
+    format?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    hash?: StringFieldUpdateOperationsInput | string
+    statut?: StringFieldUpdateOperationsInput | string
+    origine?: StringFieldUpdateOperationsInput | string
+    ocrStatut?: StringFieldUpdateOperationsInput | string
+    ocrTexte?: StringFieldUpdateOperationsInput | string
+    ocrJson?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    demande?: DemandeUpdateOneRequiredWithoutDocumentsNestedInput
+    piece?: PieceRequiseUpdateOneWithoutDocumentsNestedInput
+    auteur?: UtilisateurUpdateOneWithoutDocumentsNestedInput
+    signatures?: SignatureUpdateManyWithoutDocumentNestedInput
+    jetons?: JetonVerificationUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateWithoutAlertesFraudeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    idDemande?: StringFieldUpdateOperationsInput | string
+    idPieceRequise?: NullableStringFieldUpdateOperationsInput | string | null
+    idAuteur?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    nom?: StringFieldUpdateOperationsInput | string
+    format?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    hash?: StringFieldUpdateOperationsInput | string
+    statut?: StringFieldUpdateOperationsInput | string
+    origine?: StringFieldUpdateOperationsInput | string
+    ocrStatut?: StringFieldUpdateOperationsInput | string
+    ocrTexte?: StringFieldUpdateOperationsInput | string
+    ocrJson?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    signatures?: SignatureUncheckedUpdateManyWithoutDocumentNestedInput
+    jetons?: JetonVerificationUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type DemandeCreateWithoutValidationsInput = {
@@ -109591,6 +109977,7 @@ export namespace Prisma {
     piece?: PieceRequiseUpdateOneWithoutDocumentsNestedInput
     signatures?: SignatureUpdateManyWithoutDocumentNestedInput
     jetons?: JetonVerificationUpdateManyWithoutDocumentNestedInput
+    alertesFraude?: AlerteFraudeUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutAuteurInput = {
@@ -109610,6 +109997,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signatures?: SignatureUncheckedUpdateManyWithoutDocumentNestedInput
     jetons?: JetonVerificationUncheckedUpdateManyWithoutDocumentNestedInput
+    alertesFraude?: AlerteFraudeUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateManyWithoutAuteurInput = {
@@ -110561,6 +110949,7 @@ export namespace Prisma {
     auteur?: UtilisateurUpdateOneWithoutDocumentsNestedInput
     signatures?: SignatureUpdateManyWithoutDocumentNestedInput
     jetons?: JetonVerificationUpdateManyWithoutDocumentNestedInput
+    alertesFraude?: AlerteFraudeUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutPieceInput = {
@@ -110580,6 +110969,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signatures?: SignatureUncheckedUpdateManyWithoutDocumentNestedInput
     jetons?: JetonVerificationUncheckedUpdateManyWithoutDocumentNestedInput
+    alertesFraude?: AlerteFraudeUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateManyWithoutPieceInput = {
@@ -110777,10 +111167,13 @@ export namespace Prisma {
 
   export type AlerteFraudeCreateManyDemandeInput = {
     id?: string
+    idDocument?: string | null
     typeSignal: string
     niveau?: string
     statut?: string
     detail: string
+    idActeurTraitement?: string | null
+    traiteAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -110868,6 +111261,7 @@ export namespace Prisma {
     auteur?: UtilisateurUpdateOneWithoutDocumentsNestedInput
     signatures?: SignatureUpdateManyWithoutDocumentNestedInput
     jetons?: JetonVerificationUpdateManyWithoutDocumentNestedInput
+    alertesFraude?: AlerteFraudeUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutDemandeInput = {
@@ -110887,6 +111281,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signatures?: SignatureUncheckedUpdateManyWithoutDocumentNestedInput
     jetons?: JetonVerificationUncheckedUpdateManyWithoutDocumentNestedInput
+    alertesFraude?: AlerteFraudeUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateManyWithoutDemandeInput = {
@@ -111408,24 +111803,33 @@ export namespace Prisma {
     niveau?: StringFieldUpdateOperationsInput | string
     statut?: StringFieldUpdateOperationsInput | string
     detail?: StringFieldUpdateOperationsInput | string
+    idActeurTraitement?: NullableStringFieldUpdateOperationsInput | string | null
+    traiteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    document?: DocumentUpdateOneWithoutAlertesFraudeNestedInput
   }
 
   export type AlerteFraudeUncheckedUpdateWithoutDemandeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    idDocument?: NullableStringFieldUpdateOperationsInput | string | null
     typeSignal?: StringFieldUpdateOperationsInput | string
     niveau?: StringFieldUpdateOperationsInput | string
     statut?: StringFieldUpdateOperationsInput | string
     detail?: StringFieldUpdateOperationsInput | string
+    idActeurTraitement?: NullableStringFieldUpdateOperationsInput | string | null
+    traiteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AlerteFraudeUncheckedUpdateManyWithoutDemandeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    idDocument?: NullableStringFieldUpdateOperationsInput | string | null
     typeSignal?: StringFieldUpdateOperationsInput | string
     niveau?: StringFieldUpdateOperationsInput | string
     statut?: StringFieldUpdateOperationsInput | string
     detail?: StringFieldUpdateOperationsInput | string
+    idActeurTraitement?: NullableStringFieldUpdateOperationsInput | string | null
+    traiteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -111511,6 +111915,18 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type AlerteFraudeCreateManyDocumentInput = {
+    id?: string
+    idDemande: string
+    typeSignal: string
+    niveau?: string
+    statut?: string
+    detail: string
+    idActeurTraitement?: string | null
+    traiteAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
   export type SignatureUpdateWithoutDocumentInput = {
     id?: StringFieldUpdateOperationsInput | string
     dateSignature?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -111550,6 +111966,42 @@ export namespace Prisma {
     token?: StringFieldUpdateOperationsInput | string
     idDemande?: StringFieldUpdateOperationsInput | string
     statut?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlerteFraudeUpdateWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    typeSignal?: StringFieldUpdateOperationsInput | string
+    niveau?: StringFieldUpdateOperationsInput | string
+    statut?: StringFieldUpdateOperationsInput | string
+    detail?: StringFieldUpdateOperationsInput | string
+    idActeurTraitement?: NullableStringFieldUpdateOperationsInput | string | null
+    traiteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    demande?: DemandeUpdateOneRequiredWithoutAlertesFraudeNestedInput
+  }
+
+  export type AlerteFraudeUncheckedUpdateWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    idDemande?: StringFieldUpdateOperationsInput | string
+    typeSignal?: StringFieldUpdateOperationsInput | string
+    niveau?: StringFieldUpdateOperationsInput | string
+    statut?: StringFieldUpdateOperationsInput | string
+    detail?: StringFieldUpdateOperationsInput | string
+    idActeurTraitement?: NullableStringFieldUpdateOperationsInput | string | null
+    traiteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlerteFraudeUncheckedUpdateManyWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    idDemande?: StringFieldUpdateOperationsInput | string
+    typeSignal?: StringFieldUpdateOperationsInput | string
+    niveau?: StringFieldUpdateOperationsInput | string
+    statut?: StringFieldUpdateOperationsInput | string
+    detail?: StringFieldUpdateOperationsInput | string
+    idActeurTraitement?: NullableStringFieldUpdateOperationsInput | string | null
+    traiteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

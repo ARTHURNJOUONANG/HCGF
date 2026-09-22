@@ -118,7 +118,11 @@ export async function souscrirePolice(formData: FormData) {
   await assurerCatalogueAssurance();
   const demande = await prisma.demande.findFirst({
     where: { id: demandeId, idUtilisateur: user.id },
-    include: { reponses: { include: { champ: true } }, offre: true },
+    include: {
+      reponses: { include: { champ: true } },
+      offre: { include: { pays: true } },
+      utilisateur: { include: { profil: true } },
+    },
   });
   if (!demande || demande.offre.codeService !== "ASSURANCE") return { error: "Dossier assurance introuvable." };
 
@@ -134,6 +138,15 @@ export async function souscrirePolice(formData: FormData) {
     codeFormule,
     dateDebut: map.date_debut,
     dateFin: map.date_fin,
+    destinationPays: demande.offre.pays?.libelle ?? demande.offre.codePays,
+    assure: {
+      nom: user.profil?.nom ?? map.nom,
+      prenom: user.profil?.prenom ?? map.prenom,
+      email: user.email,
+      dateNaissance: user.profil?.dateNaissance ?? map.date_naissance,
+      telephone: user.profil?.telephone ?? map.telephone,
+      nationalite: user.profil?.nationalite,
+    },
   });
   if (!policeOp.ok) return { error: policeOp.error };
 
@@ -153,6 +166,18 @@ export async function souscrirePolice(formData: FormData) {
       statut: "tarifee",
       idExterne: policeOp.data.idExterne,
     },
+  });
+
+  // Prix à payer = barème figé + supplément formule (sans cumuler si on change de formule)
+  const { assurerEspaceFinancier } = await import("./lot3");
+  await assurerEspaceFinancier(demande.id);
+  const tarif = await prisma.tarifApplique.findUnique({ where: { idDemande: demande.id } });
+  const montantAttendu = tarif
+    ? tarif.montantAccepte + tarif.frais + formule.supplement
+    : 8900 + 900 + formule.supplement;
+  await prisma.espaceFinancier.update({
+    where: { idDemande: demande.id },
+    data: { montantAttendu },
   });
 
   await checklist(demande.id, "formule", "termine");
@@ -183,19 +208,40 @@ export async function emettreAttestationAssurance(formData: FormData) {
     return { error: "L’attestation est émise après réception des fonds." };
   }
 
+  const { modeAssureur } = await import("./assureur");
+  const mode = modeAssureur();
   const garanties = demande.police.formule.garanties
-    .map((g) => `<li>${g.garantie.libelle} — ${g.garantie.plafond}</li>`)
+    .map(
+      (g) =>
+        `<tr><td style="padding:8px 0;border-top:1px solid #d7e4f7">${g.garantie.libelle}</td><td style="padding:8px 0;border-top:1px solid #d7e4f7;text-align:right">${g.garantie.plafond}</td></tr>`,
+    )
     .join("");
+  const nom = `${demande.utilisateur.profil?.prenom ?? ""} ${demande.utilisateur.profil?.nom ?? ""}`.trim();
   const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Attestation ${demande.reference}</title>
-  <style>body{font-family:Inter,sans-serif;max-width:680px;margin:48px auto;color:#0d2b4a}h1{letter-spacing:-.03em}</style></head><body>
-  <p>AVI — Assurance voyage</p>
-  <h1>Attestation de police</h1>
-  <p>${demande.utilisateur.profil?.prenom} ${demande.utilisateur.profil?.nom}</p>
-  <p>${demande.police.formule.libelle} · ${demande.offre.pays.libelle}</p>
-  <p>Du ${demande.police.dateDebut} au ${demande.police.dateFin}</p>
-  ${demande.police.idExterne ? `<p>Référence assureur ${demande.police.idExterne}</p>` : ""}
-  <ul>${garanties}</ul>
-  <p>Police rattachée uniquement au dossier ${demande.reference}. Elle ne se mélange pas à un dossier AVI.</p>
+  <style>
+    body{font-family:Georgia,serif;max-width:720px;margin:40px auto;padding:0 24px;color:#0d1b2e;line-height:1.5}
+    .brand{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#1a6fd4}
+    h1{font-size:28px;letter-spacing:-.02em;margin:8px 0 24px}
+    .meta{color:#5b6472;font-size:14px;margin:4px 0}
+    table{width:100%;border-collapse:collapse;margin:24px 0}
+    .box{border:1px solid #d7e4f7;border-radius:12px;padding:16px 20px;margin:20px 0;background:#f4f7fc}
+    .foot{margin-top:32px;font-size:12px;color:#5b6472}
+  </style></head><body>
+  <p class="brand">HCGF — Horizon Caution &amp; Garantie Financière</p>
+  <h1>Attestation d’assurance voyage</h1>
+  <div class="box">
+    <p class="meta">Dossier <strong>${demande.reference}</strong></p>
+    <p class="meta">Assuré : <strong>${nom || user.email}</strong></p>
+    <p class="meta">Destination : ${demande.offre.pays.libelle}</p>
+    <p class="meta">Formule : <strong>${demande.police.formule.libelle}</strong></p>
+    <p class="meta">Période : du ${demande.police.dateDebut} au ${demande.police.dateFin}</p>
+    ${demande.police.idExterne ? `<p class="meta">Réf. assureur : ${demande.police.idExterne}</p>` : ""}
+    <p class="meta">Mode : ${mode === "api" ? "Partenaire assureur" : "Attestation plateforme (démo)"}</p>
+  </div>
+  <p><strong>Garanties incluses</strong></p>
+  <table>${garanties}</table>
+  <p class="foot">Document rattaché uniquement au dossier ${demande.reference}. Il ne se mélange pas à un dossier AVI, hébergement ou vol.
+  ${mode === "demo" ? "Document de démonstration — branchez ASSUREUR_API_URL / ASSUREUR_API_KEY pour une police partenaire." : "Police émise via le partenaire assureur configuré."}</p>
   </body></html>`;
 
   const filename = `${demande.reference}-attestation-assurance.html`;
@@ -234,22 +280,37 @@ export async function poserHold(formData: FormData) {
     origin: map.aeroport_depart || "CDG",
     destination: map.aeroport_arrivee || "",
     date: map.date_depart,
+    dateRetour: map.date_retour,
     idDemande: demande.id,
   });
-  const offre = OFFRES_VOL.find((o) => o.code === offreCode) ?? catalogue.find((o) => o.code === offreCode);
-  if (!offre) return { error: "Offre introuvable." };
+  const offre = catalogue.find((o) => o.code === offreCode) ?? OFFRES_VOL.find((o) => o.code === offreCode);
+  if (!offre) return { error: "Offre introuvable ou expirée — relancez la recherche." };
   if (!offre.hold) {
     return { error: "Cette offre exige un paiement immédiat : le Hold est interdit." };
   }
 
-  const hold = await creerHoldDuffel({ demandeId: demande.id, offre });
+  const hold = await creerHoldDuffel({
+    demandeId: demande.id,
+    offre,
+    passager: {
+      prenom: user.profil?.prenom || map.prenom || "Voyageur",
+      nom: user.profil?.nom || map.nom || "HCGF",
+      dateNaissance: user.profil?.dateNaissance || map.date_naissance || "1998-01-15",
+      email: user.email,
+      telephone: user.profil?.telephone || map.telephone || "",
+      sexe: map.sexe || "",
+    },
+  });
   if (!hold.ok) return { error: hold.error };
 
   const cle = `${demande.id}:${offre.code}`;
   const existante = await prisma.reservationVol.findUnique({ where: { cleIdempotence: cle } });
   if (existante) return { error: "Un Hold existe déjà pour cette offre (idempotence)." };
 
-  const limit = new Date(Date.now() + offre.garantieHeures * 3600 * 1000);
+  const limit =
+    hold.data.paymentRequiredBy != null
+      ? new Date(hold.data.paymentRequiredBy)
+      : new Date(Date.now() + offre.garantieHeures * 3600 * 1000);
   const reservation = await prisma.reservationVol.create({
     data: {
       idUtilisateur: user.id,
@@ -260,6 +321,7 @@ export async function poserHold(formData: FormData) {
       bookingReference: hold.data.bookingReference,
       airlineName: offre.airline,
       totalAmount: offre.prix,
+      currency: offre.currency ?? "EUR",
       paymentRequiredBy: limit,
       priceGuaranteeExpiresAt: limit,
       requiresInstantPayment: false,
@@ -342,6 +404,59 @@ export async function emettreJustificatifVol(formData: FormData) {
     });
     revalidatePath(`/demandes/${reservation.idDemande}`);
   }
+  revalidatePath("/vols");
+  return { ok: true };
+}
+
+export async function payerBilletVol(formData: FormData) {
+  const user = await requireUser();
+  if (!user) return { error: "Session expirée." };
+  const id = String(formData.get("reservationId") ?? "");
+  const reservation = await prisma.reservationVol.findFirst({
+    where: { id, idUtilisateur: user.id },
+  });
+  if (!reservation) return { error: "Réservation introuvable." };
+  if (reservation.statut === "TICKETED") return { error: "Billet déjà émis." };
+  if (reservation.statut !== "HELD" && reservation.statut !== "EXPIRING_SOON") {
+    return { error: "Seul un Hold actif peut être payé." };
+  }
+  if (reservation.paymentRequiredBy && reservation.paymentRequiredBy.getTime() < Date.now()) {
+    await prisma.reservationVol.update({
+      where: { id: reservation.id },
+      data: { statut: "EXPIRED" },
+    });
+    return { error: "Le Hold a expiré. Relancez une recherche." };
+  }
+
+  const { payerHoldDuffel } = await import("./duffel");
+  const paiement = await payerHoldDuffel({
+    demandeId: reservation.idDemande,
+    providerOrderId: reservation.providerOrderId,
+    montantCentimes: reservation.totalAmount,
+    currency: reservation.currency || "EUR",
+  });
+  if (!paiement.ok) return { error: paiement.error };
+
+  await prisma.reservationVol.update({
+    where: { id: reservation.id },
+    data: { statut: "TICKETED" },
+  });
+
+  if (reservation.idDemande) {
+    await prisma.demande.update({
+      where: { id: reservation.idDemande },
+      data: { etapeCourante: "billet", dateDerniereActivite: new Date() },
+    });
+    revalidatePath(`/demandes/${reservation.idDemande}`);
+  }
+  await ecrireAudit(
+    user.id,
+    "billet_emis",
+    "reservation",
+    reservation.id,
+    reservation.idDemande,
+    paiement.data.paymentId,
+  );
   revalidatePath("/vols");
   return { ok: true };
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { sauvegarderReponses } from "@/lib/actions";
+import { pushToast } from "@/components/Feedback";
 
 function champVisible(champ: Champ, valeurs: Record<string, string>) {
   if (!champ.conditionChamp) return true;
@@ -106,6 +107,9 @@ export function FormulaireDynamique({
       else {
         setAvancement(result.avancement ?? avancement);
         setEtat("Enregistré");
+        if ("fraudeDetectee" in result && result.fraudeDetectee) {
+          pushToast("Signal fraude : identité incohérente — dossier en contrôle renforcé", "hot");
+        }
       }
     }, 700);
   }

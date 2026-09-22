@@ -147,7 +147,7 @@ export function PaiementBoard({
       ) : null}
 
       {operations.length > 0 ? (
-        <section className="card p-5">
+        <section className="card p-4">
           <h3 className="panel-title">Opérations</h3>
           <ul className="pay-lines">
             {operations.map((op) => (
@@ -165,7 +165,7 @@ export function PaiementBoard({
       ) : null}
 
       {pieces.length > 0 ? (
-        <section className="card p-5">
+        <section className="card p-4">
           <h3 className="panel-title">Pièces comptables</h3>
           <ul className="pay-lines">
             {pieces.map((p) => (
@@ -181,7 +181,7 @@ export function PaiementBoard({
       ) : null}
 
       {statutFonds === "fonds_recus" ? (
-        <section className="card p-5">
+        <section className="card p-4">
           <h3 className="panel-title">Remboursement</h3>
           <p className="mt-2 text-sm muted">Jamais automatique : l’équipe vérifie d’abord le motif.</p>
           <RemboursementForm demandeId={demandeId} />
@@ -189,7 +189,7 @@ export function PaiementBoard({
       ) : null}
 
       {remboursements.length > 0 ? (
-        <ul className="pay-lines card p-5">
+        <ul className="pay-lines card p-4">
           {remboursements.map((r) => (
             <li key={r.id}>
               {libelleRemboursement(r.statut)} · {r.motif}
@@ -202,5 +202,5 @@ export function PaiementBoard({
 }
 
 export function ConsultationSeule({ children }: { children: ReactNode }) {
-  return <section className="card p-6 text-sm muted">{children}</section>;
+  return <section className="card p-4 text-sm muted">{children}</section>;
 }

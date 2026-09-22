@@ -2,6 +2,9 @@ import { prisma } from "./prisma";
 import { ecrireAudit, notifier } from "./lot2";
 import { traiterRelancesDues } from "./lot8";
 import { traiterEcheancesDues } from "./lot8";
+import { balayerFraudeRecente } from "./fraude";
+import { maintenirTailleDocuments } from "./qualite-document";
+import { appliquerRetentionDocuments } from "./rgpd";
 
 const JOUR_MS = 24 * 60 * 60 * 1000;
 
@@ -66,12 +69,15 @@ export async function classerOperationsApiStale() {
 }
 
 export async function executerMaintenance() {
-  const [relances, echeances, delegations, traces, api] = await Promise.all([
+  const [relances, echeances, delegations, traces, api, fraude, stockage, retention] = await Promise.all([
     traiterRelancesDues(),
     traiterEcheancesDues(),
     expirerDelegations(),
     purgerTracesAuth(),
     classerOperationsApiStale(),
+    balayerFraudeRecente(30),
+    maintenirTailleDocuments(),
+    appliquerRetentionDocuments(),
   ]);
-  return { relances, echeances, delegations, traces, api };
+  return { relances, echeances, delegations, traces, api, fraude, stockage, retention };
 }

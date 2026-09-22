@@ -22,14 +22,28 @@ export default async function ComptePage() {
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <PageIntro
           kicker="Confidentialité"
           title="Mon compte"
           text="Exportez vos données, surveillez les sessions ouvertes et, si besoin, fermez l’espace."
         />
-        <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          <section className="card p-6 sm:p-8">
+        <div className="mt-6 grid gap-4 lg:grid-cols-2">
+          <section className="card p-4 sm:p-5 lg:col-span-2">
+            <p className="kicker">RGPD</p>
+            <h2 className="form-desk-title">Vos droits</h2>
+            <p className="muted mt-3 text-sm leading-relaxed">
+              Accès et portabilité (export JSON), rectification via vos formulaires de dossier,
+              effacement à la fermeture du compte (pièces, OCR, messages, profil anonymisé).
+              Conservation des pièces : 24 mois après clôture, puis purge automatique. Traces de
+              connexion : 30 jours.{" "}
+              <a href="/cgv" className="link-blue">
+                Politique &amp; mentions
+              </a>
+            </p>
+          </section>
+
+          <section className="card p-4 sm:p-5">
             <p className="kicker">Identité</p>
             <h2 className="form-desk-title">
               {session.prenom} {session.nom}
@@ -44,7 +58,7 @@ export default async function ComptePage() {
             </a>
           </section>
 
-          <section className="card p-6 sm:p-8">
+          <section className="card p-4 sm:p-5">
             <p className="kicker">Sessions</p>
             <h2 className="form-desk-title">Appareils connectés</h2>
             {"error" in sessions ? (
@@ -73,7 +87,7 @@ export default async function ComptePage() {
           </section>
 
           {session.typeCompte === "collaborateur" ? (
-            <section className="card p-6 sm:p-8 lg:col-span-2">
+            <section className="card p-4 sm:p-5 lg:col-span-2">
               <p className="kicker">Clôture</p>
               <h2 className="form-desk-title">Compte équipe</h2>
               <p className="muted mt-3 text-sm">
@@ -81,11 +95,12 @@ export default async function ComptePage() {
               </p>
             </section>
           ) : (
-            <section className="card p-6 sm:p-8 lg:col-span-2">
+            <section className="card p-4 sm:p-5 lg:col-span-2">
               <p className="kicker">Clôture</p>
               <h2 className="form-desk-title">Fermer mon compte</h2>
               <p className="muted mt-3 mb-5 text-sm">
-                Les dossiers ouverts doivent d’abord être clôturés. L’e-mail est anonymisé.
+                Les dossiers ouverts doivent d’abord être clôturés. Pièces et OCR sont effacés du
+                stockage ; e-mail et profil sont anonymisés (art. 17 RGPD).
               </p>
               <div className="flex items-start gap-3">
                 <Shield size={18} strokeWidth={1.75} className="mt-1 shrink-0" />

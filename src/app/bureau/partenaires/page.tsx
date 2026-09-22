@@ -42,19 +42,19 @@ export default async function BureauPartenairesPage() {
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <PageIntro
           kicker="Back-office"
           title="Partenaires"
           text="Réseau, règles de commission et paiements. Après chaque nouveau compte partenaire, le code PD change."
         />
 
-        <section className="stagger mt-10 grid gap-3 sm:grid-cols-2">
+        <section className="stagger mt-6 grid gap-3 sm:grid-cols-2">
           <StatTile label="Partenaires" value={String(partenaires.length)} hint="Actifs au catalogue" />
           <StatTile label="Commissions" value={String(commissions.length)} hint="Toutes étapes" />
         </section>
 
-        <section className="card mt-8 p-6 sm:p-8">
+        <section className="card mt-6 p-4 sm:p-5">
           <p className="kicker">Nouveau compte</p>
           <h2 className="form-desk-title">Créer un partenaire</h2>
           <div className="mt-6">
@@ -64,11 +64,11 @@ export default async function BureauPartenairesPage() {
 
         <section className="stagger mt-8 space-y-3">
           {partenaires.map((p) => (
-            <article key={p.id} className="card p-5">
+            <article key={p.id} className="card p-4">
               <p className="kicker">
                 {TYPES[p.type] ?? p.type} · {libelleStatutComptePartenaire(p.statut)}
               </p>
-              <h2 className="mt-1 text-[20px] font-semibold tracking-tight">{p.nom}</h2>
+              <h2 className="mt-1 text-[16px] font-semibold tracking-tight">{p.nom}</h2>
               <p className="muted mt-1 text-sm">
                 {p.demandes.length} dossier{p.demandes.length > 1 ? "s" : ""}
                 {p.regles[0]

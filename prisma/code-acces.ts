@@ -10,19 +10,28 @@ export function fabriquerCodeAcces() {
   return `PD-${randomBytes(4).toString("hex").toUpperCase()}`;
 }
 
-function fichierCodeAcces() {
-  return process.env.CODE_ACCES_FICHIER || path.join(__dirname, "code-acces-pd.txt");
+function fichiersCodeAcces() {
+  const principal = process.env.CODE_ACCES_FICHIER || path.join(__dirname, "code-acces-pd.txt");
+  const extras = [
+    path.join(__dirname, "code-acces-pd.txt"),
+    path.join(__dirname, "..", "data", "code-acces-pd.txt"),
+  ];
+  return [...new Set([principal, ...extras])];
 }
 
 function ecrireCodeAcces(brut: string) {
-  const fichier = fichierCodeAcces();
-  try {
-    mkdirSync(path.dirname(fichier), { recursive: true });
-    writeFileSync(fichier, `${brut}\n`, "utf8");
-  } catch {
-    // Vercel / FS en lecture seule : le code est renvoyé à l’écran.
+  const fichiers = fichiersCodeAcces();
+  let premier = fichiers[0];
+  for (const fichier of fichiers) {
+    try {
+      mkdirSync(path.dirname(fichier), { recursive: true });
+      writeFileSync(fichier, `${brut}\n`, "utf8");
+      if (!premier) premier = fichier;
+    } catch {
+      // Vercel / FS en lecture seule : le code est renvoyé à l’écran.
+    }
   }
-  return fichier;
+  return premier;
 }
 
 export async function assurerCodeAccesRoles(prisma: PrismaClient) {

@@ -23,7 +23,7 @@ export default async function NouvelleDemandePage() {
   return (
     <div className="min-h-screen">
       <AppHeader user={session} />
-      <main className="shell max-w-3xl py-10 sm:py-14">
+      <main className="shell max-w-3xl py-6 sm:py-8">
         <PageIntro
           kicker="Nouvelle demande"
           title="Quel service ouvrez-vous ?"

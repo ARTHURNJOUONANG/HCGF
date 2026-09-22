@@ -176,7 +176,7 @@ async function main() {
     ok("partenaire /demandes/[id] renvoyé", pageRole(pagePart.text) === "partenaire", `${pagePart.status} page=${pageRole(pagePart.text)}`);
   }
 
-  const routesStaff = ["/bureau/taches", "/bureau/finance", "/bureau/partenaires", "/bureau/exploitation", "/bureau/audit"];
+  const routesStaff = ["/bureau/taches", "/bureau/finance", "/bureau/fraude", "/bureau/partenaires", "/bureau/exploitation", "/bureau/audit"];
   for (const p of routesStaff) {
     const r = await hit(p, cons, true);
     ok(`controleur ${p}`, r.status === 200 && !r.text.includes("Application error") && !r.text.includes("Parsing CSS"), `status ${r.status}`);

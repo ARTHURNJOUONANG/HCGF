@@ -1,5 +1,5 @@
 import path from "path";
-import { mkdir, readFile, writeFile } from "fs/promises";
+import { mkdir, readFile, writeFile, unlink } from "fs/promises";
 
 const UPLOAD_DIR = path.join(process.cwd(), "storage", "uploads");
 
@@ -71,5 +71,16 @@ export async function lireStockage(storagePath: string) {
     return await readFile(fichier);
   } catch {
     return null;
+  }
+}
+
+export async function supprimerStockage(storagePath: string) {
+  const fichier = cheminStockage(storagePath);
+  if (!fichier) return false;
+  try {
+    await unlink(fichier);
+    return true;
+  } catch {
+    return false;
   }
 }

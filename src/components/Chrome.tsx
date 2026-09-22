@@ -50,10 +50,10 @@ export function PageIntro({
   action?: ReactNode;
 }) {
   return (
-    <div className="page-intro reveal">
+    <div className="page-intro">
       <div className="max-w-2xl">
-        {kicker ? <p className="kicker mb-2">{kicker}</p> : null}
-        <h1 className="display">{title}</h1>
+        {kicker ? <p className="kicker mb-1.5">{kicker}</p> : null}
+        <h1 className="page-intro-title">{title}</h1>
         {text ? <p className="page-intro-text">{text}</p> : null}
       </div>
       {action}

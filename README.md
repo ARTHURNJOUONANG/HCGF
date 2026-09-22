@@ -1,4 +1,4 @@
-﻿# Plateforme AVI — LOT 1 à 8 + 3B
+﻿# Plateforme AVI — LOT 1 à 8 + 3B + LOT 9
 
 Application web du cahier des charges V9.
 
@@ -24,17 +24,28 @@ Application web du cahier des charges V9.
 ## LOT 3 — Assurance voyage + vente croisée
 
 - formules Essentielle / Confort / Premium et garanties
-- police rattachée à **sa** demande
-- attestation après encaissement
+- police rattachée à **sa** demande (FR, DE, BE, CA)
+- prix = barème + supplément formule
+- attestation HTML après encaissement (mode démo ou API assureur)
 - depuis un dossier AVI : préremplissage identité + dates
+- `ASSUREUR_API_URL` + `ASSUREUR_API_KEY` pour brancher un partenaire
 
 ## LOT 3B — Vol Hold
 
-- recherche d’offres, PNR, date limite (fuseau Europe/Paris)
-- Hold interdit si paiement immédiat
+- recherche d’offres (Duffel live si `DUFFEL_API_KEY`, sinon catalogue démo)
+- codes IATA / villes Afrique ↔ FR / DE / BE / CA
+- aller-retour optionnel (`date_retour`)
+- Hold avec passagers ; interdit si paiement immédiat
+- **Payer et émettre le billet** (balance Duffel en test) → statut `TICKETED`
 - justificatif « Réservation confirmée – billet non émis »
 - page **Mes réservations de vol** (`/vols`)
 - idempotence : un seul Hold par offre / dossier
+
+```bash
+# .env — clé test Duffel (https://app.duffel.com)
+DUFFEL_API_KEY=duffel_test_...
+DUFFEL_VERSION=v2
+```
 
 ## LOT 4 — Finance
 
@@ -72,6 +83,14 @@ Application web du cahier des charges V9.
 - matching sur le **temps en transports ≤ 40 min** (voiture informative)
 - choix de logement, coordonnées bailleur masquées
 - liste d’attente s’il n’y a aucun compatible
+
+## LOT 9 — Fraude et contrôle renforcé
+
+- signaux backend : pièce partagée (hash, bilatéral), identité instable, paiement incohérent
+- alerte → **contrôle renforcé** (signature bloquée), jamais de rejet auto
+- lien document optionnel, notification équipe, tâches, audit
+- balayage cron via maintenance ; analyse manuelle dossier
+- file `/bureau/fraude` : confirmer, lever, filtres
 
 ## Démarrer
 

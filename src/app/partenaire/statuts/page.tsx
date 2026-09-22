@@ -21,17 +21,17 @@ export default async function PartenaireStatutsPage() {
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell max-w-3xl py-10 sm:py-14">
+      <main className="shell max-w-3xl py-6 sm:py-8">
         <PageIntro
           kicker="Transparence"
           title="Statuts visibles"
           text="Un partenaire ne voit pas les statuts internes. Seulement ces cinq états."
         />
-        <ul className="stagger mt-10 space-y-3">
+        <ul className="stagger mt-6 space-y-3">
           {STATUTS.map(([code, label, texte]) => (
-            <li key={code} className="card p-5">
+            <li key={code} className="card p-4">
               <p className="kicker">{code}</p>
-              <p className="mt-1 text-[20px] font-semibold tracking-tight">{label}</p>
+              <p className="mt-1 text-[16px] font-semibold tracking-tight">{label}</p>
               <p className="muted mt-1 text-sm">{texte}</p>
             </li>
           ))}

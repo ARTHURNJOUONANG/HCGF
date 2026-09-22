@@ -51,9 +51,9 @@ export default async function VerifierPage({
           <p className="kicker mt-6">Vérification publique</p>
           <h1 className="display mt-2 text-[42px] sm:text-[48px]">{valide ? "Authentique" : "Révoqué"}</h1>
         </div>
-        <div className="card mt-8 p-6 sm:p-8">
+        <div className="card mt-6 p-4 sm:p-5">
           <p className="kicker">{jeton.demande.reference}</p>
-          <p className="mt-2 text-[22px] font-semibold tracking-tight">{jeton.demande.offre.service.libelle}</p>
+          <p className="mt-2 text-[18px] font-semibold tracking-tight">{jeton.demande.offre.service.libelle}</p>
           <p className="mt-2 text-[15px] muted">
             <PaysNom code={jeton.demande.offre.codePays} libelle={jeton.demande.offre.pays.libelle} />
           </p>

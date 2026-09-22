@@ -18,27 +18,29 @@ export default async function BureauPage() {
       taches: { where: { statut: "a_faire" } },
       partenaire: true,
     },
-    orderBy: { dateDerniereActivite: "desc" },
+    orderBy: [{ controleRenforce: "desc" }, { dateDerniereActivite: "desc" }],
   });
 
   const brouillons = dossiers.filter((d) => d.statut === "brouillon").length;
   const enCours = dossiers.filter((d) => d.statut === "en_traitement").length;
   const taches = dossiers.reduce((n, d) => n + d.taches.length, 0);
+  const fraude = dossiers.filter((d) => d.controleRenforce).length;
 
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <PageIntro
           kicker={`Back-office · ${session.role || "collaborateur"}`}
           title="File du jour"
           text="Les dossiers les plus actifs remontent en premier. Ouvrez-en un pour contrôler, relancer ou signer."
         />
 
-        <section className="stagger mt-10 grid gap-3 sm:grid-cols-3">
+        <section className="stagger mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <StatTile label="File" value={String(dossiers.length)} hint="Tous les dossiers ouverts" />
           <StatTile label="Brouillons" value={String(brouillons)} hint={`${enCours} en traitement`} />
           <StatTile label="Tâches" value={String(taches)} hint="À traiter maintenant" />
+          <StatTile label="Fraude" value={String(fraude)} hint="Contrôle renforcé" />
         </section>
 
         {dossiers.length === 0 ? (
@@ -57,6 +59,7 @@ export default async function BureauPage() {
                     <>
                       {d.utilisateur.profil?.prenom} {d.utilisateur.profil?.nom}
                       {d.partenaire ? ` · ${d.partenaire.nom}` : ""}
+                      {d.controleRenforce ? " · Contrôle renforcé" : ""}
                       {d.taches.length > 0 ? ` · ${d.taches.length} tâche${d.taches.length > 1 ? "s" : ""}` : ""}
                     </>
                   }

@@ -12,9 +12,9 @@ import {
   terminerTache,
   abandonnerDemande,
   cloturerDemande,
-  leverAlerteFraudeAction,
 } from "@/lib/lot2";
 import { pushToast } from "@/components/Feedback";
+export { LeverAlerteForm, ConfirmerAlerteForm, AnalyserFraudeForm } from "@/components/LotFraude";
 
 export function UploadPiece({
   demandeId,
@@ -41,9 +41,17 @@ export function UploadPiece({
         setEtat(result.error ?? "Déposé");
         setPending(false);
         if (!result.error) {
+          if ("fraudeDetectee" in result && result.fraudeDetectee) {
+            pushToast("Fraude détectée : même pièce déjà vue sur un autre dossier — contrôle renforcé", "hot");
+            setEtat("Déposé · signal fraude");
+          } else {
+            pushToast("Pièce déposée");
+          }
           event.currentTarget.reset();
           setFichier("");
           router.refresh();
+        } else {
+          pushToast(result.error, "hot");
         }
       }}
     >
@@ -59,7 +67,7 @@ export function UploadPiece({
           onChange={(event) => setFichier(event.target.files?.[0]?.name ?? "")}
         />
         <Upload size={16} />
-        <span>{fichier || "PDF, JPG ou PNG — cliquez pour choisir"}</span>
+        <span>{fichier || "PDF, JPG ou PNG — max 2,5 Go · images nettes requises"}</span>
       </label>
       <button type="submit" disabled={pending} className="btn btn-ghost !min-h-10">
         {pending ? "Envoi…" : "Déposer"}
@@ -124,8 +132,15 @@ export function ControleDoc({ documentId }: { documentId: string }) {
     data.set("documentId", documentId);
     data.set("statut", statut);
     const result = await controlerDocument(data);
-    if (result.error) setError(result.error);
-    else router.refresh();
+    if (result.error) {
+      setError(result.error);
+      pushToast(result.error, "hot");
+    } else {
+      if ("fraudeDetectee" in result && result.fraudeDetectee) {
+        pushToast("Fraude détectée sur cette pièce — contrôle renforcé activé", "hot");
+      }
+      router.refresh();
+    }
   }
 
   return (
@@ -278,34 +293,6 @@ export function CloturerDossierForm({ demandeId }: { demandeId: string }) {
     >
       <button type="submit" disabled={pending} className="btn">
         {pending ? "Clôture…" : "Clôturer le dossier"}
-      </button>
-    </form>
-  );
-}
-
-export function LeverAlerteForm({ alerteId }: { alerteId: string }) {
-  const router = useRouter();
-  const [pending, setPending] = useState(false);
-
-  return (
-    <form
-      onSubmit={async (event) => {
-        event.preventDefault();
-        setPending(true);
-        const data = new FormData();
-        data.set("alerteId", alerteId);
-        const result = await leverAlerteFraudeAction(data);
-        if (result && "error" in result && result.error) {
-          pushToast(result.error, "hot");
-        } else {
-          pushToast("Alerte levée");
-          router.refresh();
-        }
-        setPending(false);
-      }}
-    >
-      <button type="submit" disabled={pending} className="btn">
-        {pending ? "Levée…" : "Lever l’alerte"}
       </button>
     </form>
   );

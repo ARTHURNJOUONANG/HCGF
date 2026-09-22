@@ -256,6 +256,7 @@ model Document {
   createdAt      DateTime            @default(now())
   signatures     Signature[]
   jetons         JetonVerification[]
+  alertesFraude  AlerteFraude[]
 
   @@index([hash])
   @@index([idDemande])
@@ -791,16 +792,22 @@ model TentativeApi {
 }
 
 model AlerteFraude {
-  id         String   @id @default(cuid())
-  idDemande  String
-  demande    Demande  @relation(fields: [idDemande], references: [id], onDelete: Cascade)
-  typeSignal String
-  niveau     String   @default("moyen")
-  statut     String   @default("ouverte")
-  detail     String
-  createdAt  DateTime @default(now())
+  id                 String    @id @default(cuid())
+  idDemande          String
+  demande            Demande   @relation(fields: [idDemande], references: [id], onDelete: Cascade)
+  idDocument         String?
+  document           Document? @relation(fields: [idDocument], references: [id], onDelete: SetNull)
+  typeSignal         String
+  niveau             String    @default("moyen")
+  statut             String    @default("ouverte")
+  detail             String
+  idActeurTraitement String?
+  traiteAt           DateTime?
+  createdAt          DateTime  @default(now())
 
   @@index([idDemande, statut])
+  @@index([typeSignal, statut])
+  @@index([idDocument])
 }
 
 model DoubleValidation {

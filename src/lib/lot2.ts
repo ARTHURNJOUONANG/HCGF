@@ -6,7 +6,8 @@ import { prisma } from "./prisma";
 import { requireUser } from "./auth";
 import { hashBuffer, extraireOcr } from "./ocr";
 import { detecterFormat, ecrireStockage } from "./fichiers";
-import { signalerPiecePartagee, leverAlerteFraude } from "./fraude";
+import { signalerPiecePartagee, leverAlerteFraude, confirmerAlerteFraude, analyserDemandeFraude } from "./fraude";
+import { controlerNetteDocument, controlerTailleDepot, messageTailleMax } from "./qualite-document";
 import { validerLongueur } from "./validation";
 import { cloreQuatreYeux, enregistrerControleQuatreYeux, exigerQuatreYeuxSignature } from "./quatre-yeux";
 import { creerProcedureSignature, modeEsign } from "./esign";
@@ -81,11 +82,18 @@ export async function deposerDocument(formData: FormData) {
   if (!(fichier instanceof File) || fichier.size === 0) {
     return { error: "Choisissez un fichier PDF ou image." };
   }
-  if (fichier.size > 8 * 1024 * 1024) return { error: "Fichier trop volumineux (8 Mo max)." };
+  const tailleOk = await controlerTailleDepot(fichier.size);
+  if ("error" in tailleOk) return { error: tailleOk.error ?? messageTailleMax() };
 
   const buffer = Buffer.from(await fichier.arrayBuffer());
+  const tailleOkBuf = await controlerTailleDepot(buffer.length);
+  if ("error" in tailleOkBuf) return { error: tailleOkBuf.error ?? messageTailleMax() };
+
   const format = detecterFormat(buffer);
   if (!format) return { error: "Formats acceptés : PDF, JPG, PNG, WebP." };
+
+  const nettete = await controlerNetteDocument({ buffer, mime: format.mime });
+  if ("error" in nettete && nettete.error) return { error: nettete.error };
 
   const demande = await accesDemande(user.id, user.typeCompte, demandeId);
   if (!demande) return { error: "Dossier introuvable." };
@@ -98,6 +106,7 @@ export async function deposerDocument(formData: FormData) {
   const filename = `${demande.reference}-${pieceId}-${Date.now()}${format.ext}`;
   await ecrireStockage(filename, buffer);
 
+  const hash = hashBuffer(buffer);
   const doc = await prisma.document.create({
     data: {
       idDemande: demande.id,
@@ -107,13 +116,29 @@ export async function deposerDocument(formData: FormData) {
       nom: fichier.name,
       format: format.mime,
       storagePath: filename,
-      hash: hashBuffer(buffer),
+      hash,
       statut: "recu",
       origine: user.typeCompte === "collaborateur" ? "equipe" : "candidat",
+      ocrJson:
+        "score" in nettete && nettete.score != null
+          ? JSON.stringify({ nettete: Math.round(nettete.score) })
+          : "",
     },
   });
 
-  await signalerPiecePartagee({ documentId: doc.id, hash: doc.hash, idDemande: demande.id });
+  let fraudeDetectee = false;
+  try {
+    const alertes = await signalerPiecePartagee({
+      documentId: doc.id,
+      hash,
+      idDemande: demande.id,
+    });
+    fraudeDetectee = alertes.length > 0;
+  } catch (erreur) {
+    console.error("signalerPiecePartagee", erreur);
+  }
+  revalidatePath("/bureau/fraude");
+  revalidatePath("/bureau/taches");
   await extraireOcr({
     documentId: doc.id,
     idDemande: demande.id,
@@ -160,7 +185,8 @@ export async function deposerDocument(formData: FormData) {
   revalidatePath(`/demandes/${demande.id}`);
   revalidatePath(`/bureau/demandes/${demande.id}`);
   revalidatePath("/bureau");
-  return { ok: true };
+  revalidatePath("/bureau/fraude");
+  return { ok: true as const, fraudeDetectee };
 }
 
 export async function controlerDocument(formData: FormData) {
@@ -182,6 +208,20 @@ export async function controlerDocument(formData: FormData) {
   await prisma.document.update({ where: { id: doc.id }, data: { statut } });
   if (statut === "conforme") {
     await enregistrerControleQuatreYeux({ idDemande: doc.idDemande, idVerificateur: user.id });
+  }
+
+  let fraudeDetectee = false;
+  if (doc.hash) {
+    try {
+      const alertes = await signalerPiecePartagee({
+        documentId: doc.id,
+        hash: doc.hash,
+        idDemande: doc.idDemande,
+      });
+      fraudeDetectee = alertes.length > 0;
+    } catch (erreur) {
+      console.error("signalerPiecePartagee", erreur);
+    }
   }
 
   if (doc.piece) {
@@ -211,7 +251,8 @@ export async function controlerDocument(formData: FormData) {
 
   revalidatePath(`/demandes/${doc.idDemande}`);
   revalidatePath(`/bureau/demandes/${doc.idDemande}`);
-  return { ok: true };
+  revalidatePath("/bureau/fraude");
+  return { ok: true as const, fraudeDetectee };
 }
 
 export async function envoyerMessage(formData: FormData) {
@@ -496,7 +537,33 @@ export async function leverAlerteFraudeAction(formData: FormData) {
   const alerte = await leverAlerteFraude(alerteId, user.id);
   revalidatePath(`/bureau/demandes/${alerte.idDemande}`);
   revalidatePath("/bureau/exploitation");
+  revalidatePath("/bureau/fraude");
   return { ok: true as const };
+}
+
+export async function confirmerAlerteFraudeAction(formData: FormData) {
+  const user = await acteur();
+  if (!user || !peutTraiter(user)) return { error: "Droit insuffisant." };
+  const alerteId = String(formData.get("alerteId") ?? "");
+  if (!alerteId) return { error: "Alerte introuvable." };
+  const alerte = await confirmerAlerteFraude(alerteId, user.id);
+  revalidatePath(`/bureau/demandes/${alerte.idDemande}`);
+  revalidatePath("/bureau/exploitation");
+  revalidatePath("/bureau/fraude");
+  return { ok: true as const };
+}
+
+export async function analyserFraudeAction(formData: FormData) {
+  const user = await acteur();
+  if (!user || !peutTraiter(user)) return { error: "Droit insuffisant." };
+  const demandeId = String(formData.get("demandeId") ?? "");
+  if (!demandeId) return { error: "Dossier introuvable." };
+  const alertes = await analyserDemandeFraude(demandeId);
+  await ecrireAudit(user.id, "analyse_fraude", "demande", demandeId, demandeId, `${alertes.length} signal(s)`);
+  revalidatePath(`/bureau/demandes/${demandeId}`);
+  revalidatePath("/bureau/fraude");
+  revalidatePath("/bureau/exploitation");
+  return { ok: true as const, count: alertes.length };
 }
 
 const STATUTS_FERMABLES = new Set(["brouillon", "en_traitement"]);

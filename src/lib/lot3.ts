@@ -279,6 +279,16 @@ async function finaliserEncaissement(opts: {
     demande.id,
   );
 
+  try {
+    const { signalerPaiementIncoherent } = await import("./fraude");
+    await signalerPaiementIncoherent({
+      idDemande: demande.id,
+      idTransaction: opts.transaction,
+    });
+  } catch (erreur) {
+    console.error("signalerPaiementIncoherent", erreur);
+  }
+
   return { ok: true as const, statutFonds: opts.statutFonds };
 }
 
@@ -453,6 +463,16 @@ export async function declarerVirement(formData: FormData) {
   });
 
   await ecrireAudit(user.id, "virement_declare", "operation", demande.id, demande.id, reference);
+
+  let fraudeDetectee = false;
+  try {
+    const { signalerPaiementIncoherent } = await import("./fraude");
+    const alerte = await signalerPaiementIncoherent({ idDemande: demande.id, reference });
+    fraudeDetectee = Boolean(alerte);
+  } catch (erreur) {
+    console.error("signalerPaiementIncoherent", erreur);
+  }
+
   const conseiller = await prisma.utilisateur.findFirst({ where: { typeCompte: "collaborateur" } });
   if (conseiller) {
     await notifier(
@@ -467,7 +487,8 @@ export async function declarerVirement(formData: FormData) {
   revalidatePath(`/demandes/${demande.id}`);
   revalidatePath("/bureau/finance");
   revalidatePath("/bureau/taches");
-  return { ok: true };
+  revalidatePath("/bureau/fraude");
+  return { ok: true as const, fraudeDetectee };
 }
 
 export async function rapprocherVirement(formData: FormData) {
@@ -522,9 +543,21 @@ export async function rapprocherVirement(formData: FormData) {
 
   await ecrireAudit(user.id, "virement_rapproche", "operation", operation.id, operation.idEspace, operation.reference);
 
+  try {
+    const { signalerPaiementIncoherent } = await import("./fraude");
+    await signalerPaiementIncoherent({
+      idDemande: operation.idEspace,
+      reference: operation.reference,
+      montantOperation: operation.montant,
+    });
+  } catch (erreur) {
+    console.error("signalerPaiementIncoherent", erreur);
+  }
+
   revalidatePath(`/demandes/${operation.idEspace}`);
   revalidatePath(`/bureau/demandes/${operation.idEspace}`);
   revalidatePath("/bureau/finance");
+  revalidatePath("/bureau/fraude");
   return { ok: true };
 }
 

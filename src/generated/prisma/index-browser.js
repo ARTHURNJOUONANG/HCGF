@@ -697,10 +697,13 @@ exports.Prisma.TentativeApiScalarFieldEnum = {
 exports.Prisma.AlerteFraudeScalarFieldEnum = {
   id: 'id',
   idDemande: 'idDemande',
+  idDocument: 'idDocument',
   typeSignal: 'typeSignal',
   niveau: 'niveau',
   statut: 'statut',
   detail: 'detail',
+  idActeurTraitement: 'idActeurTraitement',
+  traiteAt: 'traiteAt',
   createdAt: 'createdAt'
 };
 

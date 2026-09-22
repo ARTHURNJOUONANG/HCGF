@@ -38,7 +38,7 @@ export default async function PartenaireDemandePage({
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <DossierHero
           backHref="/partenaire"
           backLabel="Apports"
@@ -54,7 +54,7 @@ export default async function PartenaireDemandePage({
         />
 
         <div className="workspace">
-          <section className="card p-6 sm:p-8">
+          <section className="card p-4 sm:p-5">
             <p className="kicker">Apport</p>
             <h2 className="form-desk-title">Suivi limité</h2>
             <p className="muted mt-2 text-sm">

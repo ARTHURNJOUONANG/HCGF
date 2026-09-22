@@ -35,20 +35,20 @@ export default async function BureauFinancePage() {
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <PageIntro
           kicker="Back-office"
           title="Finance"
           text="Rapprochements, remboursements et suivi des fonds dossier par dossier."
         />
 
-        <section className="stagger mt-10 grid gap-3 sm:grid-cols-3">
+        <section className="stagger mt-6 grid gap-3 sm:grid-cols-3">
           <StatTile label="Virements" value={String(virements.length)} hint="À rapprocher" />
           <StatTile label="Remboursements" value={String(remboursements.length)} hint="Ouverts" />
           <StatTile label="Espaces" value={String(espaces.length)} hint="Derniers dossiers" />
         </section>
 
-        <section className="card mt-8 p-6">
+        <section className="card mt-6 p-4 sm:p-5">
           <PanelTitle>Virements à rapprocher</PanelTitle>
           {virements.length === 0 ? (
             <p className="muted mt-4 text-sm">Aucun virement en attente.</p>
@@ -72,7 +72,7 @@ export default async function BureauFinancePage() {
           )}
         </section>
 
-        <section className="card mt-4 p-6">
+        <section className="card mt-4 p-4 sm:p-5">
           <PanelTitle>Remboursements</PanelTitle>
           {remboursements.length === 0 ? (
             <p className="muted mt-4 text-sm">Aucune demande ouverte.</p>
@@ -96,7 +96,7 @@ export default async function BureauFinancePage() {
           )}
         </section>
 
-        <section className="card mt-4 p-6">
+        <section className="card mt-4 p-4 sm:p-5">
           <PanelTitle>
             <Wallet size={18} />
             Dossiers

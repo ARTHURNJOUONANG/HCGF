@@ -22,7 +22,7 @@ export default async function PartenaireNouvellePage() {
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell max-w-3xl py-10 sm:py-14">
+      <main className="shell max-w-3xl py-6 sm:py-8">
         <PageIntro
           kicker="Apport"
           title="Initier un dossier"

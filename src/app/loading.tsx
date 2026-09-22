@@ -7,11 +7,11 @@ export default function Loading() {
           <span className="skel skel-actions" />
         </div>
       </header>
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <span className="skel skel-kicker" />
         <span className="skel skel-title" />
         <span className="skel skel-line" />
-        <div className="mt-10 grid gap-3">
+        <div className="mt-6 grid gap-3">
           <span className="skel skel-card" />
           <span className="skel skel-card" />
           <span className="skel skel-card" />

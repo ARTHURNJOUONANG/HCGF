@@ -24,13 +24,13 @@ export default async function TachesPage() {
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <PageIntro
           kicker="Exploitation"
           title="Tâches"
           text="Ce qui doit être traité maintenant, classé par priorité."
         />
-        <section className="stagger mt-10 grid gap-3 sm:grid-cols-2">
+        <section className="stagger mt-6 grid gap-3 sm:grid-cols-2">
           <StatTile label="Ouvertes" value={String(taches.length)} hint="Hors tâches terminées" />
           <StatTile label="Urgentes" value={String(urgentes)} hint="À prendre en premier" />
         </section>

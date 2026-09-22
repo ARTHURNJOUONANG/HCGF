@@ -42,7 +42,7 @@ export default async function PartenaireHomePage() {
   return (
     <div className="min-h-screen">
       <AppHeader user={session} unread={unread} />
-      <main className="shell py-10 sm:py-14">
+      <main className="shell py-6 sm:py-8">
         <PageIntro
           kicker={user.partenaire?.nom ?? "Partenaire"}
           title="Mes apports"
@@ -55,7 +55,7 @@ export default async function PartenaireHomePage() {
           }
         />
 
-        <section className="stagger mt-10 grid gap-3 sm:grid-cols-3">
+        <section className="stagger mt-6 grid gap-3 sm:grid-cols-3">
           <StatTile label="Dossiers" value={String(dossiers.length)} hint="Vos apports" />
           <StatTile label="Ouverts" value={String(ouverts)} hint={`${valides} validés`} />
           <StatTile label="À recevoir" value={euros(aRecevoir)} hint="Commissions" />
