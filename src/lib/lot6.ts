@@ -66,6 +66,7 @@ export async function assurerDocumentsContractuels() {
     { type: "cgv", numeroVersion: "2026.2", contenu: CGV },
     { type: "confidentialite", numeroVersion: "2026.2", contenu: CONF },
     { type: "mentions", numeroVersion: "2026.2", contenu: MENTIONS },
+    { type: "contrat_avi", numeroVersion: "2026.1", contenu: "Contrat de prestations de services AVI — modèle officiel 2026.1" },
   ];
   for (const doc of docs) {
     await prisma.documentContractuel.upsert({
@@ -76,7 +77,7 @@ export async function assurerDocumentsContractuels() {
   }
   // Désactiver les anciennes versions pour n’afficher que 2026.2
   await prisma.documentContractuel.updateMany({
-    where: { numeroVersion: { not: "2026.2" } },
+    where: { type: { in: ["cgv", "confidentialite", "mentions"] }, numeroVersion: { not: "2026.2" } },
     data: { actif: false },
   });
 }
@@ -84,7 +85,7 @@ export async function assurerDocumentsContractuels() {
 export async function documentsActifs() {
   await assurerDocumentsContractuels();
   return prisma.documentContractuel.findMany({
-    where: { actif: true },
+    where: { actif: true, type: { in: ["cgv", "confidentialite", "mentions"] } },
     orderBy: { type: "asc" },
   });
 }

@@ -139,11 +139,15 @@ export function BureauSignature({
   autorise,
   dejaSigne,
   controleRenforce = false,
+  contratSigne = false,
+  contratId,
 }: {
   demandeId: string;
   autorise: boolean;
   dejaSigne: boolean;
   controleRenforce?: boolean;
+  contratSigne?: boolean;
+  contratId?: string;
 }) {
   return (
     <section className="rail-card card">
@@ -156,7 +160,20 @@ export function BureauSignature({
           <PenLine size={16} />
         </span>
       </div>
-      <p className="rail-copy">Génère le dossier, archive une version et notifie le candidat.</p>
+      <p className="rail-copy">Génère l’AVI après contrat candidat signé et fonds reçus.</p>
+      {contratSigne ? (
+        <p className="pill pill-ok mt-3">
+          {contratId ? (
+            <a href={`/api/fichiers/${contratId}`} className="link-blue">
+              Contrat signé
+            </a>
+          ) : (
+            "Contrat signé"
+          )}
+        </p>
+      ) : (
+        <p className="hold-warn mt-3 text-sm">Le candidat n’a pas encore signé le contrat AVI.</p>
+      )}
       {controleRenforce ? (
         <p className="hold-warn mt-3 text-sm">Alerte fraude ouverte — la signature est bloquée jusqu’à levée.</p>
       ) : null}

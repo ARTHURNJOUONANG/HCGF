@@ -30,13 +30,13 @@ const BLOCS: { id: string; titre: string; texte: string; codes: string[] }[] = [
     id: "identite",
     titre: "Identité",
     texte: "Repris de votre compte. Corrigez seulement si besoin.",
-    codes: ["nom", "prenom", "date_naissance", "telephone", "email", "adresse"],
+    codes: ["nom", "prenom", "date_naissance", "lieu_naissance", "nationalite", "numero_passeport", "telephone", "email", "adresse"],
   },
   {
     id: "etudes",
     titre: "Études",
     texte: "Ces informations déterminent les pièces et le montant.",
-    codes: ["etablissement", "date_rentree", "duree_mois", "montant_avi", "a_admission", "reference_admission"],
+    codes: ["etablissement", "formation", "garant_financier", "date_rentree", "duree_mois", "montant_avi", "a_admission", "reference_admission"],
   },
   {
     id: "sejour",

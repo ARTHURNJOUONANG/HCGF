@@ -6,6 +6,7 @@ import {
   Home,
   MessageCircle,
   Paperclip,
+  PenLine,
   Plane,
   Shield,
   ShieldCheck,
@@ -27,9 +28,12 @@ import { AssurancePanel, BanniereCroisee, LogementPanel, VolPanel } from "@/comp
 import { DossierTabs } from "@/components/DossierTabs";
 import { aLeDroit, droitsSurDemande } from "@/lib/delegation";
 import { FormulaireDynamique } from "./ui";
+import { ContratBoard } from "./contrat";
+import { htmlContratAvi } from "@/lib/contrat-avi";
 
 const etapeLabel: Record<string, string> = {
   formulaire: "Formulaire",
+  contrat: "Contrat",
   documents: "Documents",
   paiement: "Paiement",
   validation: "Validation",
@@ -79,6 +83,7 @@ export default async function DemandePage({
       },
       jetons: { where: { statut: "valide" }, orderBy: { createdAt: "desc" }, take: 1 },
       partenaire: true,
+      utilisateur: { include: { profil: true } },
     },
   });
   if (!demande?.offre.formulaire) notFound();
@@ -88,11 +93,31 @@ export default async function DemandePage({
   const etapes = JSON.parse(demande.offre.etapesParcours) as string[];
   const index = Math.max(1, etapes.indexOf(demande.etapeCourante) + 1);
   const final = demande.documents.find((d) => d.type === "genere" && d.statut === "signe");
+  const contratSigne = demande.documents.find((d) => d.type === "contrat" && d.statut === "signe");
+  const nomContrat = `${valeurs.nom || demande.utilisateur.profil?.nom || ""} ${valeurs.prenom || demande.utilisateur.profil?.prenom || ""}`.trim();
+  const htmlContrat = htmlContratAvi({
+    dossier: demande,
+    signature: contratSigne
+      ? {
+          date: contratSigne.createdAt,
+          lieu: "Paris",
+          nomSignataire: nomContrat || "Candidat",
+          preuve: (() => {
+            try {
+              return JSON.parse(contratSigne.ocrJson || "{}").preuve ?? "";
+            } catch {
+              return "";
+            }
+          })(),
+        }
+      : null,
+  });
   const unread = await unreadCount(session);
 
   const service = demande.offre.codeService;
   const tabs = [
     ["formulaire", "Formulaire", FileText],
+    ...(service === "AVI" ? [["contrat", "Contrat", PenLine] as const] : []),
     ...(service === "ASSURANCE" ? [["assurance", "Assurance", Shield] as const] : []),
     ...(service === "VOL" ? [["vol", "Vol", Plane] as const] : []),
     ...(service === "HEBERGEMENT" ? [["logement", "Logement", Home] as const] : []),
@@ -178,6 +203,16 @@ export default async function DemandePage({
               ) : (
                 <ConsultationSeule>Consultation seule. Le formulaire n’est pas délégué.</ConsultationSeule>
               )
+            ) : null}
+
+            {onglet === "contrat" ? (
+              <ContratBoard
+                demandeId={demande.id}
+                html={htmlContrat}
+                dejaSigne={Boolean(contratSigne)}
+                canSign={aLeDroit(droits, "repondre")}
+                documentId={contratSigne?.id}
+              />
             ) : null}
 
             {onglet === "assurance" ? <AssurancePanel demandeId={demande.id} /> : null}

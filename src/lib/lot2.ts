@@ -12,6 +12,7 @@ import { validerLongueur } from "./validation";
 import { cloreQuatreYeux, enregistrerControleQuatreYeux, exigerQuatreYeuxSignature } from "./quatre-yeux";
 import { creerProcedureSignature, modeEsign } from "./esign";
 import { estAdministrateur } from "./espaces";
+import { htmlDocumentFinal, nouveauCodeVerification } from "./avi-document";
 
 async function acteur() {
   const user = await requireUser();
@@ -357,6 +358,7 @@ export async function signerEtValider(formData: FormData) {
       offre: { include: { pays: true, service: true, pieces: true } },
       documents: { include: { piece: true } },
       reponses: { include: { champ: true } },
+      espaceFinancier: { include: { operations: true } },
     },
   });
   if (!demande) return { error: "Dossier introuvable." };
@@ -387,27 +389,20 @@ export async function signerEtValider(formData: FormData) {
     return { error: "La signature attend que les fonds soient reçus." };
   }
 
-  const lignes = demande.reponses
-    .map((r) => `<tr><th>${r.champ.libelle}</th><td>${r.valeur || "—"}</td></tr>`)
-    .join("");
-  const annexes = demande.documents
-    .filter((d) => d.type === "transmis")
-    .map((d, i) => `<li>${i + 2}. ${d.piece?.libelle ?? d.nom} — ${d.statut}</li>`)
-    .join("");
+  if (demande.offre.codeService === "AVI") {
+    const contrat = demande.documents.find((d) => d.type === "contrat" && d.statut === "signe");
+    if (!contrat) {
+      return { error: "Le contrat de prestations AVI doit être signé par le candidat." };
+    }
+  }
 
-  const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>${demande.reference}</title>
-  <style>body{font-family:Georgia,serif;max-width:720px;margin:40px auto;color:#152238}
-  h1{font-weight:400} table{width:100%;border-collapse:collapse} th,td{border-top:1px solid #ddd4c6;padding:8px;text-align:left}
-  .meta{color:#6a6258;font-size:13px}</style></head><body>
-  <p>AVI — Document officiel</p>
-  <h1>${demande.offre.service.libelle} · ${demande.offre.pays.libelle}</h1>
-  <p class="meta">${demande.reference} · Signé le ${new Date().toLocaleString("fr-FR")} par ${user.profil?.prenom ?? ""} ${user.profil?.nom || user.email}</p>
-  <p>Candidat : ${demande.utilisateur.profil?.prenom ?? ""} ${demande.utilisateur.profil?.nom ?? demande.utilisateur.email}</p>
-  <table>${lignes}</table>
-  <h2>Pièces fusionnées</h2>
-  <ol><li>1. Formulaire signé</li>${annexes}</ol>
-  <p class="meta">Formulaire en première partie. Version verrouillée. Toute régénération créera une nouvelle version.</p>
-  </body></html>`;
+  const codeVerification = nouveauCodeVerification();
+  const signataire = `${user.profil?.prenom ?? ""} ${user.profil?.nom || user.email}`.trim();
+  const html = await htmlDocumentFinal({
+    dossier: demande,
+    signataire,
+    codeVerification,
+  });
 
   const filename = `${demande.reference}-final-${Date.now()}.html`;
   await ecrireStockage(filename, html);
@@ -423,6 +418,7 @@ export async function signerEtValider(formData: FormData) {
       hash: hashBuffer(html),
       statut: modeEsign() === "yousign" ? "en_signature" : "signe",
       origine: "systeme",
+      ocrJson: JSON.stringify({ codeVerification }),
     },
   });
 
@@ -452,6 +448,7 @@ export async function signerEtValider(formData: FormData) {
     idSignataire: user.id,
     idCandidat: demande.idUtilisateur,
     reference: demande.reference,
+    codeVerification,
   });
   return { ok: true };
 }
@@ -468,12 +465,19 @@ export async function confirmerSignatureEsign(demandeId: string) {
   if (dv && doc.idAuteur && dv.idVerificateur !== doc.idAuteur) {
     await cloreQuatreYeux(dv.id, doc.idAuteur);
   }
+  let codeVerification = "";
+  try {
+    codeVerification = JSON.parse(doc.ocrJson || "{}").codeVerification ?? "";
+  } catch {
+    codeVerification = "";
+  }
   await finaliserDossierSigne({
     demandeId: demande.id,
     documentId: doc.id,
     idSignataire: doc.idAuteur ?? demande.idUtilisateur,
     idCandidat: demande.idUtilisateur,
     reference: demande.reference,
+    codeVerification,
   });
   return { ok: true };
 }
@@ -484,6 +488,7 @@ async function finaliserDossierSigne(opts: {
   idSignataire: string;
   idCandidat: string;
   reference: string;
+  codeVerification?: string;
 }) {
   await prisma.document.update({
     where: { id: opts.documentId },
@@ -497,7 +502,11 @@ async function finaliserDossierSigne(opts: {
     data: { statut: "revoque" },
   });
   await prisma.jetonVerification.create({
-    data: { token: randomBytes(24).toString("hex"), idDemande: opts.demandeId, idDocument: opts.documentId },
+    data: {
+      token: opts.codeVerification || randomBytes(24).toString("hex"),
+      idDemande: opts.demandeId,
+      idDocument: opts.documentId,
+    },
   });
   await prisma.demande.update({
     where: { id: opts.demandeId },

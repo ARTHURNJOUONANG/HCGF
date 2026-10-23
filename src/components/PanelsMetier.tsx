@@ -181,8 +181,8 @@ export async function VolPanel({ demandeId }: { demandeId: string }) {
               : "Renseignez le trajet dans le formulaire pour lancer une recherche."}
           </p>
           <p className="muted mt-1 text-sm">
-            Liaisons Afrique ↔ France, Allemagne, Belgique, Canada (Air France, Brussels Airlines,
-            Lufthansa, Air Canada, Ethiopian, Royal Air Maroc…).
+            Liaisons Afrique ↔ France, Allemagne, Belgique, Italie, Canada (Air France, ITA Airways,
+            Brussels Airlines, Lufthansa, Air Canada, Ethiopian, Royal Air Maroc…).
             {mode === "duffel" ? (
               <span className="pill pill-ok ml-2">Duffel live</span>
             ) : (

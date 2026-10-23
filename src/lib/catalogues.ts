@@ -215,6 +215,13 @@ export const OFFRES_VOL: OffreVol[] = [
   { code: "NBO-FRA-1", from: "NBO", to: "FRA", fromNom: "Nairobi", toNom: "Francfort", airline: "Lufthansa", depart: "23:40", arrivee: "06:10", prix: 66800, hold: true, garantieHeures: 48 },
   { code: "CAI-FRA-1", from: "CAI", to: "FRA", fromNom: "Le Caire", toNom: "Francfort", airline: "EgyptAir", depart: "14:20", arrivee: "18:35", prix: 35400, hold: true, garantieHeures: 36 },
   { code: "CMN-FRA-1", from: "CMN", to: "FRA", fromNom: "Casablanca", toNom: "Francfort", airline: "Royal Air Maroc", depart: "11:05", arrivee: "15:40", prix: 31200, hold: true, garantieHeures: 36 },
+  // Afrique → Italie
+  { code: "DLA-FCO-1", from: "DLA", to: "FCO", fromNom: "Douala", toNom: "Rome Fiumicino", airline: "ITA Airways", depart: "21:50", arrivee: "06:25", prix: 64200, hold: true, garantieHeures: 48 },
+  { code: "CMN-FCO-1", from: "CMN", to: "FCO", fromNom: "Casablanca", toNom: "Rome Fiumicino", airline: "Royal Air Maroc", depart: "10:40", arrivee: "14:20", prix: 27800, hold: true, garantieHeures: 36 },
+  { code: "TUN-FCO-1", from: "TUN", to: "FCO", fromNom: "Tunis", toNom: "Rome Fiumicino", airline: "ITA Airways", depart: "08:15", arrivee: "09:55", prix: 18900, hold: true, garantieHeures: 36 },
+  { code: "ADD-FCO-1", from: "ADD", to: "FCO", fromNom: "Addis-Abeba", toNom: "Rome Fiumicino", airline: "Ethiopian Airlines", depart: "01:10", arrivee: "05:40", prix: 59800, hold: true, garantieHeures: 48 },
+  { code: "CDG-FCO-1", from: "CDG", to: "FCO", fromNom: "Paris CDG", toNom: "Rome Fiumicino", airline: "Air France", depart: "09:05", arrivee: "11:15", prix: 14200, hold: true, garantieHeures: 48 },
+  { code: "CDG-MXP-1", from: "CDG", to: "MXP", fromNom: "Paris CDG", toNom: "Milan Malpensa", airline: "Air France", depart: "07:40", arrivee: "09:20", prix: 12800, hold: true, garantieHeures: 48 },
   // Afrique → Canada (souvent via Europe — démo directe)
   { code: "DLA-YUL-1", from: "DLA", to: "YUL", fromNom: "Douala", toNom: "Montréal", airline: "Air Canada", depart: "20:00", arrivee: "08:30", prix: 98500, hold: true, garantieHeures: 24 },
   { code: "CMN-YUL-1", from: "CMN", to: "YUL", fromNom: "Casablanca", toNom: "Montréal", airline: "Air Canada", depart: "12:45", arrivee: "16:20", prix: 72400, hold: true, garantieHeures: 24 },
@@ -222,12 +229,14 @@ export const OFFRES_VOL: OffreVol[] = [
   // Retours Europe/Canada → Afrique (séjours / vacances)
   { code: "CDG-DLA-1", from: "CDG", to: "DLA", fromNom: "Paris CDG", toNom: "Douala", airline: "Air France", depart: "15:20", arrivee: "21:55", prix: 67500, hold: true, garantieHeures: 48 },
   { code: "BRU-DLA-1", from: "BRU", to: "DLA", fromNom: "Bruxelles", toNom: "Douala", airline: "Brussels Airlines", depart: "14:50", arrivee: "21:30", prix: 64900, hold: true, garantieHeures: 48 },
+  { code: "FCO-DLA-1", from: "FCO", to: "DLA", fromNom: "Rome Fiumicino", toNom: "Douala", airline: "ITA Airways", depart: "14:10", arrivee: "20:45", prix: 63100, hold: true, garantieHeures: 48 },
   { code: "YUL-CMN-1", from: "YUL", to: "CMN", fromNom: "Montréal", toNom: "Casablanca", airline: "Air Canada", depart: "18:40", arrivee: "06:15", prix: 69800, hold: true, garantieHeures: 24 },
 ];
 
 export function aeroportPays(codePays: string) {
   if (codePays === "DE") return "FRA";
   if (codePays === "BE") return "BRU";
+  if (codePays === "IT") return "FCO";
   if (codePays === "CA") return "YUL";
   return "CDG";
 }

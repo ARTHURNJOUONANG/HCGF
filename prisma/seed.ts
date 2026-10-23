@@ -23,6 +23,7 @@ const pays = [
   { code: "FR", libelle: "France" },
   { code: "DE", libelle: "Allemagne" },
   { code: "BE", libelle: "Belgique" },
+  { code: "IT", libelle: "Italie" },
   { code: "CA", libelle: "Canada" },
 ];
 
@@ -56,9 +57,11 @@ const offres: {
     pays: "FR",
     service: "AVI",
     texte: "Attestation de virement irrévocable pour une poursuite d'études en France.",
-    etapes: ["formulaire", "documents", "paiement", "validation"],
+    etapes: ["formulaire", "contrat", "documents", "paiement", "validation"],
     champs: [
       ...champsIdentite(),
+      { code: "lieu_naissance", typeSaisie: "text", obligatoire: false, ordre: 7, libelle: "Lieu de naissance" },
+      { code: "nationalite", typeSaisie: "text", obligatoire: false, ordre: 8, libelle: "Nationalité" },
       { code: "etablissement", typeSaisie: "text", obligatoire: true, ordre: 10, libelle: "Établissement d'accueil" },
       { code: "date_rentree", typeSaisie: "date", obligatoire: true, ordre: 11, libelle: "Date de rentrée" },
       { code: "duree_mois", typeSaisie: "number", obligatoire: true, ordre: 12, libelle: "Durée du séjour (mois)" },
@@ -74,9 +77,12 @@ const offres: {
     pays: "DE",
     service: "AVI",
     texte: "Parcours Allemagne : le dossier s'adapte selon que vous avez déjà une admission.",
-    etapes: ["formulaire", "documents", "paiement", "validation"],
+    etapes: ["formulaire", "contrat", "documents", "paiement", "validation"],
     champs: [
       ...champsIdentite(),
+      { code: "lieu_naissance", typeSaisie: "text", obligatoire: false, ordre: 7, libelle: "Lieu de naissance" },
+      { code: "nationalite", typeSaisie: "text", obligatoire: false, ordre: 8, libelle: "Nationalité" },
+      { code: "numero_passeport", typeSaisie: "text", obligatoire: false, ordre: 9, libelle: "Numéro de passeport" },
       { code: "etablissement", typeSaisie: "text", obligatoire: true, ordre: 10, libelle: "Établissement d'accueil" },
       { code: "date_rentree", typeSaisie: "date", obligatoire: true, ordre: 11, libelle: "Date de rentrée" },
       {
@@ -108,12 +114,13 @@ const offres: {
     pays: "BE",
     service: "AVI",
     texte: "Solution adaptée à une poursuite d'études en Belgique.",
-    etapes: ["formulaire", "documents", "paiement", "validation"],
+    etapes: ["formulaire", "contrat", "documents", "paiement", "validation"],
     champs: [
       ...champsIdentite(),
-      { code: "etablissement", typeSaisie: "text", obligatoire: true, ordre: 10, libelle: "Établissement" },
+      { code: "garant_financier", typeSaisie: "text", obligatoire: false, ordre: 9, libelle: "Garant financier" },
+      { code: "etablissement", typeSaisie: "text", obligatoire: true, ordre: 10, libelle: "Établissement d'enseignement en Belgique" },
       { code: "date_rentree", typeSaisie: "date", obligatoire: true, ordre: 11, libelle: "Date de rentrée" },
-      { code: "montant_avi", typeSaisie: "number", obligatoire: true, ordre: 12, libelle: "Montant (€)" },
+      { code: "montant_avi", typeSaisie: "number", obligatoire: true, ordre: 12, libelle: "Montant (€)", aide: "Seuil de référence Belgique, ex. 12 744 € pour 12 mois." },
     ],
     pieces: [
       { typePiece: "passeport", libelle: "Passeport", obligatoire: true, ordreFusion: 2 },
@@ -121,10 +128,32 @@ const offres: {
     ],
   },
   {
+    pays: "IT",
+    service: "AVI",
+    texte: "Attestation de moyens / virement irrévocable pour une poursuite d'études en Italie.",
+    etapes: ["formulaire", "contrat", "documents", "paiement", "validation"],
+    champs: [
+      ...champsIdentite(),
+      { code: "nationalite", typeSaisie: "text", obligatoire: false, ordre: 7, libelle: "Nationalité" },
+      { code: "numero_passeport", typeSaisie: "text", obligatoire: false, ordre: 8, libelle: "Numéro de passeport" },
+      { code: "garant_financier", typeSaisie: "text", obligatoire: false, ordre: 9, libelle: "Garant financier", aide: "Laisser vide si le bénéficiaire verse lui-même les fonds." },
+      { code: "etablissement", typeSaisie: "text", obligatoire: true, ordre: 10, libelle: "Établissement d'accueil en Italie" },
+      { code: "formation", typeSaisie: "text", obligatoire: false, ordre: 11, libelle: "Formation / corso di studio" },
+      { code: "date_rentree", typeSaisie: "date", obligatoire: true, ordre: 12, libelle: "Date de rentrée" },
+      { code: "duree_mois", typeSaisie: "number", obligatoire: true, ordre: 13, libelle: "Durée du séjour (mois)" },
+      { code: "montant_avi", typeSaisie: "number", obligatoire: true, ordre: 14, libelle: "Montant bloqué (€)", aide: "Montant exigé pour le visa / la preuve de moyens Italie." },
+    ],
+    pieces: [
+      { typePiece: "passeport", libelle: "Passeport", obligatoire: true, ordreFusion: 2 },
+      { typePiece: "admission", libelle: "Admission / preiscrizione", obligatoire: true, ordreFusion: 3 },
+      { typePiece: "justificatifs_financiers", libelle: "Justificatifs financiers", obligatoire: true, ordreFusion: 4 },
+    ],
+  },
+  {
     pays: "CA",
     service: "AVI",
     texte: "Solution adaptée à une poursuite d'études au Canada.",
-    etapes: ["formulaire", "documents", "paiement", "validation"],
+    etapes: ["formulaire", "contrat", "documents", "paiement", "validation"],
     champs: [
       ...champsIdentite(),
       { code: "etablissement", typeSaisie: "text", obligatoire: true, ordre: 10, libelle: "Établissement" },
@@ -180,6 +209,26 @@ const offres: {
     pays: "BE",
     service: "ASSURANCE",
     texte: "Assurance voyage pour une destination Belgique.",
+    etapes: ["formulaire", "tarification", "paiement", "attestation"],
+    champs: [
+      ...champsIdentite(),
+      { code: "date_debut", typeSaisie: "date", obligatoire: true, ordre: 10, libelle: "Début du séjour" },
+      { code: "date_fin", typeSaisie: "date", obligatoire: true, ordre: 11, libelle: "Fin du séjour" },
+      {
+        code: "formule",
+        typeSaisie: "select",
+        obligatoire: true,
+        ordre: 12,
+        libelle: "Formule",
+        options: ["essentielle", "confort", "premium"],
+      },
+    ],
+    pieces: [{ typePiece: "passeport", libelle: "Passeport", obligatoire: true, ordreFusion: 2 }],
+  },
+  {
+    pays: "IT",
+    service: "ASSURANCE",
+    texte: "Assurance voyage pour une destination Italie.",
     etapes: ["formulaire", "tarification", "paiement", "attestation"],
     champs: [
       ...champsIdentite(),
@@ -265,6 +314,20 @@ const offres: {
       ...champsIdentite(),
       { code: "aeroport_depart", typeSaisie: "text", obligatoire: true, ordre: 10, libelle: "Aéroport / ville de départ", aide: "Ex. DLA, ABJ, DSS, FIH, LBV…" },
       { code: "aeroport_arrivee", typeSaisie: "text", obligatoire: true, ordre: 11, libelle: "Aéroport / ville d'arrivée", aide: "Belgique : BRU — Bruxelles." },
+      { code: "date_depart", typeSaisie: "date", obligatoire: true, ordre: 12, libelle: "Date de départ" },
+      { code: "date_retour", typeSaisie: "date", obligatoire: false, ordre: 13, libelle: "Date de retour (si aller-retour)" },
+    ],
+    pieces: [{ typePiece: "passeport", libelle: "Passeport / document de voyage", obligatoire: true, ordreFusion: 2 }],
+  },
+  {
+    pays: "IT",
+    service: "VOL",
+    texte: "Vol Hold Afrique ↔ Italie (FCO, MXP, LIN). ITA Airways, Air France, Ethiopian…",
+    etapes: ["recherche", "passager", "hold", "justificatif"],
+    champs: [
+      ...champsIdentite(),
+      { code: "aeroport_depart", typeSaisie: "text", obligatoire: true, ordre: 10, libelle: "Aéroport / ville de départ", aide: "Ex. DLA, ABJ, DSS, TUN, CMN, ADD…" },
+      { code: "aeroport_arrivee", typeSaisie: "text", obligatoire: true, ordre: 11, libelle: "Aéroport / ville d'arrivée", aide: "Italie : FCO, MXP, LIN, NAP — Rome, Milan, Naples." },
       { code: "date_depart", typeSaisie: "date", obligatoire: true, ordre: 12, libelle: "Date de départ" },
       { code: "date_retour", typeSaisie: "date", obligatoire: false, ordre: 13, libelle: "Date de retour (si aller-retour)" },
     ],
@@ -522,6 +585,56 @@ async function main() {
   }
 
   await assurerCatalogue();
+  const beAvi = await prisma.offreService.findUnique({
+    where: { codePays_codeService: { codePays: "BE", codeService: "AVI" } },
+    include: { formulaire: { include: { champs: true } } },
+  });
+  if (beAvi?.formulaire && !beAvi.formulaire.champs.some((c) => c.code === "garant_financier")) {
+    await prisma.champFormulaire.create({
+      data: {
+        idFormulaire: beAvi.formulaire.id,
+        code: "garant_financier",
+        typeSaisie: "text",
+        obligatoire: false,
+        ordre: 9,
+        libelle: "Garant financier",
+      },
+    });
+  }
+  const itAvi = await prisma.offreService.findUnique({
+    where: { codePays_codeService: { codePays: "IT", codeService: "AVI" } },
+    include: { formulaire: { include: { champs: true } } },
+  });
+  const frAvi = await prisma.offreService.findUnique({
+    where: { codePays_codeService: { codePays: "FR", codeService: "AVI" } },
+    include: { formulaire: { include: { champs: true } } },
+  });
+  if (frAvi?.formulaire) {
+    const extraFr = [
+      { code: "lieu_naissance", typeSaisie: "text", obligatoire: false, ordre: 7, libelle: "Lieu de naissance" },
+      { code: "nationalite", typeSaisie: "text", obligatoire: false, ordre: 8, libelle: "Nationalité" },
+    ];
+    for (const c of extraFr) {
+      if (!frAvi.formulaire.champs.some((x) => x.code === c.code)) {
+        await prisma.champFormulaire.create({ data: { idFormulaire: frAvi.formulaire.id, ...c } });
+      }
+    }
+  }
+  if (itAvi?.formulaire) {
+    const extraIt = [
+      { code: "nationalite", typeSaisie: "text", obligatoire: false, ordre: 7, libelle: "Nationalité" },
+      { code: "numero_passeport", typeSaisie: "text", obligatoire: false, ordre: 8, libelle: "Numéro de passeport" },
+      { code: "garant_financier", typeSaisie: "text", obligatoire: false, ordre: 9, libelle: "Garant financier", aide: "Laisser vide si le bénéficiaire verse lui-même les fonds." },
+      { code: "formation", typeSaisie: "text", obligatoire: false, ordre: 11, libelle: "Formation / corso di studio" },
+    ];
+    for (const c of extraIt) {
+      if (!itAvi.formulaire.champs.some((x) => x.code === c.code)) {
+        await prisma.champFormulaire.create({
+          data: { idFormulaire: itAvi.formulaire.id, ...c },
+        });
+      }
+    }
+  }
   await assurerComptesDemo();
 
   // Migration des anciens rôles (conseiller → contrôleur, signataire → administrateur).

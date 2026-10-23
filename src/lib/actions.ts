@@ -254,6 +254,7 @@ export async function creerDemande(formData: FormData) {
             statut: "a_venir" as const,
             ordre: i + 2,
           })),
+          ...(codeService === "AVI" ? [{ libelle: "Contrat AVI", statut: "a_venir" as const, ordre: 19 }] : []),
           { libelle: "Paiement des frais", statut: "a_venir", ordre: 20 },
           { libelle: "Validation", statut: "a_venir", ordre: 21 },
         ],

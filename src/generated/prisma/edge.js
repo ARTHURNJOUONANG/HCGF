@@ -809,6 +809,7 @@ const config = {
   ],
   "activeProvider": "sqlite",
   "postinstall": false,
+  "ciName": "Vercel",
   "inlineDatasources": {
     "db": {
       "url": {

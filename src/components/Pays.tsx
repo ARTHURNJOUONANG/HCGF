@@ -2,6 +2,7 @@ const NOMS: Record<string, string> = {
   FR: "France",
   DE: "Allemagne",
   BE: "Belgique",
+  IT: "Italie",
   CA: "Canada",
 };
 
@@ -9,6 +10,7 @@ export const PAYS_OUVERTS = [
   { code: "FR", libelle: "France" },
   { code: "DE", libelle: "Allemagne" },
   { code: "BE", libelle: "Belgique" },
+  { code: "IT", libelle: "Italie" },
   { code: "CA", libelle: "Canada" },
 ];
 
@@ -36,6 +38,14 @@ function FlagSvg({ code }: { code: string }) {
           <rect width="1" height="2" fill="#000" />
           <rect x="1" width="1" height="2" fill="#fada5e" />
           <rect x="2" width="1" height="2" fill="#ef3340" />
+        </svg>
+      );
+    case "IT":
+      return (
+        <svg viewBox="0 0 3 2" aria-hidden>
+          <rect width="1" height="2" fill="#009246" />
+          <rect x="1" width="1" height="2" fill="#fff" />
+          <rect x="2" width="1" height="2" fill="#ce2b37" />
         </svg>
       );
     case "CA":

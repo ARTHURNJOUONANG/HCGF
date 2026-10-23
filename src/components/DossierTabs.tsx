@@ -5,6 +5,7 @@ import {
   Home,
   MessageCircle,
   Paperclip,
+  PenLine,
   Plane,
   Shield,
 } from "lucide-react";
@@ -12,6 +13,7 @@ import { OrbitMenu } from "./OrbitMenu";
 
 const ICONS = {
   formulaire: FileText,
+  contrat: PenLine,
   assurance: Shield,
   vol: Plane,
   logement: Home,

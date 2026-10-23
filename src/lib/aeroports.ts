@@ -1,4 +1,4 @@
-/** Aéroports / villes — Afrique ↔ France, Allemagne, Belgique, Canada. */
+/** Aéroports / villes — Afrique ↔ France, Allemagne, Belgique, Italie, Canada. */
 
 export const AEROPORTS_CIBLE = {
   FR: [
@@ -14,6 +14,12 @@ export const AEROPORTS_CIBLE = {
   ],
   BE: [
     { code: "BRU", nom: "Bruxelles" },
+  ],
+  IT: [
+    { code: "FCO", nom: "Rome Fiumicino" },
+    { code: "MXP", nom: "Milan Malpensa" },
+    { code: "LIN", nom: "Milan Linate" },
+    { code: "NAP", nom: "Naples" },
   ],
   CA: [
     { code: "YUL", nom: "Montréal" },
@@ -68,6 +74,18 @@ const VILLES_VERS_IATA: Record<string, string> = {
   MÜNCHEN: "MUC",
   BRUXELLES: "BRU",
   BRUSSELS: "BRU",
+  ROME: "FCO",
+  FCO: "FCO",
+  FIUMICINO: "FCO",
+  MILAN: "MXP",
+  MILANO: "MXP",
+  MXP: "MXP",
+  MALPENSA: "MXP",
+  LINATE: "LIN",
+  NAPLES: "NAP",
+  NAPOLI: "NAP",
+  VENISE: "VCE",
+  VENEZIA: "VCE",
   AMSTERDAM: "AMS",
   MONTREAL: "YUL",
   MONTRÉAL: "YUL",
@@ -153,6 +171,7 @@ export function codeIata(saisie: string, fallback = ""): string {
 export function aeroportPays(codePays: string) {
   if (codePays === "DE") return "FRA";
   if (codePays === "BE") return "BRU";
+  if (codePays === "IT") return "FCO";
   if (codePays === "CA") return "YUL";
   return "CDG";
 }
@@ -161,6 +180,8 @@ export function suggestionsTrajetsVol(): { from: string; to: string; label: stri
   return [
     { from: "DLA", to: "CDG", label: "Douala → Paris" },
     { from: "DLA", to: "BRU", label: "Douala → Bruxelles" },
+    { from: "DLA", to: "FCO", label: "Douala → Rome" },
+    { from: "CMN", to: "FCO", label: "Casablanca → Rome" },
     { from: "NSI", to: "CDG", label: "Yaoundé → Paris" },
     { from: "ABJ", to: "CDG", label: "Abidjan → Paris" },
     { from: "DSS", to: "CDG", label: "Dakar → Paris" },

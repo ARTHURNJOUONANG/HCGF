@@ -98,7 +98,7 @@ export function AuthLayout({
             <p className="auth-panel-claim">L’accompagnement des parcours d’études, de mobilité et d’installation.</p>
             <ul className="auth-panel-proofs">
               <li>AVI, assurance, logement et vol</li>
-              <li>France, Allemagne, Belgique, Canada</li>
+              <li>France, Allemagne, Belgique, Italie, Canada</li>
               <li>Pièces et paiements jamais mélangés</li>
             </ul>
             <div className="auth-panel-flags">

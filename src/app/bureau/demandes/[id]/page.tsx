@@ -55,6 +55,7 @@ export default async function BureauDemandePage({
   const unread = await unreadCount(session);
   const transmis = demande.documents.filter((d) => d.type === "transmis");
   const dejaSigne = demande.documents.some((d) => d.type === "genere" && d.statut === "signe");
+  const contratDoc = demande.documents.find((d) => d.type === "contrat" && d.statut === "signe");
 
   return (
     <div className="min-h-screen">
@@ -128,6 +129,8 @@ export default async function BureauDemandePage({
                 autorise={peutSigner}
                 dejaSigne={dejaSigne}
                 controleRenforce={demande.controleRenforce}
+                contratSigne={Boolean(contratDoc)}
+                contratId={contratDoc?.id}
               />
             ) : null}
             {demande.offre.codeService === "ASSURANCE" && demande.police ? (

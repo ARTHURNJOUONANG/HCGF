@@ -24,8 +24,8 @@ const ETAPES = [
     kicker: "Le bon parcours",
     titre: "Choisissez le pays.\nLe dossier s’adapte.",
     texte:
-      "France, Allemagne, Belgique ou Canada : le formulaire, les pièces et les règles changent selon le service et la destination. Rien à recréer.",
-    drapeaux: ["FR", "DE", "BE", "CA"],
+      "France, Allemagne, Belgique, Italie ou Canada : le formulaire, les pièces et les règles changent selon le service et la destination. Rien à recréer.",
+    drapeaux: ["FR", "DE", "BE", "IT", "CA"],
   },
   {
     image: "/intro/documents.png",
@@ -174,7 +174,15 @@ export function IntroOnboarding() {
               {etape.drapeaux.map((code) => (
                 <li key={code} className="intro-chip">
                   <Drapeau code={code} />
-                  {code === "FR" ? "France" : code === "DE" ? "Allemagne" : code === "BE" ? "Belgique" : "Canada"}
+                  {code === "FR"
+                    ? "France"
+                    : code === "DE"
+                      ? "Allemagne"
+                      : code === "BE"
+                        ? "Belgique"
+                        : code === "IT"
+                          ? "Italie"
+                          : "Canada"}
                 </li>
               ))}
             </ul>
