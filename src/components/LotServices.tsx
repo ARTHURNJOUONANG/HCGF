@@ -12,7 +12,7 @@ import {
   payerBilletVol,
   poserHold,
   souscrirePolice,
-} from "@/lib/server-actions";
+} from "@/lib/action-binds";
 
 function ActionForm({
   action,

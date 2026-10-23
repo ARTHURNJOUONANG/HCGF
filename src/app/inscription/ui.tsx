@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { inscrire } from "@/lib/server-actions";
+import { inscrire } from "@/lib/action-binds";
 import { RolePicker } from "@/components/RolePicker";
 import { ChampCodeAcces } from "@/components/ChampCodeAcces";
 import { ESPACES_INSCRIPTION, espaceParId, roleExigeCode, rolePublic, type EspaceId } from "@/lib/espaces";

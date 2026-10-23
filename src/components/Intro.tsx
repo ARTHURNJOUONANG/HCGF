@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { terminerIntro } from "@/lib/server-actions";
+import { terminerIntro } from "@/lib/action-binds";
 import { Drapeau } from "@/components/Pays";
 
 const DUREE = 7800;

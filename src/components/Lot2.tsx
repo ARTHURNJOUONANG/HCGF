@@ -12,7 +12,7 @@ import {
   terminerTache,
   abandonnerDemande,
   cloturerDemande,
-} from "@/lib/server-actions";
+} from "@/lib/action-binds";
 import { pushToast } from "@/components/Feedback";
 export { LeverAlerteForm, ConfirmerAlerteForm, AnalyserFraudeForm } from "@/components/LotFraude";
 

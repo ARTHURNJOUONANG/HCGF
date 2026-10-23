@@ -9,7 +9,7 @@ import {
   payerParMoyen,
   rapprocherVirement,
   traiterRemboursement,
-} from "@/lib/server-actions";
+} from "@/lib/action-binds";
 import type { MoyenInstant } from "@/lib/moyens-paiement";
 
 function FormEtat({

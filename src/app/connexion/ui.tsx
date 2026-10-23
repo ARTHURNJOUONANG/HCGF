@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { connecter } from "@/lib/server-actions";
+import { connecter } from "@/lib/action-binds";
 import { RolePicker } from "@/components/RolePicker";
 import { espaceParId, roleExigeCode, type EspaceId } from "@/lib/espaces";
 

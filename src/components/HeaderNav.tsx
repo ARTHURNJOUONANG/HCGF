@@ -15,7 +15,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { deconnecter } from "@/lib/server-actions";
+import { deconnecter } from "@/lib/action-binds";
 import type { SessionUser } from "@/lib/auth";
 import { OrbitMenu, type OrbitItem } from "./OrbitMenu";
 

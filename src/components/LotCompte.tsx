@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { fermerMonCompte, revoquerAutresSessions } from "@/lib/server-actions";
+import { fermerMonCompte, revoquerAutresSessions } from "@/lib/action-binds";
 import { pushToast } from "@/components/Feedback";
 
 export function RevoquerSessionsForm() {
