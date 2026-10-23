@@ -1,5 +1,3 @@
-"use server";
-
 import { createHash } from "crypto";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
@@ -20,11 +18,11 @@ export async function assurerModeleContratAvi() {
   await assurerDocumentsContractuels();
   await prisma.documentContractuel.upsert({
     where: { type_numeroVersion: { type: "contrat_avi", numeroVersion: "2026.1" } },
-    update: { actif: true, contenu: "Contrat de prestations de services AVI â€” modÃ¨le officiel 2026.1" },
+    update: { actif: true, contenu: "Contrat de prestations de services AVI — modèle officiel 2026.1" },
     create: {
       type: "contrat_avi",
       numeroVersion: "2026.1",
-      contenu: "Contrat de prestations de services AVI â€” modÃ¨le officiel 2026.1",
+      contenu: "Contrat de prestations de services AVI — modèle officiel 2026.1",
       actif: true,
     },
   });
@@ -32,9 +30,9 @@ export async function assurerModeleContratAvi() {
 
 export async function signerContratAvi(demandeId: string) {
   const user = await requireUser();
-  if (!user) return { error: "Session expirÃ©e." };
+  if (!user) return { error: "Session expirée." };
   const droits = await droitsSurDemande(user.id, user.typeCompte, demandeId);
-  if (!aLeDroit(droits, "repondre")) return { error: "Ce droit nâ€™est pas dÃ©lÃ©guÃ©." };
+  if (!aLeDroit(droits, "repondre")) return { error: "Ce droit n’est pas délégué." };
 
   const demande = await prisma.demande.findFirst({
     where: { id: demandeId },
@@ -47,9 +45,9 @@ export async function signerContratAvi(demandeId: string) {
     },
   });
   if (!demande) return { error: "Dossier introuvable." };
-  if (demande.offre.codeService !== "AVI") return { error: "Ce contrat concerne uniquement lâ€™AVI." };
+  if (demande.offre.codeService !== "AVI") return { error: "Ce contrat concerne uniquement l’AVI." };
   if (["cloturee", "abandonnee", "annulee"].includes(demande.statut)) {
-    return { error: "Ce dossier ne peut plus Ãªtre modifiÃ©." };
+    return { error: "Ce dossier ne peut plus être modifié." };
   }
   const deja = demande.documents.find((d) => d.type === "contrat" && d.statut === "signe");
   if (deja) return { ok: true, documentId: deja.id };
@@ -58,7 +56,7 @@ export async function signerContratAvi(demandeId: string) {
   for (const r of demande.reponses) map[r.champ.code] = r.valeur;
   const nom = `${(map.nom || demande.utilisateur.profil?.nom || "").trim()} ${(map.prenom || demande.utilisateur.profil?.prenom || "").trim()}`.trim();
   if (!nom || !(map.etablissement || "").trim()) {
-    return { error: "ComplÃ©tez dâ€™abord le formulaire (identitÃ© et Ã©tablissement)." };
+    return { error: "Complétez d’abord le formulaire (identité et établissement)." };
   }
 
   await assurerModeleContratAvi();
@@ -66,7 +64,7 @@ export async function signerContratAvi(demandeId: string) {
     where: { type: "contrat_avi", actif: true },
     orderBy: { datePublication: "desc" },
   });
-  if (!modele) return { error: "ModÃ¨le de contrat indisponible." };
+  if (!modele) return { error: "Modèle de contrat indisponible." };
 
   const preuve = createHash("sha256").update(`${user.id}:${demande.id}:${Date.now()}`).digest("hex").slice(0, 24);
   const signature = {

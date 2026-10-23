@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { demanderReinitialisation, definirNouveauMotDePasse } from "@/lib/mot-de-passe";
+import { demanderReinitialisation, definirNouveauMotDePasse } from "@/lib/server-actions";
 
 export function DemandeResetForm() {
   const [error, setError] = useState<string | null>(null);

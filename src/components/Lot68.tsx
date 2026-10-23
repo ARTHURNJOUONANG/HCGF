@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { ouvrirDelegation, revoquerDelegation } from "@/lib/lot6";
+import { ouvrirDelegation, revoquerDelegation } from "@/lib/server-actions";
 import {
   changerPriorite,
   changerStatutReclamation,
   ecrireMessageSav,
   executerRelances,
   ouvrirReclamation,
-} from "@/lib/lot8";
+} from "@/lib/server-actions";
 import { DROITS_DELEGABLES } from "@/lib/droits";
 import { libelleSav } from "@/lib/labels";
 import { pushToast } from "@/components/Feedback";

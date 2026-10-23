@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ArrowRight, FileCheck, Home, Plane, Shield } from "lucide-react";
-import { initierDossierPartenaire, payerCommission } from "@/lib/lot5";
+import { initierDossierPartenaire, payerCommission } from "@/lib/server-actions";
 import { Drapeau } from "@/components/Pays";
 
 type OffreLite = {

@@ -1,5 +1,3 @@
-"use server";
-
 import { randomBytes } from "crypto";
 import { redirect } from "next/navigation";
 import { prisma } from "./prisma";
@@ -68,8 +66,8 @@ export async function envoyerLienAcces(idUtilisateur: string, email: string, act
   try {
     await envoyerMail({
       to: email,
-      subject: "AccÃ©der Ã  votre espace HCGF",
-      texte: `Bonjour,\n\nPour choisir votre mot de passe, ouvrez ce lien (valable 1 heure) :\n${lien}\n\nSi vous nâ€™Ãªtes pas Ã  lâ€™origine de cette demande, ignorez ce message.\n`,
+      subject: "Accéder à votre espace HCGF",
+      texte: `Bonjour,\n\nPour choisir votre mot de passe, ouvrez ce lien (valable 1 heure) :\n${lien}\n\nSi vous n’êtes pas à l’origine de cette demande, ignorez ce message.\n`,
     });
   } catch (erreur) {
     console.error("envoyerLienAcces", erreur);
@@ -93,7 +91,7 @@ export async function definirNouveauMotDePasse(formData: FormData) {
 
   const jeton = await lireJeton(token);
   if (!jeton) {
-    return { error: "Ce lien nâ€™est plus valable. Demandez-en un nouveau." };
+    return { error: "Ce lien n’est plus valable. Demandez-en un nouveau." };
   }
 
   await prisma.$transaction([

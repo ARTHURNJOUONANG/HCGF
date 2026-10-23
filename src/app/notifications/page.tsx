@@ -5,7 +5,7 @@ import { AppHeader, PageIntro } from "@/components/Chrome";
 import { EmptyHint } from "@/components/Surface";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { marquerNotificationsLues } from "@/lib/lot2";
+import { marquerNotificationsLues } from "@/lib/server-actions";
 import { unreadCount } from "@/lib/shell";
 
 export default async function NotificationsPage() {

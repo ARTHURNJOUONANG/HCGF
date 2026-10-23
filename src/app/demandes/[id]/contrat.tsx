@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Download, PenLine, ShieldCheck } from "lucide-react";
 import { pushToast } from "@/components/Feedback";
-import { signerContratAvi } from "@/lib/lot-contrat";
+import { signerContratAvi } from "@/lib/server-actions";
 
 export function ContratBoard({
   demandeId,

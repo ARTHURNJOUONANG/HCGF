@@ -1,5 +1,3 @@
-"use server";
-
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "./prisma";
@@ -28,7 +26,7 @@ export async function initierDossierPartenaire(formData: FormData) {
   const prenom = String(formData.get("prenom") ?? "").trim();
   const codeService = String(formData.get("service") ?? "AVI");
   const codePays = String(formData.get("pays") ?? "FR");
-  if (!email || !nom || !prenom) return { error: "IdentitÃ© du candidat incomplÃ¨te." };
+  if (!email || !nom || !prenom) return { error: "Identité du candidat incomplète." };
   const emailInvalide = validerEmail(email);
   if (emailInvalide) return { error: emailInvalide };
 
@@ -36,7 +34,7 @@ export async function initierDossierPartenaire(formData: FormData) {
     where: { codePays_codeService: { codePays, codeService } },
     include: { formulaire: { include: { champs: true } }, pieces: true, baremes: { where: { actif: true } } },
   });
-  if (!offre?.formulaire) return { error: "Cette offre nâ€™est pas ouverte." };
+  if (!offre?.formulaire) return { error: "Cette offre n’est pas ouverte." };
 
   let candidat = await prisma.utilisateur.findUnique({
     where: { email },
@@ -103,15 +101,15 @@ export async function initierDossierPartenaire(formData: FormData) {
     });
   }
 
-  const apporteur = [user.profil?.prenom, user.profil?.nom].filter(Boolean).join(" ") || "Votre contrÃ´leur";
+  const apporteur = [user.profil?.prenom, user.profil?.nom].filter(Boolean).join(" ") || "Votre contrôleur";
   const lien = `${await origine()}/demandes/${demande.id}`;
   await notifierEtMailer({
     idUtilisateur: candidat.id,
     evenement: "dossier_cree",
-    titre: "COMPLÃ‰TER MON DOSSIER",
-    corps: `${apporteur} a ouvert ${reference}. Connectez-vous pour le complÃ©ter.`,
+    titre: "COMPLÉTER MON DOSSIER",
+    corps: `${apporteur} a ouvert ${reference}. Connectez-vous pour le compléter.`,
     idDemande: demande.id,
-    sujet: `ComplÃ©ter mon dossier ${reference}`,
+    sujet: `Compléter mon dossier ${reference}`,
     texte: texteCompleterDossier({
       prenom: candidat.profil?.prenom || prenom,
       apporteur,
@@ -135,7 +133,7 @@ export async function payerCommission(formData: FormData) {
   if (!user || user.typeCompte !== "collaborateur") return { error: "Droit insuffisant." };
   const id = String(formData.get("commissionId") ?? "");
   const commission = await prisma.commission.findUnique({ where: { id } });
-  if (!commission || commission.statut !== "acquise") return { error: "La commission nâ€™est pas encore acquise." };
+  if (!commission || commission.statut !== "acquise") return { error: "La commission n’est pas encore acquise." };
   await prisma.commission.update({
     where: { id },
     data: { statut: "payee", datePaiement: new Date() },

@@ -6,7 +6,7 @@ import {
   analyserFraudeAction,
   confirmerAlerteFraudeAction,
   leverAlerteFraudeAction,
-} from "@/lib/lot2";
+} from "@/lib/server-actions";
 import { pushToast } from "@/components/Feedback";
 
 export function LeverAlerteForm({ alerteId }: { alerteId: string }) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { sauvegarderReponses } from "@/lib/actions";
+import { sauvegarderReponses } from "@/lib/server-actions";
 import { pushToast } from "@/components/Feedback";
 
 function champVisible(champ: Champ, valeurs: Record<string, string>) {

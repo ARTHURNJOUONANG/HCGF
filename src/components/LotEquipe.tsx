@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { creerCollaborateur, creerComptePartenaire } from "@/lib/equipe";
+import { creerCollaborateur, creerComptePartenaire } from "@/lib/server-actions";
 import { pushToast } from "@/components/Feedback";
 
 function LienAcces({ lien, codeAcces }: { lien: string | null; codeAcces: string | null }) {
