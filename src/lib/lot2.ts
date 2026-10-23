@@ -73,7 +73,7 @@ async function accesDemande(userId: string, typeCompte: string, demandeId: strin
 
 export async function deposerDocument(formData: FormData) {
   const user = await acteur();
-  if (!user) return { error: "Session expirée." };
+  if (!user) return { error: "Session expirÃ©e." };
 
   const demandeId = String(formData.get("demandeId") ?? "");
   const pieceId = String(formData.get("pieceId") ?? "");
@@ -89,7 +89,7 @@ export async function deposerDocument(formData: FormData) {
   if ("error" in tailleOkBuf) return { error: tailleOkBuf.error ?? messageTailleMax() };
 
   const format = detecterFormat(buffer);
-  if (!format) return { error: "Formats acceptés : PDF, JPG, PNG, WebP." };
+  if (!format) return { error: "Formats acceptÃ©s : PDF, JPG, PNG, WebP." };
 
   const nettete = await controlerNetteDocument({ buffer, mime: format.mime });
   if ("error" in nettete && nettete.error) return { error: nettete.error };
@@ -99,7 +99,7 @@ export async function deposerDocument(formData: FormData) {
   if (user.typeCompte === "delegataire") {
     const { aLeDroit, droitsSurDemande } = await import("./delegation");
     const droits = await droitsSurDemande(user.id, user.typeCompte, demandeId);
-    if (!aLeDroit(droits, "deposer_piece")) return { error: "Ce droit n’est pas délégué." };
+    if (!aLeDroit(droits, "deposer_piece")) return { error: "Ce droit nâ€™est pas dÃ©lÃ©guÃ©." };
   }
 
   const filename = `${demande.reference}-${pieceId}-${Date.now()}${format.ext}`;
@@ -167,7 +167,7 @@ export async function deposerDocument(formData: FormData) {
   await prisma.tacheInterne.create({
     data: {
       idDemande: demande.id,
-      action: `Contrôler ${piece?.libelle ?? "une pièce"}`,
+      action: `ContrÃ´ler ${piece?.libelle ?? "une piÃ¨ce"}`,
       priorite: "normal",
     },
   });
@@ -176,8 +176,8 @@ export async function deposerDocument(formData: FormData) {
   await notifier(
     demande.idUtilisateur,
     "document_recu",
-    "Document reçu",
-    `${piece?.libelle ?? "Une pièce"} a été déposé sur ${demande.reference}.`,
+    "Document reÃ§u",
+    `${piece?.libelle ?? "Une piÃ¨ce"} a Ã©tÃ© dÃ©posÃ© sur ${demande.reference}.`,
     demande.id,
   );
 
@@ -195,7 +195,7 @@ export async function controlerDocument(formData: FormData) {
   const documentId = String(formData.get("documentId") ?? "");
   const statut = String(formData.get("statut") ?? "");
   if (!["conforme", "a_verifier", "a_remplacer"].includes(statut)) {
-    return { error: "Statut de contrôle invalide." };
+    return { error: "Statut de contrÃ´le invalide." };
   }
 
   const doc = await prisma.document.findUnique({
@@ -243,8 +243,8 @@ export async function controlerDocument(formData: FormData) {
   await notifier(
     doc.demande.idUtilisateur,
     statut === "conforme" ? "document_accepte" : "document_refuse",
-    statut === "conforme" ? "Document accepté" : "Document à revoir",
-    `${libelle} : ${statut === "conforme" ? "conforme" : statut === "a_remplacer" ? "à remplacer" : "contrôle humain requis"}.`,
+    statut === "conforme" ? "Document acceptÃ©" : "Document Ã  revoir",
+    `${libelle} : ${statut === "conforme" ? "conforme" : statut === "a_remplacer" ? "Ã  remplacer" : "contrÃ´le humain requis"}.`,
     doc.idDemande,
   );
 
@@ -256,7 +256,7 @@ export async function controlerDocument(formData: FormData) {
 
 export async function envoyerMessage(formData: FormData) {
   const user = await acteur();
-  if (!user) return { error: "Session expirée." };
+  if (!user) return { error: "Session expirÃ©e." };
 
   const demandeId = String(formData.get("demandeId") ?? "");
   const contenu = String(formData.get("contenu") ?? "").trim();
@@ -269,7 +269,7 @@ export async function envoyerMessage(formData: FormData) {
   if (user.typeCompte === "delegataire") {
     const { aLeDroit, droitsSurDemande } = await import("./delegation");
     const droits = await droitsSurDemande(user.id, user.typeCompte, demandeId);
-    if (!aLeDroit(droits, "repondre")) return { error: "Ce droit n’est pas délégué." };
+    if (!aLeDroit(droits, "repondre")) return { error: "Ce droit nâ€™est pas dÃ©lÃ©guÃ©." };
   }
 
   const conversation = await prisma.conversation.upsert({
@@ -313,8 +313,8 @@ export async function creerTache(formData: FormData) {
   const demandeId = String(formData.get("demandeId") ?? "");
   const action = String(formData.get("action") ?? "").trim();
   const priorite = String(formData.get("priorite") ?? "normal");
-  if (!action) return { error: "Décrivez la tâche." };
-  const tropLong = validerLongueur(action, 400, "La tâche");
+  if (!action) return { error: "DÃ©crivez la tÃ¢che." };
+  const tropLong = validerLongueur(action, 400, "La tÃ¢che");
   if (tropLong) return { error: tropLong };
   const demande = await prisma.demande.findUnique({ where: { id: demandeId }, select: { id: true } });
   if (!demande) return { error: "Dossier introuvable." };
@@ -345,7 +345,7 @@ export async function terminerTache(formData: FormData) {
 export async function signerEtValider(formData: FormData) {
   const user = await acteur();
   if (!user || !peutSigner(user)) {
-    return { error: "Seul un administrateur habilité peut signer une attestation." };
+    return { error: "Seul un administrateur habilitÃ© peut signer une attestation." };
   }
 
   const demandeId = String(formData.get("demandeId") ?? "");
@@ -371,12 +371,12 @@ export async function signerEtValider(formData: FormData) {
     );
   });
   if (manquantes.length > 0) {
-    return { error: `Pièces non conformes : ${manquantes.map((p) => p.libelle).join(", ")}.` };
+    return { error: `PiÃ¨ces non conformes : ${manquantes.map((p) => p.libelle).join(", ")}.` };
   }
 
   const bloquantes = demande.documents.filter((d) => d.statut === "a_remplacer" && d.type === "transmis");
   if (bloquantes.length > 0) {
-    return { error: "Un document à remplacer bloque la signature." };
+    return { error: "Un document Ã  remplacer bloque la signature." };
   }
 
   const quatreYeux = await exigerQuatreYeuxSignature(demande.id, user.id);
@@ -384,13 +384,13 @@ export async function signerEtValider(formData: FormData) {
 
   const finance = await prisma.espaceFinancier.findUnique({ where: { idDemande: demande.id } });
   if (finance && finance.statutFonds !== "fonds_recus") {
-    return { error: "La signature attend que les fonds soient reçus." };
+    return { error: "La signature attend que les fonds soient reÃ§us." };
   }
 
   if (demande.offre.codeService === "AVI") {
     const contrat = demande.documents.find((d) => d.type === "contrat" && d.statut === "signe");
     if (!contrat) {
-      return { error: "Le contrat de prestations AVI doit être signé par le candidat." };
+      return { error: "Le contrat de prestations AVI doit Ãªtre signÃ© par le candidat." };
     }
   }
 
@@ -517,7 +517,7 @@ async function finaliserDossierSigne(opts: {
     opts.idCandidat,
     "attestation_disponible",
     "Attestation disponible",
-    `Le dossier ${opts.reference} a été signé. Le document final est dans votre espace.`,
+    `Le dossier ${opts.reference} a Ã©tÃ© signÃ©. Le document final est dans votre espace.`,
     opts.demandeId,
   );
   revalidatePath(`/demandes/${opts.demandeId}`);
@@ -527,7 +527,7 @@ async function finaliserDossierSigne(opts: {
 
 export async function marquerNotificationsLues() {
   const user = await acteur();
-  if (!user) return { error: "Session expirée." };
+  if (!user) return { error: "Session expirÃ©e." };
   await prisma.notification.updateMany({
     where: { idUtilisateur: user.id, statut: "non_lue" },
     data: { statut: "lue" },
@@ -577,7 +577,7 @@ const STATUTS_FERMABLES = new Set(["brouillon", "en_traitement"]);
 
 export async function abandonnerDemande(formData: FormData) {
   const user = await acteur();
-  if (!user) return { error: "Session expirée." };
+  if (!user) return { error: "Session expirÃ©e." };
   if (user.typeCompte !== "candidat") return { error: "Seul le titulaire peut abandonner le dossier." };
 
   const demandeId = String(formData.get("demandeId") ?? "");
@@ -587,10 +587,10 @@ export async function abandonnerDemande(formData: FormData) {
   });
   if (!demande) return { error: "Dossier introuvable." };
   if (!STATUTS_FERMABLES.has(demande.statut)) {
-    return { error: "Ce dossier ne peut plus être abandonné." };
+    return { error: "Ce dossier ne peut plus Ãªtre abandonnÃ©." };
   }
   if (demande.espaceFinancier && demande.espaceFinancier.montantRecu > 0) {
-    return { error: "Demandez d’abord le remboursement des fonds reçus." };
+    return { error: "Demandez dâ€™abord le remboursement des fonds reÃ§us." };
   }
 
   await prisma.demande.update({
@@ -613,7 +613,7 @@ export async function cloturerDemande(formData: FormData) {
   });
   if (!demande) return { error: "Dossier introuvable." };
   if (demande.statut !== "validee" && demande.statut !== "abandonnee") {
-    return { error: "Clôturez seulement un dossier validé ou abandonné." };
+    return { error: "ClÃ´turez seulement un dossier validÃ© ou abandonnÃ©." };
   }
   await prisma.demande.update({
     where: { id: demande.id },

@@ -9,62 +9,62 @@ import { envoyerLienAcces } from "./mot-de-passe";
 import { ecrireAudit, notifier } from "./lot2";
 import { DROITS_DELEGABLES } from "./droits";
 
-const CGV = `Conditions générales AVI — version 2026.2
+const CGV = `Conditions gÃ©nÃ©rales AVI â€” version 2026.2
 
-La plateforme met à disposition un espace unique pour ouvrir et suivre des dossiers indépendants (AVI, assurance, hébergement, vol). Chaque dossier a sa référence, ses pièces et son paiement.
+La plateforme met Ã  disposition un espace unique pour ouvrir et suivre des dossiers indÃ©pendants (AVI, assurance, hÃ©bergement, vol). Chaque dossier a sa rÃ©fÃ©rence, ses piÃ¨ces et son paiement.
 
-Le candidat reste titulaire du compte. Une délégation n’autorise jamais la signature, la modification d’identité ou la suppression du compte. Elle est révocable à tout moment.
+Le candidat reste titulaire du compte. Une dÃ©lÃ©gation nâ€™autorise jamais la signature, la modification dâ€™identitÃ© ou la suppression du compte. Elle est rÃ©vocable Ã  tout moment.
 
-Les tarifs acceptés à l’ouverture d’un dossier ne sont pas recalculés si le barème change ensuite.
+Les tarifs acceptÃ©s Ã  lâ€™ouverture dâ€™un dossier ne sont pas recalculÃ©s si le barÃ¨me change ensuite.
 
-Le responsable du traitement est HCGF (plateforme AVI). Pour exercer vos droits RGPD : page Compte ou contact indiqué dans les mentions légales.`;
+Le responsable du traitement est HCGF (plateforme AVI). Pour exercer vos droits RGPD : page Compte ou contact indiquÃ© dans les mentions lÃ©gales.`;
 
-const CONF = `Politique de confidentialité — version 2026.2
+const CONF = `Politique de confidentialitÃ© â€” version 2026.2
 
 1. Responsable du traitement
-HCGF — plateforme AVI. Contact : via la page Contact / Compte. Réclamation possible auprès de la CNIL (www.cnil.fr).
+HCGF â€” plateforme AVI. Contact : via la page Contact / Compte. RÃ©clamation possible auprÃ¨s de la CNIL (www.cnil.fr).
 
-2. Données traitées
-Identité et coordonnées, formulaires de dossier, pièces justificatives (passeport, admission…), messages, paiements et preuves d’acceptation des CGV / confidentialité, journaux techniques (connexion, audit).
+2. DonnÃ©es traitÃ©es
+IdentitÃ© et coordonnÃ©es, formulaires de dossier, piÃ¨ces justificatives (passeport, admissionâ€¦), messages, paiements et preuves dâ€™acceptation des CGV / confidentialitÃ©, journaux techniques (connexion, audit).
 
-3. Finalités et bases légales
-- Exécution du contrat / mesures précontractuelles : ouvrir et traiter le dossier, paiement, signature, suivi.
-- Obligation légale / intérêt légitime : lutte contre la fraude, audit, conservation limitée des preuves.
-- Consentement : acceptation des documents contractuels à l’inscription.
+3. FinalitÃ©s et bases lÃ©gales
+- ExÃ©cution du contrat / mesures prÃ©contractuelles : ouvrir et traiter le dossier, paiement, signature, suivi.
+- Obligation lÃ©gale / intÃ©rÃªt lÃ©gitime : lutte contre la fraude, audit, conservation limitÃ©e des preuves.
+- Consentement : acceptation des documents contractuels Ã  lâ€™inscription.
 
 4. Destinataires
-Équipe HCGF habilitée (contrôleur, administrateur), éventuels partenaires liés au dossier, prestataires techniques (hébergement, e-mail transactionnel, e-signature, OCR) uniquement pour le service rendu. Pas de vente de données.
+Ã‰quipe HCGF habilitÃ©e (contrÃ´leur, administrateur), Ã©ventuels partenaires liÃ©s au dossier, prestataires techniques (hÃ©bergement, e-mail transactionnel, e-signature, OCR) uniquement pour le service rendu. Pas de vente de donnÃ©es.
 
-5. Durées de conservation
-- Compte actif : durée de la relation.
-- Pièces et OCR : 24 mois après clôture / abandon du dossier, puis effacement (sauf obligation légale contraire).
-- Traces d’authentification : 30 jours.
-- Acceptations contractuelles et éléments comptables : durée légale de preuve.
-- Après fermeture du compte : anonymisation de l’identité et effacement des pièces associées.
+5. DurÃ©es de conservation
+- Compte actif : durÃ©e de la relation.
+- PiÃ¨ces et OCR : 24 mois aprÃ¨s clÃ´ture / abandon du dossier, puis effacement (sauf obligation lÃ©gale contraire).
+- Traces dâ€™authentification : 30 jours.
+- Acceptations contractuelles et Ã©lÃ©ments comptables : durÃ©e lÃ©gale de preuve.
+- AprÃ¨s fermeture du compte : anonymisation de lâ€™identitÃ© et effacement des piÃ¨ces associÃ©es.
 
 6. Vos droits (RGPD)
-Accès, rectification, effacement, limitation, opposition, portabilité. Exercice depuis « Mon compte » (export JSON, fermeture avec effacement) ou par message à l’équipe. Vous pouvez introduire une réclamation auprès de la CNIL.
+AccÃ¨s, rectification, effacement, limitation, opposition, portabilitÃ©. Exercice depuis Â« Mon compte Â» (export JSON, fermeture avec effacement) ou par message Ã  lâ€™Ã©quipe. Vous pouvez introduire une rÃ©clamation auprÃ¨s de la CNIL.
 
 7. Cookies
-Cookie de session strictement nécessaire (avi_session) : authentification, httpOnly. Pas de cookies publicitaires. Un bandeau d’information rappelle ce point.
+Cookie de session strictement nÃ©cessaire (avi_session) : authentification, httpOnly. Pas de cookies publicitaires. Un bandeau dâ€™information rappelle ce point.
 
-8. Sécurité
-Accès restreint par rôle, journal d’audit, code d’accès pour le bureau, contrôle renforcé antifraude. Les fichiers sont stockés hors accès public direct.`;
+8. SÃ©curitÃ©
+AccÃ¨s restreint par rÃ´le, journal dâ€™audit, code dâ€™accÃ¨s pour le bureau, contrÃ´le renforcÃ© antifraude. Les fichiers sont stockÃ©s hors accÃ¨s public direct.`;
 
-const MENTIONS = `Mentions légales — version 2026.2
+const MENTIONS = `Mentions lÃ©gales â€” version 2026.2
 
-Éditeur : HCGF — plateforme AVI (service de dossiers étudiants).
+Ã‰diteur : HCGF â€” plateforme AVI (service de dossiers Ã©tudiants).
 Contact : page Contact de la plateforme.
-Hébergement : Vercel Inc. (application) ; base de données PostgreSQL (Neon) en production ; stockage fichiers sur l’infrastructure déployée.
+HÃ©bergement : Vercel Inc. (application) ; base de donnÃ©es PostgreSQL (Neon) en production ; stockage fichiers sur lâ€™infrastructure dÃ©ployÃ©e.
 Directeur de la publication : responsable HCGF.
-Données personnelles : voir la Politique de confidentialité.`;
+DonnÃ©es personnelles : voir la Politique de confidentialitÃ©.`;
 
 export async function assurerDocumentsContractuels() {
   const docs = [
     { type: "cgv", numeroVersion: "2026.2", contenu: CGV },
     { type: "confidentialite", numeroVersion: "2026.2", contenu: CONF },
     { type: "mentions", numeroVersion: "2026.2", contenu: MENTIONS },
-    { type: "contrat_avi", numeroVersion: "2026.1", contenu: "Contrat de prestations de services AVI — modèle officiel 2026.1" },
+    { type: "contrat_avi", numeroVersion: "2026.1", contenu: "Contrat de prestations de services AVI â€” modÃ¨le officiel 2026.1" },
   ];
   for (const doc of docs) {
     await prisma.documentContractuel.upsert({
@@ -73,7 +73,7 @@ export async function assurerDocumentsContractuels() {
       create: doc,
     });
   }
-  // Désactiver les anciennes versions pour n’afficher que 2026.2
+  // DÃ©sactiver les anciennes versions pour nâ€™afficher que 2026.2
   await prisma.documentContractuel.updateMany({
     where: { type: { in: ["cgv", "confidentialite", "mentions"] }, numeroVersion: { not: "2026.2" } },
     data: { actif: false },
@@ -116,7 +116,7 @@ export async function enregistrerAcceptations(userId: string, idDemande?: string
 
 export async function ouvrirDelegation(formData: FormData) {
   const user = await requireUser();
-  if (!user || user.typeCompte !== "candidat") return { error: "Seul le titulaire du compte peut déléguer." };
+  if (!user || user.typeCompte !== "candidat") return { error: "Seul le titulaire du compte peut dÃ©lÃ©guer." };
 
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const nom = String(formData.get("nom") ?? "").trim();
@@ -124,10 +124,10 @@ export async function ouvrirDelegation(formData: FormData) {
   const dateFin = String(formData.get("dateFin") ?? "").trim() || null;
   const idDemande = String(formData.get("demandeId") ?? "").trim() || null;
   const droits = DROITS_DELEGABLES.map(([code]) => code).filter((code) => formData.get(code) === "on");
-  if (!email || !nom || !prenom) return { error: "Identité du tiers incomplète." };
+  if (!email || !nom || !prenom) return { error: "IdentitÃ© du tiers incomplÃ¨te." };
   const emailInvalide = validerEmail(email);
   if (emailInvalide) return { error: emailInvalide };
-  if (email === user.email) return { error: "Vous ne pouvez pas vous déléguer à vous-même." };
+  if (email === user.email) return { error: "Vous ne pouvez pas vous dÃ©lÃ©guer Ã  vous-mÃªme." };
   if (droits.length === 0) return { error: "Choisissez au moins un droit." };
   if (idDemande) {
     const propre = await prisma.demande.findFirst({ where: { id: idDemande, idUtilisateur: user.id } });
@@ -162,8 +162,8 @@ export async function ouvrirDelegation(formData: FormData) {
   await notifier(
     mandataire.id,
     "delegation",
-    "Délégation reçue",
-    `${user.profil?.prenom ?? "Un candidat"} vous autorise à intervenir sur ${idDemande ? "un dossier" : "son compte"}.`,
+    "DÃ©lÃ©gation reÃ§ue",
+    `${user.profil?.prenom ?? "Un candidat"} vous autorise Ã  intervenir sur ${idDemande ? "un dossier" : "son compte"}.`,
     idDemande ?? undefined,
   );
   await ecrireAudit(user.id, "delegation_ouverte", "delegation", delegation.id, idDemande, email);
@@ -175,14 +175,14 @@ export async function revoquerDelegation(formData: FormData) {
   const user = await requireUser();
   if (!user || user.typeCompte !== "candidat") return { error: "Droit insuffisant." };
   const id = String(formData.get("delegationId") ?? "");
-  const motif = String(formData.get("motif") ?? "").trim() || "Révoquée par le titulaire";
+  const motif = String(formData.get("motif") ?? "").trim() || "RÃ©voquÃ©e par le titulaire";
   const delegation = await prisma.delegation.findFirst({ where: { id, idMandant: user.id } });
-  if (!delegation) return { error: "Délégation introuvable." };
+  if (!delegation) return { error: "DÃ©lÃ©gation introuvable." };
   await prisma.delegation.update({
     where: { id },
     data: { statut: "revoquee", motifRevocation: motif, revokedAt: new Date() },
   });
-  await notifier(delegation.idMandataire, "delegation", "Délégation révoquée", "Vous n’avez plus accès aux dossiers concernés.");
+  await notifier(delegation.idMandataire, "delegation", "DÃ©lÃ©gation rÃ©voquÃ©e", "Vous nâ€™avez plus accÃ¨s aux dossiers concernÃ©s.");
   await ecrireAudit(user.id, "delegation_revoquee", "delegation", id, delegation.idDemande, motif);
   revalidatePath("/delegations");
   return { ok: true };

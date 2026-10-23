@@ -33,7 +33,7 @@ async function creerInvite(params: {
   idPartenaire?: string;
 }) {
   const existant = await prisma.utilisateur.findUnique({ where: { email: params.email } });
-  if (existant) return { error: "Un compte existe déjà avec cet e-mail." } as const;
+  if (existant) return { error: "Un compte existe dÃ©jÃ  avec cet e-mail." } as const;
 
   const utilisateur = await prisma.utilisateur.create({
     data: {
@@ -55,24 +55,24 @@ export async function creerCollaborateur(formData: FormData) {
     return await inviterCollaborateur(formData);
   } catch (erreur) {
     console.error("creerCollaborateur", erreur);
-    return { error: "Impossible de créer le compte pour le moment. Réessayez." };
+    return { error: "Impossible de crÃ©er le compte pour le moment. RÃ©essayez." };
   }
 }
 
 async function inviterCollaborateur(formData: FormData) {
   const acteur = await reserviste();
-  if (!acteur) return { error: "Réservé à l’équipe." };
-  if (!peutInviterEquipe(acteur)) return { error: "Seul un administrateur peut inviter l’équipe." };
+  if (!acteur) return { error: "RÃ©servÃ© Ã  lâ€™Ã©quipe." };
+  if (!peutInviterEquipe(acteur)) return { error: "Seul un administrateur peut inviter lâ€™Ã©quipe." };
 
   const email = champ(formData, "email").toLowerCase();
   const nom = champ(formData, "nom");
   const prenom = champ(formData, "prenom");
   const role = normaliserRoleCollaborateur(champ(formData, "role"));
 
-  if (!email || !nom || !prenom) return { error: "Identité incomplète." };
+  if (!email || !nom || !prenom) return { error: "IdentitÃ© incomplÃ¨te." };
   const emailInvalide = validerEmail(email);
   if (emailInvalide) return { error: emailInvalide };
-  if (!ROLES_EQUIPE.has(role)) return { error: "Choisissez contrôleur ou administrateur." };
+  if (!ROLES_EQUIPE.has(role)) return { error: "Choisissez contrÃ´leur ou administrateur." };
 
   const resultat = await creerInvite({
     email,
@@ -94,13 +94,13 @@ export async function creerComptePartenaire(formData: FormData) {
     return await inviterPartenaire(formData);
   } catch (erreur) {
     console.error("creerComptePartenaire", erreur);
-    return { error: "Impossible de créer le partenaire pour le moment. Réessayez." };
+    return { error: "Impossible de crÃ©er le partenaire pour le moment. RÃ©essayez." };
   }
 }
 
 async function inviterPartenaire(formData: FormData) {
   const acteur = await reserviste();
-  if (!acteur) return { error: "Réservé à l’équipe." };
+  if (!acteur) return { error: "RÃ©servÃ© Ã  lâ€™Ã©quipe." };
 
   const organisme = champ(formData, "organisme");
   const type = champ(formData, "type");
@@ -110,15 +110,15 @@ async function inviterPartenaire(formData: FormData) {
   const taux = Number(champ(formData, "taux") || "0");
   const montantFixe = Math.round(Number(champ(formData, "montantFixe") || "0") * 100);
 
-  if (!organisme || !email || !nom || !prenom) return { error: "Identité du partenaire incomplète." };
+  if (!organisme || !email || !nom || !prenom) return { error: "IdentitÃ© du partenaire incomplÃ¨te." };
   const emailInvalide = validerEmail(email);
   if (emailInvalide) return { error: emailInvalide };
   if (!TYPES_PARTENAIRE.has(type)) return { error: "Type de partenaire invalide." };
-  if (!Number.isFinite(taux) || taux < 0 || taux > 100) return { error: "Le taux doit être entre 0 et 100." };
+  if (!Number.isFinite(taux) || taux < 0 || taux > 100) return { error: "Le taux doit Ãªtre entre 0 et 100." };
   if (!Number.isFinite(montantFixe) || montantFixe < 0) return { error: "Le montant fixe est invalide." };
 
   const existant = await prisma.utilisateur.findUnique({ where: { email } });
-  if (existant) return { error: "Un compte existe déjà avec cet e-mail." };
+  if (existant) return { error: "Un compte existe dÃ©jÃ  avec cet e-mail." };
 
   const partenaire = await prisma.partenaire.create({
     data: { nom: organisme, type, statut: "actif" },

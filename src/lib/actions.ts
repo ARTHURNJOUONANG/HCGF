@@ -41,7 +41,7 @@ export async function inscrire(formData: FormData) {
   } catch (error) {
     if (estRedirection(error)) throw error;
     console.error("inscription", error);
-    return { error: "Impossible de créer le compte pour le moment. Réessayez dans une minute." };
+    return { error: "Impossible de crÃ©er le compte pour le moment. RÃ©essayez dans une minute." };
   }
 }
 
@@ -65,32 +65,32 @@ async function inscrireCompte(formData: FormData) {
   const telephone = formString(formData, "telephone");
 
   if (!email || !password || !nom || !prenom) {
-    return { error: "Tous les champs obligatoires doivent être renseignés." };
+    return { error: "Tous les champs obligatoires doivent Ãªtre renseignÃ©s." };
   }
   const emailInvalide = validerEmail(email);
   if (emailInvalide) return { error: emailInvalide };
   const motDePasseInvalide = validerMotDePasse(password);
   if (motDePasseInvalide) return { error: motDePasseInvalide };
   if (formData.get("acceptCgv") !== "on") {
-    return { error: "L’acceptation des CGV et de la confidentialité est obligatoire." };
+    return { error: "Lâ€™acceptation des CGV et de la confidentialitÃ© est obligatoire." };
   }
 
   const exists = await prisma.utilisateur.findUnique({ where: { email } });
-  if (exists) return { error: "Un compte existe déjà avec cet e-mail." };
+  if (exists) return { error: "Un compte existe dÃ©jÃ  avec cet e-mail." };
 
   const espace = espaceParId(formString(formData, "role"));
   if (espace.typeCompte === "collaborateur") {
-    return { error: "Un contrôleur ou un administrateur s’invite depuis le bureau." };
+    return { error: "Un contrÃ´leur ou un administrateur sâ€™invite depuis le bureau." };
   }
   if (roleExigeCode(espace.id)) {
     const codeOk = await verifierCodeAccesRoles(formString(formData, "codeAcces"));
-    if (!codeOk) return { error: "Code d’accès invalide." };
+    if (!codeOk) return { error: "Code dâ€™accÃ¨s invalide." };
   }
   let idPartenaire: string | undefined;
   if (espace.typeCompte === "partenaire") {
     const organisme = formString(formData, "organisme");
     const typePartenaire = formString(formData, "typePartenaire") || "agence";
-    if (!organisme) return { error: "Indiquez le nom de l’organisme." };
+    if (!organisme) return { error: "Indiquez le nom de lâ€™organisme." };
     const partenaire = await prisma.partenaire.create({
       data: { nom: organisme, type: typePartenaire, statut: "actif" },
     });
@@ -147,7 +147,7 @@ export async function connecter(identifiants: {
   } catch (error) {
     if (estRedirection(error)) throw error;
     console.error("connexion", error);
-    return { error: "Connexion indisponible pour le moment. Réessayez dans une minute." };
+    return { error: "Connexion indisponible pour le moment. RÃ©essayez dans une minute." };
   }
 }
 
@@ -159,7 +159,7 @@ async function connecterCompte(identifiants: {
   acceptConfidentialite?: boolean;
 }) {
   if (!identifiants.acceptConfidentialite) {
-    return { error: "Acceptez la politique de confidentialité pour continuer." };
+    return { error: "Acceptez la politique de confidentialitÃ© pour continuer." };
   }
 
   const quota = await limiterAction("connexion", 25);
@@ -175,7 +175,7 @@ async function connecterCompte(identifiants: {
   if (resultat.user.typeCompte === "collaborateur") {
     const codeOk = await verifierCodeAccesRoles(identifiants.codeAcces);
     if (!codeOk) {
-      return { error: "Le code d’accès n’est pas reconnu. Recopiez-le depuis le champ sous le mot de passe." };
+      return { error: "Le code dâ€™accÃ¨s nâ€™est pas reconnu. Recopiez-le depuis le champ sous le mot de passe." };
     }
   }
 
@@ -273,11 +273,11 @@ export async function creerDemande(formData: FormData) {
 
 export async function sauvegarderReponses(demandeId: string, valeurs: Record<string, string>) {
   const user = await requireUser();
-  if (!user) return { error: "Session expirée." };
+  if (!user) return { error: "Session expirÃ©e." };
 
   const { aLeDroit, droitsSurDemande } = await import("./delegation");
   const droits = await droitsSurDemande(user.id, user.typeCompte, demandeId);
-  if (!aLeDroit(droits, "repondre")) return { error: "Ce droit n’est pas délégué." };
+  if (!aLeDroit(droits, "repondre")) return { error: "Ce droit nâ€™est pas dÃ©lÃ©guÃ©." };
 
   const demande = await prisma.demande.findFirst({
     where: { id: demandeId },
@@ -288,7 +288,7 @@ export async function sauvegarderReponses(demandeId: string, valeurs: Record<str
   });
   if (!demande?.offre.formulaire) return { error: "Demande introuvable." };
   if (demande.statut === "cloturee" || demande.statut === "abandonnee" || demande.statut === "annulee") {
-    return { error: "Un dossier clôturé ne peut plus être modifié." };
+    return { error: "Un dossier clÃ´turÃ© ne peut plus Ãªtre modifiÃ©." };
   }
 
   const champs = demande.offre.formulaire.champs;

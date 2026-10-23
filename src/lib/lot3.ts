@@ -125,18 +125,18 @@ async function emettreRecu(opts: {
   h1{font-weight:600;letter-spacing:-.03em} .meta{color:#5b7391;font-size:13px}
   table{width:100%;border-collapse:collapse;margin-top:24px} th,td{padding:10px 0;border-top:1px solid #d7e4f7;text-align:left}
   .ok{color:#0f7a4a}</style></head><body>
-  <p>AVI — Pièce comptable</p>
-  <h1>Reçu ${numero}</h1>
-  <p class="meta">${opts.reference} · ${opts.service} · ${opts.pays}</p>
-  <p>Payé par ${opts.candidat}</p>
+  <p>AVI â€” PiÃ¨ce comptable</p>
+  <h1>ReÃ§u ${numero}</h1>
+  <p class="meta">${opts.reference} Â· ${opts.service} Â· ${opts.pays}</p>
+  <p>PayÃ© par ${opts.candidat}</p>
   <table>
     <tr><th>Montant</th><td>${euros(opts.montant)}</td></tr>
     <tr><th>Moyen</th><td>${opts.moyen}</td></tr>
     <tr><th>Transaction</th><td>${opts.transaction}</td></tr>
     <tr><th>Date</th><td>${new Date().toLocaleString("fr-FR")}</td></tr>
-    <tr><th>Statut</th><td class="ok">Encaissé</td></tr>
+    <tr><th>Statut</th><td class="ok">EncaissÃ©</td></tr>
   </table>
-  <p class="meta">Ce reçu est lié uniquement à ce dossier. Un changement de barème ne le modifie pas.</p>
+  <p class="meta">Ce reÃ§u est liÃ© uniquement Ã  ce dossier. Un changement de barÃ¨me ne le modifie pas.</p>
   </body></html>`;
 
   const filename = `${opts.reference}-${numero}.html`;
@@ -149,7 +149,7 @@ async function emettreRecu(opts: {
       type: "recu",
       montant: opts.montant,
       storagePath: filename,
-      nom: `Reçu ${numero}`,
+      nom: `ReÃ§u ${numero}`,
     },
   });
 }
@@ -220,7 +220,7 @@ async function enregistrerEncaissement(opts: {
     if (opts.cleIdempotence) {
       return { ok: true as const, statutFonds: espace.statutFonds, deja: true as const };
     }
-    throw new Error("Opération financière déjà enregistrée.");
+    throw new Error("OpÃ©ration financiÃ¨re dÃ©jÃ  enregistrÃ©e.");
   }
 
   await prisma.espaceFinancier.update({
@@ -272,8 +272,8 @@ async function finaliserEncaissement(opts: {
   await notifier(
     demande.idUtilisateur,
     "paiement",
-    opts.statutFonds === "fonds_recus" ? "Paiement reçu" : "Paiement partiel",
-    `${euros(opts.montant)} encaissés sur ${demande.reference}.`,
+    opts.statutFonds === "fonds_recus" ? "Paiement reÃ§u" : "Paiement partiel",
+    `${euros(opts.montant)} encaissÃ©s sur ${demande.reference}.`,
     demande.id,
   );
 
@@ -292,7 +292,7 @@ async function finaliserEncaissement(opts: {
 
 export async function payerParMoyen(formData: FormData) {
   const user = await acteur();
-  if (!user) return { error: "Session expirée." };
+  if (!user) return { error: "Session expirÃ©e." };
 
   const demandeId = String(formData.get("demandeId") ?? "");
   const moyen = String(formData.get("moyen") ?? "");
@@ -300,7 +300,7 @@ export async function payerParMoyen(formData: FormData) {
 
   const { aLeDroit, droitsSurDemande } = await import("./delegation");
   const droits = await droitsSurDemande(user.id, user.typeCompte, demandeId);
-  if (!aLeDroit(droits, "payer")) return { error: "Le paiement n’est pas délégué." };
+  if (!aLeDroit(droits, "payer")) return { error: "Le paiement nâ€™est pas dÃ©lÃ©guÃ©." };
   const demande = await prisma.demande.findFirst({
     where: { id: demandeId },
     include: { utilisateur: true },
@@ -309,17 +309,17 @@ export async function payerParMoyen(formData: FormData) {
 
   const espace = await assurerEspaceFinancier(demande.id);
   if (!espace) return { error: "Tarif introuvable." };
-  if (espace.statutFonds === "fonds_recus") return { error: "Ce dossier est déjà soldé." };
+  if (espace.statutFonds === "fonds_recus") return { error: "Ce dossier est dÃ©jÃ  soldÃ©." };
 
   const telephone = String(formData.get("telephone") ?? "").replace(/\D+/g, "");
   if ((moyen === "orange_money" || moyen === "mtn_money") && telephone.length < 8) {
-    return { error: "Indiquez le numéro du compte mobile money." };
+    return { error: "Indiquez le numÃ©ro du compte mobile money." };
   }
 
   const restant = espace.montantAttendu - espace.montantRecu;
   const cle = clePaiementMoyen(moyen, demande.id, restant);
   const existante = await prisma.operationFinanciere.findUnique({ where: { cleIdempotence: cle } });
-  if (existante?.statut === "reussi") return { error: "Ce dossier est déjà soldé." };
+  if (existante?.statut === "reussi") return { error: "Ce dossier est dÃ©jÃ  soldÃ©." };
 
   await prisma.operationFinanciere.updateMany({
     where: { idEspace: espace.idDemande, type: "virement", statut: "en_attente" },
@@ -372,7 +372,7 @@ export async function payerParMoyen(formData: FormData) {
     montant: restant,
     reference: demande.reference,
     transaction: sessionOp.data.id,
-    moyen: telephone ? `${LIBELLES_MOYEN[moyen]} · ${telephone.slice(-4)}` : LIBELLES_MOYEN[moyen],
+    moyen: telephone ? `${LIBELLES_MOYEN[moyen]} Â· ${telephone.slice(-4)}` : LIBELLES_MOYEN[moyen],
     cleIdempotence: cle,
   });
   if ("error" in result) return result;
@@ -412,15 +412,15 @@ export async function confirmerPaiementExterne(opts: {
 
 export async function declarerVirement(formData: FormData) {
   const user = await acteur();
-  if (!user) return { error: "Session expirée." };
+  if (!user) return { error: "Session expirÃ©e." };
 
   const demandeId = String(formData.get("demandeId") ?? "");
   const reference = String(formData.get("reference") ?? "").trim();
-  if (reference.length < 4) return { error: "Indiquez la référence du virement." };
+  if (reference.length < 4) return { error: "Indiquez la rÃ©fÃ©rence du virement." };
 
   const { aLeDroit, droitsSurDemande } = await import("./delegation");
   const droitsPaye = await droitsSurDemande(user.id, user.typeCompte, demandeId);
-  if (!aLeDroit(droitsPaye, "payer")) return { error: "Le paiement n’est pas délégué." };
+  if (!aLeDroit(droitsPaye, "payer")) return { error: "Le paiement nâ€™est pas dÃ©lÃ©guÃ©." };
   const demande = await prisma.demande.findFirst({
     where: { id: demandeId },
     include: { offre: true },
@@ -429,10 +429,10 @@ export async function declarerVirement(formData: FormData) {
 
   const espace = await assurerEspaceFinancier(demande.id);
   if (!espace) return { error: "Tarif introuvable." };
-  if (espace.statutFonds === "fonds_recus") return { error: "Ce dossier est déjà soldé." };
+  if (espace.statutFonds === "fonds_recus") return { error: "Ce dossier est dÃ©jÃ  soldÃ©." };
 
   const deja = espace.operations.some((o) => o.type === "virement" && o.statut === "en_attente");
-  if (deja) return { error: "Un virement est déjà en attente de rapprochement." };
+  if (deja) return { error: "Un virement est dÃ©jÃ  en attente de rapprochement." };
 
   await prisma.operationFinanciere.create({
     data: {
@@ -476,8 +476,8 @@ export async function declarerVirement(formData: FormData) {
     await notifier(
       conseiller.id,
       "virement",
-      `Virement à rapprocher · ${demande.reference}`,
-      `Référence déclarée : ${reference}`,
+      `Virement Ã  rapprocher Â· ${demande.reference}`,
+      `RÃ©fÃ©rence dÃ©clarÃ©e : ${reference}`,
       demande.id,
     );
   }
@@ -498,7 +498,7 @@ export async function rapprocherVirement(formData: FormData) {
     where: { id: operationId },
     include: { espace: { include: { demande: { include: { offre: { include: { pays: true, service: true } }, utilisateur: { include: { profil: true } } } } } } },
   });
-  if (!operation || operation.statut !== "en_attente") return { error: "Opération introuvable." };
+  if (!operation || operation.statut !== "en_attente") return { error: "OpÃ©ration introuvable." };
 
   const espace = operation.espace;
   if (espace.statutFonds === "fonds_recus") {
@@ -561,12 +561,12 @@ export async function rapprocherVirement(formData: FormData) {
 
 export async function demanderRemboursement(formData: FormData) {
   const user = await acteur();
-  if (!user) return { error: "Session expirée." };
+  if (!user) return { error: "Session expirÃ©e." };
 
   const demandeId = String(formData.get("demandeId") ?? "");
   const motif = String(formData.get("motif") ?? "").trim();
   const iban = String(formData.get("iban") ?? "").trim();
-  if (motif.length < 8) return { error: "Précisez le motif (8 caractères minimum)." };
+  if (motif.length < 8) return { error: "PrÃ©cisez le motif (8 caractÃ¨res minimum)." };
   const ibanInvalide = validerIban(iban);
   if (ibanInvalide) return { error: ibanInvalide };
 
@@ -576,12 +576,12 @@ export async function demanderRemboursement(formData: FormData) {
   if (!demande) return { error: "Dossier introuvable." };
 
   const espace = await assurerEspaceFinancier(demande.id);
-  if (!espace || espace.montantRecu <= 0) return { error: "Aucun encaissement à rembourser." };
+  if (!espace || espace.montantRecu <= 0) return { error: "Aucun encaissement Ã  rembourser." };
 
   const ouvert = await prisma.demandeRemboursement.findFirst({
     where: { idDemande: demande.id, statut: { notIn: ["remboursee", "refusee"] } },
   });
-  if (ouvert) return { error: "Une demande de remboursement est déjà en cours." };
+  if (ouvert) return { error: "Une demande de remboursement est dÃ©jÃ  en cours." };
 
   const dossier = await prisma.demandeRemboursement.create({
     data: { idDemande: demande.id, motif, coordonnees: iban, statut: "recue" },
@@ -594,7 +594,7 @@ export async function demanderRemboursement(formData: FormData) {
   await ecrireAudit(user.id, "remboursement_demande", "remboursement", dossier.id, demande.id, motif);
   const conseiller = await prisma.utilisateur.findFirst({ where: { typeCompte: "collaborateur" } });
   if (conseiller) {
-    await notifier(conseiller.id, "remboursement", `Remboursement · ${demande.reference}`, motif, demande.id);
+    await notifier(conseiller.id, "remboursement", `Remboursement Â· ${demande.reference}`, motif, demande.id);
   }
 
   revalidatePath(`/demandes/${demande.id}`);
@@ -623,7 +623,7 @@ export async function traiterRemboursement(formData: FormData) {
   const suivant = suite[action];
   if (!suivant) return { error: "Action inconnue." };
   if (action === "payer" && !estAdministrateur(user.role)) {
-    return { error: "Seul un administrateur peut marquer un remboursement comme payé." };
+    return { error: "Seul un administrateur peut marquer un remboursement comme payÃ©." };
   }
 
   await prisma.demandeRemboursement.update({ where: { id }, data: { statut: suivant } });
@@ -654,7 +654,7 @@ export async function traiterRemboursement(formData: FormData) {
     dossier.demande.idUtilisateur,
     "remboursement",
     `Remboursement : ${libelleRemboursement(suivant)}`,
-    `Votre demande sur le dossier a le statut « ${libelleRemboursement(suivant)} ».`,
+    `Votre demande sur le dossier a le statut Â« ${libelleRemboursement(suivant)} Â».`,
     dossier.idDemande,
   );
 

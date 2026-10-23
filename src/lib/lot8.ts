@@ -111,7 +111,7 @@ export async function traiterRelancesDues(idAssignee?: string) {
         titre,
         corps,
         idDemande: demande.id,
-        sujet: `${titre} — ${demande.reference}`,
+        sujet: `${titre} â€” ${demande.reference}`,
         texte,
       });
       if (envoi.mode === "journal") journal += 1;
@@ -136,7 +136,7 @@ export async function traiterRelancesDues(idAssignee?: string) {
           titre,
           corps: `Dossier ${demande.reference} incomplet.`,
           idDemande: demande.id,
-          sujet: `${titre} — ${demande.reference}`,
+          sujet: `${titre} â€” ${demande.reference}`,
           texte,
         });
       }
@@ -153,7 +153,7 @@ export async function traiterRelancesDues(idAssignee?: string) {
         await prisma.tacheInterne.create({
           data: {
             idDemande: demande.id,
-            action: `Relancer le candidat — dossier incomplet depuis ${regle.delaiJours} jours`,
+            action: `Relancer le candidat â€” dossier incomplet depuis ${regle.delaiJours} jours`,
             priorite: demande.priorite,
             idAssignee: assignee,
             dateEcheance: maintenant,
@@ -196,14 +196,14 @@ export async function traiterEcheancesDues() {
   let alertes = 0;
 
   for (const echeance of dues) {
-    const titre = `Échéance SLA dépassée · ${echeance.demande.reference}`;
-    const corps = `Le délai de réponse du dossier ${echeance.demande.reference} est dépassé.`;
+    const titre = `Ã‰chÃ©ance SLA dÃ©passÃ©e Â· ${echeance.demande.reference}`;
+    const corps = `Le dÃ©lai de rÃ©ponse du dossier ${echeance.demande.reference} est dÃ©passÃ©.`;
     if (conseiller) {
       await notifier(conseiller.id, "sla", titre, corps, echeance.idDemande);
       await prisma.tacheInterne.create({
         data: {
           idDemande: echeance.idDemande,
-          action: `Relancer le dossier — échéance ${echeance.type} dépassée`,
+          action: `Relancer le dossier â€” Ã©chÃ©ance ${echeance.type} dÃ©passÃ©e`,
           priorite: echeance.demande.priorite === "urgent" ? "urgent" : "haute",
           idAssignee: conseiller.id,
           dateEcheance: new Date(),
@@ -232,7 +232,7 @@ export async function executerRelances() {
 
 export async function ouvrirReclamation(formData: FormData) {
   const user = await requireUser();
-  if (!user) return { error: "Session expirée." };
+  if (!user) return { error: "Session expirÃ©e." };
   const demandeId = String(formData.get("demandeId") ?? "");
   const categorie = String(formData.get("categorie") ?? "autre");
   const objet = String(formData.get("objet") ?? "").trim();
@@ -260,7 +260,7 @@ export async function ouvrirReclamation(formData: FormData) {
   });
   const conseiller = await prisma.utilisateur.findFirst({ where: { typeCompte: "collaborateur" } });
   if (conseiller) {
-    await notifier(conseiller.id, "reclamation", `Réclamation ${numero}`, objet, demandeId);
+    await notifier(conseiller.id, "reclamation", `RÃ©clamation ${numero}`, objet, demandeId);
   }
   await ecrireAudit(user.id, "reclamation_ouverte", "reclamation", reclamation.id, demandeId, numero);
   revalidatePath(`/demandes/${demandeId}`);
@@ -270,14 +270,14 @@ export async function ouvrirReclamation(formData: FormData) {
 
 export async function ecrireMessageSav(formData: FormData) {
   const user = await requireUser();
-  if (!user) return { error: "Session expirée." };
+  if (!user) return { error: "Session expirÃ©e." };
   const id = String(formData.get("reclamationId") ?? "");
   const contenu = String(formData.get("contenu") ?? "").trim();
   if (!contenu) return { error: "Message vide." };
   const tropLong = validerLongueur(contenu, 4000, "Le message");
   if (tropLong) return { error: tropLong };
   const rec = await prisma.reclamation.findUnique({ where: { id } });
-  if (!rec) return { error: "Réclamation introuvable." };
+  if (!rec) return { error: "RÃ©clamation introuvable." };
   const droits = await droitsSurDemande(user.id, user.typeCompte, rec.idDemande);
   if (user.typeCompte !== "collaborateur" && !aLeDroit(droits, "repondre") && !aLeDroit(droits, "consulter")) {
     return { error: "Droit insuffisant." };
@@ -297,7 +297,7 @@ export async function changerStatutReclamation(formData: FormData) {
     where: { id },
     data: { statut, idResponsable: user.id },
   });
-  await notifier(rec.idAuteur, "reclamation", `Réclamation ${rec.numero}`, `Statut : ${statut}`, rec.idDemande);
+  await notifier(rec.idAuteur, "reclamation", `RÃ©clamation ${rec.numero}`, `Statut : ${statut}`, rec.idDemande);
   await ecrireAudit(user.id, "reclamation_statut", "reclamation", rec.id, rec.idDemande, statut);
   revalidatePath("/bureau/exploitation");
   return { ok: true };
