@@ -7,6 +7,7 @@ import { Mark } from "./Surface";
 const NAV = [
   { href: "/", label: "Accueil" },
   { href: "/services", label: "Services" },
+  { href: "/#destinations", label: "Pays" },
   { href: "/#avi", label: "Souscription AVI" },
   { href: "/contact", label: "Contact" },
 ];

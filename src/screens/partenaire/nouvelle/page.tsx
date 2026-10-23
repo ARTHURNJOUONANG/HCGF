@@ -4,12 +4,14 @@ import { InitierDossierForm } from "@/components/Lot5";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { unreadCount } from "@/lib/shell";
+import { assurerPaysOuverts } from "@/lib/ouvrir-catalogue";
 export default async function PartenaireNouvellePage() {
   const session = await getSession();
   if (!session) redirect("/connexion");
   if (session.typeCompte !== "partenaire") redirect("/tableau-de-bord");
   const unread = await unreadCount(session);
 
+  await assurerPaysOuverts();
   const [pays, services, offres] = await Promise.all([
     prisma.pays.findMany({ where: { actif: true }, orderBy: { libelle: "asc" } }),
     prisma.service.findMany({ where: { actif: true } }),

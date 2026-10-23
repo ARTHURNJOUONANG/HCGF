@@ -3,6 +3,7 @@ import { AppHeader, PageIntro } from "@/components/Chrome";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NouvelleDemandeForm } from "./ui";
+import { assurerPaysOuverts } from "@/lib/ouvrir-catalogue";
 
 export default async function NouvelleDemandePage() {
   const session = await getSession();
@@ -11,6 +12,7 @@ export default async function NouvelleDemandePage() {
   if (session.typeCompte === "collaborateur") redirect("/bureau");
   if (session.typeCompte === "delegataire") redirect("/delegue");
 
+  await assurerPaysOuverts();
   const [pays, services, offres] = await Promise.all([
     prisma.pays.findMany({ where: { actif: true }, orderBy: { libelle: "asc" } }),
     prisma.service.findMany({ where: { actif: true } }),

@@ -527,6 +527,53 @@ a.vitrine-cta:hover {
   margin-top: 28px;
 }
 
+.vz-destinations {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: 36rem;
+}
+
+.vz-destinations li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 15px;
+}
+
+.vz-destinations li.is-new {
+  background: rgba(247, 144, 30, 0.92);
+  color: #041830;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.vz-destinations li span {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.vz-destinations-page {
+  margin-top: 32px;
+}
+
+@media (min-width: 720px) {
+  .vz-destinations {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    max-width: none;
+  }
+}
+
 .vz-promises {
   display: grid;
   gap: 14px;

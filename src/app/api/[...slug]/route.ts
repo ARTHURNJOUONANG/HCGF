@@ -14,6 +14,7 @@ import { assurerCatalogueAssurance } from "@/lib/catalogues";
 import { rechercherOffresVol, modeVol } from "@/lib/duffel";
 import { etatServices } from "@/lib/sante";
 import { assurerFournisseurs } from "@/lib/fournisseurs";
+import { assurerPaysOuverts } from "@/lib/ouvrir-catalogue";
 import { statutPartenaire } from "@/lib/partenaire";
 import { analyserDossier, iaPeut } from "@/lib/ia-metier";
 import { exporterDonnees } from "@/lib/rgpd";
@@ -54,6 +55,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     try {
       await prisma.$queryRaw`SELECT 1`;
       await assurerFournisseurs();
+      await assurerPaysOuverts();
       return NextResponse.json({ ok: true, ...etatServices() });
     } catch (erreur) {
       return NextResponse.json({ ok: false, error: erreur instanceof Error ? erreur.message : "base" }, { status: 503 });
@@ -61,6 +63,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   }
 
   if (p === "catalogue") {
+    await assurerPaysOuverts();
     const url = new URL(request.url);
     const service = url.searchParams.get("service");
     const pays = url.searchParams.get("pays");

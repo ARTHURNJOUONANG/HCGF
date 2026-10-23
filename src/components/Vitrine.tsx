@@ -12,7 +12,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { Mark } from "./Surface";
-import { PaysListe } from "./Pays";
+import { Drapeau, PaysListe, PAYS_OUVERTS } from "./Pays";
 import { SiteHeader } from "./SiteHeader";
 import { RevealOnScroll, VitrineStage } from "./VitrineStage";
 import { VitrineWorld } from "./VitrineWorld";
@@ -22,6 +22,7 @@ import { coordonneesPubliques } from "@/lib/coordonnees";
 const NAV = [
   { href: "/", label: "Accueil" },
   { href: "/services", label: "Services" },
+  { href: "/#destinations", label: "Pays" },
   { href: "/#avi", label: "Souscription AVI" },
   { href: "/contact", label: "Contact" },
 ];
@@ -292,6 +293,38 @@ export function LandingHome() {
           </div>
         </section>
 
+        <section className="vz-chapter" id="destinations" data-rail="Pays">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="vz-chapter-photo" src={SCENES.ETUDE.src} alt="Destinations d’études internationales" />
+          <div className="vz-chapter-veil" />
+          <div className="vz-chapter-copy">
+            <p className="vz-kicker is-light">Destinations ouvertes</p>
+            <h2>France, Allemagne, Belgique, Italie, Canada</h2>
+            <p className="vz-lead is-light">
+              Chaque pays a son formulaire, ses pièces et son modèle AVI. L’Italie est ouverte : attestation de fonds
+              bloqués, avec ou sans garant.
+            </p>
+            <ul className="vz-destinations">
+              {PAYS_OUVERTS.map((p) => (
+                <li key={p.code} className={p.code === "IT" ? "is-new" : undefined}>
+                  <Drapeau code={p.code} size="lg" />
+                  <strong>{p.libelle}</strong>
+                  {p.code === "IT" ? <span>Nouveau</span> : null}
+                </li>
+              ))}
+            </ul>
+            <div className="vz-actions">
+              <a href="#avi" className="btn btn-orange">
+                Voir l’AVI
+                <ArrowRight size={16} />
+              </a>
+              <Link href="/inscription" className="btn btn-ghost-on-blue">
+                Ouvrir un dossier Italie
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {DOSSIERS.map((item, index) => {
           const Icon = item.icon;
           const next = DOSSIERS[index + 1];
@@ -381,8 +414,17 @@ export function ServicesHome() {
               </h1>
               <p className="vz-lead is-light">
                 Garantie, courtage, paiement, administratif, financier, logistique, hébergement, assurance et vol —
-                chaque demande reste isolée.
+                chaque demande reste isolée. Destinations : France, Allemagne, Belgique, Italie et Canada.
               </p>
+              <ul className="vz-destinations vz-destinations-page">
+                {PAYS_OUVERTS.map((p) => (
+                  <li key={p.code} className={p.code === "IT" ? "is-new" : undefined}>
+                    <Drapeau code={p.code} size="lg" />
+                    <strong>{p.libelle}</strong>
+                    {p.code === "IT" ? <span>Nouveau</span> : null}
+                  </li>
+                ))}
+              </ul>
             </div>
           </section>
           <section className="vz-catalog">
