@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: process.cwd(),
   },
+  async rewrites() {
+    return [
+      { source: "/api/fichiers/:id", destination: "/api/dl/fichiers/:id" },
+      { source: "/api/pieces-comptables/:id", destination: "/api/dl/pieces-comptables/:id" },
+      { source: "/api/police/:id", destination: "/api/dl/police/:id" },
+      { source: "/api/justificatif-vol/:id", destination: "/api/dl/justificatif-vol/:id" },
+    ];
+  },
   async headers() {
     return [
       {
