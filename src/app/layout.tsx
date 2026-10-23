@@ -22,6 +22,7 @@ export const metadata: Metadata = {
   description:
     "AVI, assurance, hébergement et vol pour les étudiants internationaux. Un espace, tous vos dossiers.",
   applicationName: "HCGF",
+  manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
