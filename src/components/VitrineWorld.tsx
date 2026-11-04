@@ -122,8 +122,8 @@ export function VitrineWorld({
       const ring = new THREE.Mesh(
         new THREE.TorusGeometry(1.62, 0.028, 10, 80),
         new THREE.MeshStandardMaterial({
-          color: 0xf7901e,
-          emissive: 0xf7901e,
+          color: 0xe30613,
+          emissive: 0xe30613,
           emissiveIntensity: 0.35,
           roughness: 0.4,
           metalness: 0.45,
@@ -201,10 +201,10 @@ export function VitrineWorld({
         roughness: 0.36,
       });
       const brass = new THREE.MeshStandardMaterial({
-        color: 0xf7901e,
+        color: 0xe30613,
         metalness: 0.55,
         roughness: 0.32,
-        emissive: 0xf7901e,
+        emissive: 0xe30613,
         emissiveIntensity: 0.18,
       });
       const colGeo = new THREE.BoxGeometry(0.18, 3.5, 0.22);

@@ -11,7 +11,7 @@ function earthTexture(THREE: typeof import("three")) {
   const sky = ctx.createLinearGradient(0, 0, 0, 1024);
   sky.addColorStop(0, "#082a62");
   sky.addColorStop(0.5, "#1a6fd4");
-  sky.addColorStop(1, "#041830");
+  sky.addColorStop(1, "#002654");
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, 2048, 1024);
 
@@ -113,8 +113,8 @@ export function VitrineGlobe({ active = 0 }: { active?: number }) {
       const ring = new THREE.Mesh(
         new THREE.TorusGeometry(1.68, 0.048, 16, 96),
         new THREE.MeshStandardMaterial({
-          color: 0xf7901e,
-          emissive: 0xf7901e,
+          color: 0xe30613,
+          emissive: 0xe30613,
           emissiveIntensity: 1.1,
           roughness: 0.25,
           metalness: 0.45,
@@ -151,7 +151,7 @@ export function VitrineGlobe({ active = 0 }: { active?: number }) {
       const fill = new THREE.DirectionalLight(0x1a6fd4, 1.2);
       fill.position.set(4, -1, 2);
       scene.add(fill);
-      const rim = new THREE.PointLight(0xf7901e, 32, 16);
+      const rim = new THREE.PointLight(0xe30613, 32, 16);
       rim.position.set(2.2, 0.6, 2.4);
       scene.add(rim);
 

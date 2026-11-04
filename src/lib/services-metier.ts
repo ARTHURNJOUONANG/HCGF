@@ -218,7 +218,7 @@ export async function emettreAttestationAssurance(formData: FormData) {
   const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Attestation ${demande.reference}</title>
   <style>
     body{font-family:Georgia,serif;max-width:720px;margin:40px auto;padding:0 24px;color:#0d1b2e;line-height:1.5}
-    .brand{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#1a6fd4}
+    .brand{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#0055a4}
     h1{font-size:28px;letter-spacing:-.02em;margin:8px 0 24px}
     .meta{color:#5b6472;font-size:14px;margin:4px 0}
     table{width:100%;border-collapse:collapse;margin:24px 0}

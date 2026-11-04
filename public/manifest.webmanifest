@@ -9,8 +9,8 @@
   "orientation": "any",
   "lang": "fr",
   "dir": "ltr",
-  "background_color": "#f4f7fc",
-  "theme_color": "#06203f",
+  "background_color": "#ffffff",
+  "theme_color": "#0055a4",
   "categories": ["finance", "education", "business"],
   "icons": [
     { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },

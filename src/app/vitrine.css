@@ -18,18 +18,20 @@
 }
 
 .vitrine {
-  --vz-navy: #041830;
-  --vz-blue: #1a6fd4;
-  --vz-blue-deep: #0a3d8c;
-  --vz-orange: #f7901e;
-  --vz-orange-hot: #ff9a2e;
+  --vz-navy: #002654;
+  --vz-blue: #0055a4;
+  --vz-blue-deep: #002654;
+  --vz-orange: #e30613;
+  --vz-orange-hot: #c10a14;
+  --vz-red: #e30613;
+  --vz-white: #ffffff;
   isolation: isolate;
-  color: #e8eef8;
-  background: var(--vz-navy);
+  color: #002654;
+  background: var(--vz-white);
 }
 
 html:has(.vitrine) {
-  background: #041830;
+  background: #ffffff;
 }
 
 body:has(.vitrine) .ambient {
@@ -52,8 +54,8 @@ body:has(.vz-stage-wrap) {
   right: 0;
   left: 0;
   z-index: 50;
-  background: rgba(4, 24, 48, 0.92);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 3px solid #e30613;
   backdrop-filter: blur(16px);
 }
 
@@ -72,7 +74,7 @@ body:has(.vz-stage-wrap) {
 
 .vitrine-header.is-open {
   z-index: 80;
-  background: #041830;
+  background: #ffffff;
 }
 
 .vitrine-burger {
@@ -82,7 +84,7 @@ body:has(.vz-stage-wrap) {
   height: 44px;
   padding: 0;
   place-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 38, 84, 0.2);
   border-radius: 2px;
   background: transparent;
   cursor: pointer;
@@ -94,7 +96,7 @@ body:has(.vz-stage-wrap) {
   width: 16px;
   height: 2px;
   border-radius: 99px;
-  background: #fff;
+  background: #002654;
   transition: transform 0.28s ease, opacity 0.2s ease;
 }
 
@@ -122,12 +124,12 @@ body:has(.vz-stage-wrap) {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(232, 238, 248, 0.72);
+  color: #002654;
 }
 
 .vitrine-menu a:hover,
 .vitrine-menu a.is-on {
-  color: #fff;
+  color: #e30613;
 }
 
 a.vitrine-cta {
@@ -138,13 +140,13 @@ a.vitrine-cta {
   letter-spacing: 0.01em;
   text-transform: none;
   white-space: nowrap;
-  color: #041830 !important;
-  background: #f7901e !important;
+  color: #ffffff !important;
+  background: #e30613 !important;
 }
 
 a.vitrine-cta:hover {
-  background: #ff9a2e !important;
-  color: #041830 !important;
+  background: #c10a14 !important;
+  color: #ffffff !important;
 }
 
 @media (min-width: 768px) {
@@ -165,9 +167,9 @@ a.vitrine-cta:hover {
     right: 16px;
     display: grid;
     padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(0, 38, 84, 0.12);
     border-radius: 4px;
-    background: #06203f;
+    background: #ffffff;
   }
 }
 
@@ -175,7 +177,7 @@ a.vitrine-cta:hover {
   position: relative;
   height: 100svh;
   overflow: hidden;
-  background: #041830;
+  background: #002654;
   perspective: 1600px;
 }
 
@@ -202,12 +204,12 @@ a.vitrine-cta:hover {
 }
 
 .vz-journey .vz-chapter-veil {
-  background: linear-gradient(90deg, rgba(4, 24, 48, 0.88) 0%, rgba(4, 24, 48, 0.42) 38%, rgba(4, 24, 48, 0.08) 72%);
+  background: linear-gradient(90deg, rgba(0, 38, 84, 0.88) 0%, rgba(0, 38, 84, 0.42) 38%, rgba(0, 38, 84, 0.08) 72%);
   pointer-events: none;
 }
 
 .vz-journey .vz-chapter.is-enter .vz-chapter-veil {
-  background: linear-gradient(90deg, rgba(4, 24, 48, 0.9) 0%, rgba(4, 24, 48, 0.35) 48%, rgba(4, 24, 48, 0.12) 100%);
+  background: linear-gradient(90deg, rgba(0, 38, 84, 0.9) 0%, rgba(0, 38, 84, 0.35) 48%, rgba(0, 38, 84, 0.12) 100%);
 }
 
 .vz-chapter.is-intro {
@@ -239,7 +241,7 @@ a.vitrine-cta:hover {
   display: grid;
   place-content: center;
   gap: 6px;
-  background: #041830;
+  background: #002654;
   color: rgba(232, 238, 248, 0.7);
   text-align: center;
   letter-spacing: 0.18em;
@@ -262,7 +264,7 @@ a.vitrine-cta:hover {
   height: 52px;
   margin: 14px auto 0;
   border: 3px solid rgba(26, 111, 212, 0.28);
-  border-top-color: #f7901e;
+  border-top-color: #e30613;
   border-radius: 50%;
   animation: vz-orbit 0.8s linear infinite;
 }
@@ -288,7 +290,7 @@ a.vitrine-cta:hover {
   height: 100%;
   width: 100%;
   transform-origin: 0 50%;
-  background: linear-gradient(90deg, #1a6fd4, #f7901e);
+  background: linear-gradient(90deg, #002654 0%, #ffffff 48%, #e30613 100%);
 }
 
 .vz-rail {
@@ -316,7 +318,7 @@ a.vitrine-cta:hover {
 
 .vz-rail button.is-on,
 .vz-rail button:hover {
-  color: #f7901e;
+  color: #e30613;
 }
 
 .vz-scroll-hint {
@@ -339,7 +341,7 @@ a.vitrine-cta:hover {
 .vz-scroll-hint span {
   width: 1px;
   height: 36px;
-  background: linear-gradient(#f7901e, transparent);
+  background: linear-gradient(#e30613, transparent);
   animation: vz-hint 1.6s ease-in-out infinite;
 }
 
@@ -428,8 +430,8 @@ a.vitrine-cta:hover {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #f7901e;
-  box-shadow: 0 0 24px #f7901e;
+  background: #e30613;
+  box-shadow: 0 0 24px #e30613;
 }
 
 @keyframes vz-orbit {
@@ -465,11 +467,11 @@ a.vitrine-cta:hover {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #f7901e;
+  color: #e30613;
 }
 
 .vz-kicker.is-light {
-  color: #f7901e;
+  color: #e30613;
 }
 
 .vz h1,
@@ -500,7 +502,7 @@ a.vitrine-cta:hover {
 .vz h2 span {
   display: block;
   font-style: italic;
-  color: #f7901e;
+  color: #e30613;
 }
 
 .vz-lead {
@@ -550,8 +552,8 @@ a.vitrine-cta:hover {
 }
 
 .vz-destinations li.is-new {
-  background: rgba(247, 144, 30, 0.92);
-  color: #041830;
+  background: #e30613;
+  color: #ffffff;
   box-shadow: 0 0 0 2px #fff;
 }
 
@@ -586,7 +588,7 @@ a.vitrine-cta:hover {
   display: flex;
   gap: 12px;
   max-width: 34rem;
-  color: #f7901e;
+  color: #e30613;
 }
 
 .vz-promises strong {
@@ -615,7 +617,7 @@ a.vitrine-cta:hover {
 }
 
 .vz-enter-legal a:hover {
-  color: #f7901e;
+  color: #e30613;
 }
 
 .vz-page {
@@ -623,7 +625,17 @@ a.vitrine-cta:hover {
   z-index: 1;
   min-height: 100svh;
   padding-top: 72px;
-  background: transparent;
+  color: #002654;
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.94) 55%, rgba(245, 247, 252, 0.9) 100%);
+}
+
+.vz-page .vz-kicker.is-light,
+.vz-page .vz-lead.is-light {
+  color: #002654;
+}
+
+.vz-page .vz-lead.is-light {
+  color: rgba(0, 38, 84, 0.78);
 }
 
 .vz-catalog li {
@@ -631,9 +643,9 @@ a.vitrine-cta:hover {
   gap: 20px;
   padding: 20px;
   margin: 10px 0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 38, 84, 0.12);
   border-radius: 4px;
-  background: rgba(4, 24, 48, 0.78);
+  background: #ffffff;
   backdrop-filter: blur(12px);
 }
 
@@ -651,7 +663,7 @@ a.vitrine-cta:hover {
 .vz-pagehead h1,
 .vz-contact-panel h1,
 .vz-doorband h2 {
-  text-shadow: 0 12px 42px rgba(4, 24, 48, 0.9);
+  text-shadow: none;
 }
 
 .vz-doorband {
@@ -660,8 +672,9 @@ a.vitrine-cta:hover {
 
 .vz-doorband .vz-shell {
   padding: 36px 28px;
-  border: 1px solid rgba(247, 144, 30, 0.28);
-  background: rgba(4, 24, 48, 0.55);
+  border: 1px solid rgba(0, 85, 164, 0.22);
+  border-top: 4px solid #e30613;
+  background: #ffffff;
   backdrop-filter: blur(12px);
 }
 
@@ -684,7 +697,7 @@ a.vitrine-cta:hover {
 .vz-crumb {
   margin: 0 0 16px;
   font-size: 13px;
-  color: rgba(232, 238, 248, 0.48);
+  color: #0055a4;
 }
 
 .vz-catalog {
@@ -713,7 +726,7 @@ a.vitrine-cta:hover {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.18em;
-  color: #f7901e;
+  color: #e30613;
 }
 
 .vz-catalog h2 {
@@ -726,7 +739,7 @@ a.vitrine-cta:hover {
   margin: 8px 0 0;
   font-size: 15px;
   line-height: 1.55;
-  color: rgba(232, 238, 248, 0.68);
+  color: rgba(0, 38, 84, 0.72);
 }
 
 .vz-textlink {
@@ -738,11 +751,11 @@ a.vitrine-cta:hover {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #f7901e;
+  color: #e30613;
 }
 
 .vz-textlink:hover {
-  color: #ff9a2e;
+  color: #c10a14;
   gap: 12px;
 }
 
@@ -769,8 +782,8 @@ a.vitrine-cta:hover {
 
 .vz-contact-panel {
   padding: 48px 28px 64px;
-  background: rgba(6, 32, 63, 0.72);
-  backdrop-filter: blur(16px);
+  color: #002654;
+  background: #ffffff;
 }
 
 @media (min-width: 900px) {
@@ -807,12 +820,12 @@ a.vitrine-cta:hover {
   place-items: center;
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(247, 144, 30, 0.35);
-  color: #f7901e;
+  border: 1px solid rgba(227, 6, 19, 0.45);
+  color: #e30613;
 }
 
 a.vz-contact-line:hover .vz-ico {
-  background: rgba(247, 144, 30, 0.12);
+  background: rgba(227, 6, 19, 0.12);
 }
 
 .vz-contact-line small {
@@ -821,7 +834,7 @@ a.vz-contact-line:hover .vz-ico {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #f7901e;
+  color: #e30613;
 }
 
 .vz-contact-line strong {
@@ -840,7 +853,7 @@ a.vz-contact-line:hover .vz-ico {
 
 .vz-footer {
   padding: 56px 0 28px;
-  background: #02101f;
+  background: #002654;
   color: rgba(232, 238, 248, 0.7);
 }
 
@@ -874,7 +887,7 @@ a.vz-contact-line:hover .vz-ico {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #f7901e;
+  color: #e30613;
 }
 
 .vz-footer ul {
@@ -895,7 +908,7 @@ a.vz-contact-line:hover .vz-ico {
 }
 
 .vz-footer a:hover {
-  color: #f7901e;
+  color: #e30613;
 }
 
 .vitrine .btn {
@@ -908,8 +921,8 @@ a.vz-contact-line:hover .vz-ico {
 
 .vitrine .btn-primary,
 .btn-orange {
-  background: #f7901e;
-  color: #041830;
+  background: #e30613;
+  color: #ffffff;
   box-shadow: none;
 }
 
@@ -919,7 +932,8 @@ a.vz-contact-line:hover .vz-ico {
 
 .vitrine .btn-primary:hover:not(:disabled),
 .btn-orange:hover:not(:disabled) {
-  background: #ff9a2e;
+  background: #c10a14;
+  color: #ffffff;
   box-shadow: none;
 }
 
@@ -931,7 +945,7 @@ a.vz-contact-line:hover .vz-ico {
 
 .btn-white {
   background: #fff;
-  color: #041830;
+  color: #002654;
 }
 
 .btn-white:hover:not(:disabled) {
