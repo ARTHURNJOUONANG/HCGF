@@ -5,6 +5,7 @@ import { modeVol } from "./duffel";
 import { modeAssureur } from "./assureur";
 import { modeMaps } from "./maps";
 import { modeIa } from "./ia-metier";
+import { modeStockage } from "./fichiers";
 
 export function fournisseurBase(): "sqlite" | "postgres" {
   const url = process.env.DATABASE_URL ?? "";
@@ -15,6 +16,7 @@ export function fournisseurBase(): "sqlite" | "postgres" {
 export function etatServices() {
   const detail = {
     base: fournisseurBase(),
+    stockage: modeStockage(),
     mail: process.env.RESEND_API_KEY ? "resend" : "journal",
     moyens: etatMoyensPaiement(),
     vol: modeVol(),

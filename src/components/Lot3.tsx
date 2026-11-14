@@ -85,7 +85,7 @@ export function PaiementMoyen({
 }: {
   demandeId: string;
   moyen: MoyenInstant;
-  mode?: "demo" | "live";
+  mode?: "demo" | "live" | "indisponible";
 }) {
   const texte = TEXTES_MOYEN[moyen];
   return (

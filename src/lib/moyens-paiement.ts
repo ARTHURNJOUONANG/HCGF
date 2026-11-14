@@ -30,13 +30,31 @@ export function modeMoyen(code: MoyenInstant): "demo" | "live" {
   return process.env.WERO_API_KEY && process.env.WERO_API_URL ? "live" : "demo";
 }
 
+/**
+ * Le mode démo encaisse sans argent réel : autorisé hors production,
+ * ou en production uniquement avec PAIEMENT_DEMO=1 (preview client).
+ */
+export function paiementDemoAutorise() {
+  if (process.env.PAIEMENT_DEMO === "1") return true;
+  if (process.env.PAIEMENT_DEMO === "0") return false;
+  return process.env.NODE_ENV !== "production";
+}
+
+export type EtatMoyen = "demo" | "live" | "indisponible";
+
+export function etatMoyen(code: MoyenInstant): EtatMoyen {
+  const mode = modeMoyen(code);
+  if (mode === "demo" && !paiementDemoAutorise()) return "indisponible";
+  return mode;
+}
+
 export function etatMoyensPaiement() {
   return {
     virement: "bureau" as const,
-    paypal: modeMoyen("paypal"),
-    orange_money: modeMoyen("orange_money"),
-    mtn_money: modeMoyen("mtn_money"),
-    wero: modeMoyen("wero"),
+    paypal: etatMoyen("paypal"),
+    orange_money: etatMoyen("orange_money"),
+    mtn_money: etatMoyen("mtn_money"),
+    wero: etatMoyen("wero"),
   };
 }
 
@@ -84,6 +102,14 @@ export async function ouvrirPaiement(opts: {
     idDemande: opts.demandeId,
     appeler: async () => {
       if (modeMoyen(opts.moyen) === "demo") {
+        if (!paiementDemoAutorise()) {
+          return {
+            ok: false as const,
+            erreur: `${LIBELLES_MOYEN[opts.moyen]} n’est pas encore activé. Utilisez le virement.`,
+            codeHttp: 503,
+            reponse: "demo_interdit",
+          };
+        }
         return {
           ok: true as const,
           data: { id: `DEMO-${opts.moyen}-${opts.reference}`, pending: false },

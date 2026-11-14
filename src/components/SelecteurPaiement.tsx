@@ -31,7 +31,8 @@ export function SelecteurPaiement({
   const [choix, setChoix] = useState<MoyenId | "">("");
   const [ouvert, setOuvert] = useState(false);
   const boite = useRef<HTMLDivElement>(null);
-  const actuel = OPTIONS.find((o) => o.id === choix);
+  const options = OPTIONS.filter((o) => o.id === "virement" || moyens[o.id] !== "indisponible");
+  const actuel = options.find((o) => o.id === choix);
 
   useEffect(() => {
     function fermer(event: MouseEvent) {
@@ -46,7 +47,7 @@ export function SelecteurPaiement({
       <p className="kicker">Règlement</p>
       <h2 className="pay-box-title">Choisir un moyen</h2>
       <ul className="pay-brands" aria-label="Moyens acceptés">
-        {OPTIONS.map((option) => (
+        {options.map((option) => (
           <li key={option.id} title={option.label}>
             <LogoPaiement id={option.id} />
           </li>
@@ -76,7 +77,7 @@ export function SelecteurPaiement({
         </button>
         {ouvert ? (
           <ul className="pay-menu" role="listbox">
-            {OPTIONS.map((option) => (
+            {options.map((option) => (
               <li key={option.id}>
                 <button
                   type="button"

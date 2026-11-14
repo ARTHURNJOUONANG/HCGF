@@ -12,14 +12,27 @@ const VERROU_MS = 15 * 60 * 1000;
 const FENETRE_IP_MS = 15 * 60 * 1000;
 const MAX_ECHECS_IP = 20;
 
+const SECRETS_EXEMPLE = new Set([
+  "avi-dev-secret",
+  "change-me-in-production",
+  "docker-dev-secret-change-me",
+  "build-placeholder",
+]);
+
+let secretCache: Uint8Array | null = null;
+
 function secret() {
-  const raw = process.env.AUTH_SECRET;
-  if (!raw || raw === "avi-dev-secret") {
-    if (process.env.NODE_ENV === "production") {
-      throw new Error("AUTH_SECRET est obligatoire en production.");
+  if (secretCache) return secretCache;
+  const raw = process.env.AUTH_SECRET?.trim();
+  if (process.env.NODE_ENV === "production") {
+    if (!raw || SECRETS_EXEMPLE.has(raw) || raw.length < 32) {
+      throw new Error(
+        "AUTH_SECRET doit être défini en production (32 caractères minimum, pas une valeur d’exemple).",
+      );
     }
   }
-  return new TextEncoder().encode(raw ?? "avi-dev-secret-change-in-production-2026");
+  secretCache = new TextEncoder().encode(raw || "avi-dev-secret-change-in-production-2026");
+  return secretCache;
 }
 
 export type SessionUser = {

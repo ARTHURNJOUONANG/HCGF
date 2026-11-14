@@ -2,7 +2,7 @@ import { readdir, stat, unlink } from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 import { prisma } from "./prisma";
-import { cheminStockage } from "./fichiers";
+import { modeStockage, supprimerStockage, tailleStockage } from "./fichiers";
 
 /** Limite absurde de sécurité / maintenance : 2,5 Go par document. */
 export const TAILLE_MAX_DOCUMENT = Math.floor(2.5 * 1024 * 1024 * 1024);
@@ -78,14 +78,7 @@ export async function controlerNetteDocument(opts: { buffer: Buffer; mime: strin
 }
 
 export async function tailleFichierStocke(storagePath: string) {
-  const fichier = cheminStockage(storagePath);
-  if (!fichier) return 0;
-  try {
-    const info = await stat(fichier);
-    return info.size;
-  } catch {
-    return 0;
-  }
+  return tailleStockage(storagePath);
 }
 
 /** Purge / signalement des fichiers > 2,5 Go (maintenance BD + disque). */
@@ -106,14 +99,7 @@ export async function maintenirTailleDocuments() {
 
     excessifs++;
     octetsLibres += taille;
-    const fichier = cheminStockage(doc.storagePath);
-    if (fichier) {
-      try {
-        await unlink(fichier);
-      } catch {
-        /* ignore */
-      }
-    }
+    await supprimerStockage(doc.storagePath);
     await prisma.document.update({
       where: { id: doc.id },
       data: {
@@ -144,9 +130,9 @@ export async function maintenirTailleDocuments() {
     });
   }
 
-  // Orphelins disque non référencés
+  // Orphelins disque non référencés (stockage local uniquement)
   let orphelins = 0;
-  try {
+  if (modeStockage() === "disque") try {
     const dir = path.join(process.cwd(), "storage", "uploads");
     const noms = await readdir(dir);
     const connus = new Set(docs.map((d) => path.basename(d.storagePath.replaceAll("\\", "/"))));

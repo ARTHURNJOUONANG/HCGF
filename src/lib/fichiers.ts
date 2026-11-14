@@ -1,5 +1,5 @@
 import path from "path";
-import { mkdir, readFile, writeFile, unlink } from "fs/promises";
+import { mkdir, readFile, stat, writeFile, unlink } from "fs/promises";
 
 const UPLOAD_DIR = path.join(process.cwd(), "storage", "uploads");
 
@@ -56,29 +56,80 @@ export function entetesFichier(mime: string, nom?: string) {
   };
 }
 
+/**
+ * Stockage des pièces : disque local (dev / Docker) ou Vercel Blob privé
+ * dès que BLOB_READ_WRITE_TOKEN est défini (le disque Vercel est éphémère).
+ */
+export function modeStockage(): "disque" | "blob" {
+  return process.env.BLOB_READ_WRITE_TOKEN?.trim() ? "blob" : "disque";
+}
+
+const PREFIXE_BLOB = "uploads/";
+
+async function blob() {
+  return import("@vercel/blob");
+}
+
 export async function ecrireStockage(storagePath: string, data: Buffer | string) {
-  const fichier = cheminStockage(storagePath);
-  if (!fichier) throw new Error("Nom de fichier invalide.");
+  const nom = nomStockageSur(storagePath);
+  if (!nom) throw new Error("Nom de fichier invalide.");
+  if (modeStockage() === "blob") {
+    const { put } = await blob();
+    await put(`${PREFIXE_BLOB}${nom}`, data, {
+      access: "private",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+    });
+    return nom;
+  }
+  if (process.env.VERCEL) {
+    throw new Error("Stockage : BLOB_READ_WRITE_TOKEN est requis sur Vercel (disque éphémère).");
+  }
   await mkdir(UPLOAD_DIR, { recursive: true });
-  await writeFile(fichier, data);
-  return path.basename(fichier);
+  await writeFile(path.join(UPLOAD_DIR, nom), data);
+  return nom;
 }
 
 export async function lireStockage(storagePath: string) {
-  const fichier = cheminStockage(storagePath);
-  if (!fichier) return null;
+  const nom = nomStockageSur(storagePath);
+  if (!nom) return null;
   try {
-    return await readFile(fichier);
+    if (modeStockage() === "blob") {
+      const { get } = await blob();
+      const resultat = await get(`${PREFIXE_BLOB}${nom}`, { access: "private" });
+      if (!resultat || resultat.statusCode !== 200) return null;
+      return Buffer.from(await new Response(resultat.stream).arrayBuffer());
+    }
+    return await readFile(path.join(UPLOAD_DIR, nom));
   } catch {
     return null;
   }
 }
 
-export async function supprimerStockage(storagePath: string) {
-  const fichier = cheminStockage(storagePath);
-  if (!fichier) return false;
+export async function tailleStockage(storagePath: string) {
+  const nom = nomStockageSur(storagePath);
+  if (!nom) return 0;
   try {
-    await unlink(fichier);
+    if (modeStockage() === "blob") {
+      const { head } = await blob();
+      return (await head(`${PREFIXE_BLOB}${nom}`)).size;
+    }
+    return (await stat(path.join(UPLOAD_DIR, nom))).size;
+  } catch {
+    return 0;
+  }
+}
+
+export async function supprimerStockage(storagePath: string) {
+  const nom = nomStockageSur(storagePath);
+  if (!nom) return false;
+  try {
+    if (modeStockage() === "blob") {
+      const { del } = await blob();
+      await del(`${PREFIXE_BLOB}${nom}`);
+      return true;
+    }
+    await unlink(path.join(UPLOAD_DIR, nom));
     return true;
   } catch {
     return false;

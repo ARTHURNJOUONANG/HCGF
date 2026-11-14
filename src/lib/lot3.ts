@@ -7,6 +7,7 @@ import {
   LIBELLES_MOYEN,
   clePaiementMoyen,
   estMoyenInstant,
+  etatMoyen,
   modeMoyen,
   ouvrirPaiement,
 } from "./moyens-paiement";
@@ -182,8 +183,9 @@ async function enregistrerEncaissement(opts: {
     if (deja && deja.statut !== "reussi") {
       const recu = espace.montantRecu + opts.montant;
       const statutFonds = recu >= espace.montantAttendu ? "fonds_recus" : "partiel";
-      await prisma.operationFinanciere.update({
-        where: { id: deja.id },
+      // Transition atomique : deux webhooks simultanés ne comptent qu’une fois.
+      const bascule = await prisma.operationFinanciere.updateMany({
+        where: { id: deja.id, statut: { not: "reussi" } },
         data: {
           statut: "reussi",
           idTransaction: opts.transaction,
@@ -191,6 +193,9 @@ async function enregistrerEncaissement(opts: {
           montant: opts.montant,
         },
       });
+      if (bascule.count === 0) {
+        return { ok: true as const, statutFonds: espace.statutFonds, deja: true as const };
+      }
       await prisma.espaceFinancier.update({
         where: { idDemande: opts.demandeId },
         data: { montantRecu: recu, statutFonds },
@@ -297,6 +302,9 @@ export async function payerParMoyen(formData: FormData) {
   const demandeId = String(formData.get("demandeId") ?? "");
   const moyen = String(formData.get("moyen") ?? "");
   if (!estMoyenInstant(moyen)) return { error: "Choisissez PayPal, Orange Money, MTN Money ou Wero." };
+  if (etatMoyen(moyen) === "indisponible") {
+    return { error: `${LIBELLES_MOYEN[moyen]} n’est pas encore activé. Utilisez le virement.` };
+  }
 
   const { aLeDroit, droitsSurDemande } = await import("./delegation");
   const droits = await droitsSurDemande(user.id, user.typeCompte, demandeId);
@@ -397,6 +405,25 @@ export async function confirmerPaiementExterne(opts: {
 }) {
   const demande = await prisma.demande.findUnique({ where: { id: opts.demandeId } });
   if (!demande) return { error: "Dossier introuvable." };
+
+  // Le webhook ne peut confirmer qu’une opération ouverte par le serveur,
+  // sur ce dossier, ce moyen et ce montant exact.
+  const attendue = await prisma.operationFinanciere.findUnique({
+    where: { cleIdempotence: opts.cleIdempotence },
+  });
+  if (!attendue || attendue.idEspace !== demande.id) {
+    return { error: "Aucun paiement en attente ne correspond à cette notification." };
+  }
+  if (attendue.statut === "reussi") {
+    return { ok: true as const, deja: true as const };
+  }
+  if (attendue.source && attendue.source !== opts.source) {
+    return { error: "Le moyen de paiement ne correspond pas." };
+  }
+  if (Math.round(opts.montant) !== Math.round(attendue.montant)) {
+    return { error: "Le montant notifié ne correspond pas au montant attendu." };
+  }
+
   return enregistrerEncaissement({
     demandeId: opts.demandeId,
     userId: demande.idUtilisateur,

@@ -19,7 +19,7 @@ services:
       - "3010:3000"
     environment:
       DATABASE_URL: postgresql://hcgf:hcgf@db:5432/hcgf
-      AUTH_SECRET: docker-dev-secret-change-me
+      AUTH_SECRET: docker-local-only-secret-0123456789abcdef
       APP_URL: http://localhost:3010
       CODE_ACCES_FICHIER: /data/code-acces-pd.txt
       SEED_DEMO: "1"
