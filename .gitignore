@@ -1,0 +1,27 @@
+node_modules
+.next
+tsconfig.tsbuildinfo
+prisma/dev.db
+prisma/dev.db-journal
+prisma/code-acces-pd.txt
+.env
+storage/uploads
+storage/mail-journal.jsonl
+
+.vercel
+prisma/schema.postgres.prisma
+prisma/postgres/schema.prisma
+.env.local
+.env.vercel
+src/generated/prisma/*.tmp*
+.agents/
+skills-lock.json
+data/code-acces-pd.txt
+data/*.txt
+tmp-avi-ref/
+
+# Client Prisma généré (prisma generate au postinstall)
+src/generated/
+prisma/test.db
+prisma/test.db-journal
+prisma/test-code-acces-pd.txt
