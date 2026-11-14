@@ -63,7 +63,8 @@ const TABLE = {
   definirNouveauMotDePasse: mdp.definirNouveauMotDePasse,
 } as const;
 
-export type ActionName = keyof typeof TABLE;
+export type ActionTable = typeof TABLE;
+export type ActionName = keyof ActionTable;
 
 export async function runAction(name: ActionName, ...args: unknown[]) {
   const fn = TABLE[name] as (...params: unknown[]) => unknown;

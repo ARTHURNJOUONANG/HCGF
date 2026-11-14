@@ -143,7 +143,7 @@ export async function souscrirePolice(formData: FormData) {
       email: user.email,
       dateNaissance: user.profil?.dateNaissance ?? map.date_naissance,
       telephone: user.profil?.telephone ?? map.telephone,
-      nationalite: user.profil?.nationalite,
+      nationalite: user.profil?.nationalite ?? undefined,
     },
   });
   if (!policeOp.ok) return { error: policeOp.error };

@@ -21,6 +21,8 @@ export function VitrineStage({
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce || images.length === 0) {
+      // matchMedia n’existe qu’après montage : mise à jour unique, sans cascade.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPct(100);
       setReady(true);
       return;

@@ -73,7 +73,7 @@ export default async function DelegationsPage() {
                   </div>
                   <div className="right-chips">
                     {d.droits.map((r) => (
-                      <span key={r.id} className="right-chip" style={{ cursor: "default" }}>
+                      <span key={r.codeDroit} className="right-chip" style={{ cursor: "default" }}>
                         {LIBELLE_DROIT[r.codeDroit] ?? r.codeDroit}
                       </span>
                     ))}

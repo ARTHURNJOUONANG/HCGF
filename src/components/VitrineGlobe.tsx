@@ -51,7 +51,9 @@ function earthTexture(THREE: typeof import("three")) {
 export function VitrineGlobe({ active = 0 }: { active?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const activeRef = useRef(active);
-  activeRef.current = active;
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

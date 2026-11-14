@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ouvrirDelegation, revoquerDelegation } from "@/lib/action-binds";
+import { enActionFormulaire, ouvrirDelegation, revoquerDelegation } from "@/lib/action-binds";
 import {
   changerPriorite,
   changerStatutReclamation,
@@ -162,7 +162,7 @@ export function ReclamationForm({ demandeId }: { demandeId: string }) {
 
 export function PrioriteForm({ demandeId, valeur }: { demandeId: string; valeur: string }) {
   return (
-    <form action={changerPriorite} className="flex items-center gap-2">
+    <form action={enActionFormulaire(changerPriorite)} className="flex items-center gap-2">
       <input type="hidden" name="demandeId" value={demandeId} />
       <select name="priorite" defaultValue={valeur} className="input !min-h-9">
         <option value="normal">Standard</option>
@@ -205,7 +205,7 @@ export function RelancerForm() {
 
 export function StatutSavForm({ reclamationId, statut }: { reclamationId: string; statut: string }) {
   return (
-    <form action={changerStatutReclamation} className="flex items-center gap-2">
+    <form action={enActionFormulaire(changerStatutReclamation)} className="flex items-center gap-2">
       <input type="hidden" name="reclamationId" value={reclamationId} />
       <select name="statut" defaultValue={statut} className="input !min-h-9">
         {["ouverte", "en_cours", "attente_candidat", "resolue", "fermee"].map((s) => (
@@ -221,7 +221,7 @@ export function StatutSavForm({ reclamationId, statut }: { reclamationId: string
 
 export function MessageSavForm({ reclamationId }: { reclamationId: string }) {
   return (
-    <form action={ecrireMessageSav} className="mt-2 flex gap-2">
+    <form action={enActionFormulaire(ecrireMessageSav)} className="mt-2 flex gap-2">
       <input type="hidden" name="reclamationId" value={reclamationId} />
       <input name="contenu" className="input flex-1" placeholder="Réponse SAV" required />
       <button className="btn btn-primary !min-h-9 !px-3 text-[13px]">Envoyer</button>

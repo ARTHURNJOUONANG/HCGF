@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   choisirLogement,
+  enActionFormulaire,
   emettreAttestationAssurance,
   emettreJustificatifVol,
   inscrireListeAttente,
@@ -59,7 +60,7 @@ function ActionForm({
 
 export function VenteCroiseeAvi({ demandeId }: { demandeId: string }) {
   return (
-    <form action={ouvrirAssuranceDepuisAvi}>
+    <form action={enActionFormulaire(ouvrirAssuranceDepuisAvi)}>
       <input type="hidden" name="idOrigine" value={demandeId} />
       <button type="submit" className="btn btn-primary">
         Préremplir une assurance

@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock, Home, Plane, Shield } from "lucide-react";
+import { CheckCircle2, Clock, Plane, Shield } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { euros, jour } from "@/lib/finance";
 import { assurerCatalogueAssurance, libelleStatutVol } from "@/lib/catalogues";

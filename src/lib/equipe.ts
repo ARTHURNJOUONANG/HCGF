@@ -81,7 +81,7 @@ async function inviterCollaborateur(formData: FormData) {
     typeCompte: "collaborateur",
     role,
   });
-  if ("error" in resultat) return resultat;
+  if (resultat.error !== undefined) return { error: resultat.error };
 
   await ecrireAudit(acteur.id, "compte_equipe_cree", "utilisateur", resultat.utilisateur.id, null, `${role}:${email}`);
   const code = await renouvelerCodeAccesRoles();
@@ -140,9 +140,9 @@ async function inviterPartenaire(formData: FormData) {
     role: "apporteur",
     idPartenaire: partenaire.id,
   });
-  if ("error" in resultat) {
+  if (resultat.error !== undefined) {
     await prisma.partenaire.delete({ where: { id: partenaire.id } });
-    return resultat;
+    return { error: resultat.error };
   }
 
   await ecrireAudit(

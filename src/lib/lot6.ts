@@ -1,7 +1,6 @@
 import { createHash } from "crypto";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { prisma } from "./prisma";
 import { randomBytes } from "crypto";
 import { hashPassword, requireUser, validerEmail } from "./auth";

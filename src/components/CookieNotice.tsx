@@ -1,22 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 
 const CLE = "avi_cookies_info";
 
+function abonnementVide() {
+  return () => {};
+}
+
+function lireDejaVu() {
+  try {
+    return localStorage.getItem(CLE) === "1";
+  } catch {
+    return false;
+  }
+}
+
 export function CookieNotice() {
-  const [visible, setVisible] = useState(false);
+  // Lu côté client uniquement : rien au rendu serveur, pas d’écart d’hydratation.
+  const dejaVu = useSyncExternalStore(abonnementVide, lireDejaVu, () => true);
+  const [ferme, setFerme] = useState(false);
 
-  useEffect(() => {
-    try {
-      if (localStorage.getItem(CLE) !== "1") setVisible(true);
-    } catch {
-      setVisible(true);
-    }
-  }, []);
-
-  if (!visible) return null;
+  if (dejaVu || ferme) return null;
 
   return (
     <div
@@ -41,7 +47,7 @@ export function CookieNotice() {
             } catch {
               /* ignore */
             }
-            setVisible(false);
+            setFerme(true);
           }}
         >
           J’ai compris

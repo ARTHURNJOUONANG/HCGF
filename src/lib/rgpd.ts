@@ -3,7 +3,6 @@ import { requireUser, sidCourant } from "./auth";
 import { ecrireAudit } from "./lot2";
 import { supprimerStockage } from "./fichiers";
 
-const DOSSIERS_OUVERTS = ["brouillon", "en_traitement"];
 
 /** Pièces d’identité / OCR : 24 mois après clôture du dossier. */
 export const RETENTION_PIECES_JOURS = 730;

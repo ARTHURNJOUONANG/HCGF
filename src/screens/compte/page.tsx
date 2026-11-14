@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Shield } from "lucide-react";
 import { AppHeader, PageIntro } from "@/components/Chrome";
@@ -37,9 +38,9 @@ export default async function ComptePage() {
               effacement à la fermeture du compte (pièces, OCR, messages, profil anonymisé).
               Conservation des pièces : 24 mois après clôture, puis purge automatique. Traces de
               connexion : 30 jours.{" "}
-              <a href="/cgv" className="link-blue">
+              <Link href="/cgv" className="link-blue">
                 Politique &amp; mentions
-              </a>
+              </Link>
             </p>
           </section>
 
@@ -53,7 +54,9 @@ export default async function ComptePage() {
               {LIBELLE_COMPTE[session.typeCompte] ?? session.typeCompte}
               {session.role ? ` · ${session.role}` : ""}
             </p>
-            <a href="/api/compte/export" className="btn btn-primary mt-6 inline-flex">
+            {/* Téléchargement d’API : un <Link> préchargerait l’export. */}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <a href="/api/compte/export" download className="btn btn-primary mt-6 inline-flex">
               Télécharger mes données
             </a>
           </section>

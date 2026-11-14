@@ -37,6 +37,8 @@ export function InstallerApp() {
     window.addEventListener("beforeinstallprompt", onPrompt);
 
     if (appareilApple()) {
+      // Détection navigateur possible seulement après montage (pas de SSR).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIos(true);
       setVisible(true);
     }

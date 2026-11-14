@@ -5,7 +5,7 @@ import { AppHeader, PageIntro } from "@/components/Chrome";
 import { EmptyHint } from "@/components/Surface";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { marquerNotificationsLues } from "@/lib/action-binds";
+import { enActionFormulaire, marquerNotificationsLues } from "@/lib/action-binds";
 import { unreadCount } from "@/lib/shell";
 
 export default async function NotificationsPage() {
@@ -28,7 +28,7 @@ export default async function NotificationsPage() {
           title="Notifications"
           text={unread > 0 ? `${unread} non lue${unread > 1 ? "s" : ""}.` : "Tout est à jour."}
           action={
-            <form action={marquerNotificationsLues}>
+            <form action={enActionFormulaire(marquerNotificationsLues)}>
               <button className="icon-btn" aria-label="Tout marquer comme lu" title="Tout marquer comme lu">
                 <CheckCheck size={18} />
               </button>

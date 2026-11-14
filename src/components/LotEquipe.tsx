@@ -46,8 +46,8 @@ export function CreerCollaborateurForm() {
           setError(result.error);
           pushToast(result.error, "hot");
         } else {
-          setLien(result.lien);
-          setCodeAcces(result.codeAcces);
+          setLien(result.lien ?? null);
+          setCodeAcces(result.codeAcces ?? null);
           form.reset();
           pushToast("Compte équipe créé — le code PD a changé");
         }
@@ -105,8 +105,8 @@ export function CreerPartenaireForm() {
           setError(result.error);
           pushToast(result.error, "hot");
         } else {
-          setLien(result.lien);
-          setCodeAcces(result.codeAcces);
+          setLien(result.lien ?? null);
+          setCodeAcces(result.codeAcces ?? null);
           form.reset();
           pushToast("Compte partenaire créé — le code PD a changé");
         }

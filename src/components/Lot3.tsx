@@ -95,6 +95,9 @@ export function PaiementMoyen({
       <p className="muted mt-2 text-sm">
         {texte.aide}
       </p>
+      {mode === "demo" ? (
+        <p className="hold-warn mt-2 text-sm">Mode démonstration : aucun montant ne sera débité.</p>
+      ) : null}
       {texte.mobile ? (
         <label className="field">
           Numéro mobile money
