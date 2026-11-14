@@ -96,7 +96,9 @@ export function VitrineWorld({
         return;
       }
       const world = terre.objet;
-      world.position.set(1.6, 0.2, 3.8);
+      // Mobile : le globe descend en bas à droite pour laisser le texte lisible.
+      if (mobile) world.position.set(1.95, -1.05, 3.6);
+      else world.position.set(1.6, 0.2, 3.8);
       scene.add(world);
 
       const floor = new THREE.Mesh(

@@ -77,11 +77,11 @@ html {
 }
 
 ::view-transition-old(root) {
-  animation: vt-out 0.32s var(--ease) both;
+  animation: vt-out 0.18s var(--ease) both;
 }
 
 ::view-transition-new(root) {
-  animation: vt-in 0.5s var(--ease-out) both;
+  animation: vt-in 0.3s var(--ease-out) both;
 }
 
 ::selection {
@@ -537,11 +537,12 @@ a {
 }
 
 .reveal {
-  animation: rise 0.55s var(--ease-out) both;
+  animation: rise 0.4s var(--ease-out) both;
 }
 
+/* Une seule entrée de page, courte : le contenu est lisible en ~0,3 s. */
 .app-route-motion {
-  animation: page-enter 0.52s var(--ease-out) both;
+  animation: page-enter 0.32s var(--ease-out) both;
 }
 
 body:has(.vitrine) .app-route-motion,
@@ -550,25 +551,25 @@ body:has(.intro-shell) .app-route-motion {
 }
 
 .stagger > * {
-  animation: rise 0.5s var(--ease-out) both;
+  animation: rise 0.4s var(--ease-out) both;
 }
 
-.stagger > *:nth-child(1) { animation-delay: 30ms; }
+.stagger > *:nth-child(1) { animation-delay: 35ms; }
 .stagger > *:nth-child(2) { animation-delay: 70ms; }
-.stagger > *:nth-child(3) { animation-delay: 110ms; }
-.stagger > *:nth-child(4) { animation-delay: 150ms; }
-.stagger > *:nth-child(5) { animation-delay: 190ms; }
-.stagger > *:nth-child(6) { animation-delay: 230ms; }
-.stagger > *:nth-child(7) { animation-delay: 270ms; }
-.stagger > *:nth-child(8) { animation-delay: 310ms; }
-.stagger > *:nth-child(9) { animation-delay: 350ms; }
-.stagger > *:nth-child(10) { animation-delay: 390ms; }
-.stagger > *:nth-child(11) { animation-delay: 430ms; }
-.stagger > *:nth-child(12) { animation-delay: 470ms; }
-.stagger > *:nth-child(13) { animation-delay: 510ms; }
-.stagger > *:nth-child(14) { animation-delay: 550ms; }
-.stagger > *:nth-child(15) { animation-delay: 590ms; }
-.stagger > *:nth-child(16) { animation-delay: 630ms; }
+.stagger > *:nth-child(3) { animation-delay: 105ms; }
+.stagger > *:nth-child(4) { animation-delay: 140ms; }
+.stagger > *:nth-child(5) { animation-delay: 175ms; }
+.stagger > *:nth-child(6) { animation-delay: 210ms; }
+.stagger > *:nth-child(7) { animation-delay: 245ms; }
+.stagger > *:nth-child(8) { animation-delay: 280ms; }
+.stagger > *:nth-child(9) { animation-delay: 280ms; }
+.stagger > *:nth-child(10) { animation-delay: 280ms; }
+.stagger > *:nth-child(11) { animation-delay: 280ms; }
+.stagger > *:nth-child(12) { animation-delay: 280ms; }
+.stagger > *:nth-child(13) { animation-delay: 280ms; }
+.stagger > *:nth-child(14) { animation-delay: 280ms; }
+.stagger > *:nth-child(15) { animation-delay: 280ms; }
+.stagger > *:nth-child(16) { animation-delay: 280ms; }
 
 .lift {
   transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), border-color 0.25s ease;
@@ -663,7 +664,7 @@ body:has(.intro-shell) .app-route-motion {
 @keyframes page-enter {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -1980,7 +1981,6 @@ body:has(.vitrine-header.is-open) {
   width: min(520px, calc(100% - 40px));
   margin: 0 auto;
   padding: 8px 0 48px;
-  animation: page-enter 0.55s var(--ease-out) both;
 }
 
 .auth-heading {
@@ -4528,6 +4528,78 @@ body:has(.vitrine-header.is-open) {
   .welcome-grid > li,
   .next-step.is-action .next-step-dot,
   .icon-nav.is-on::after {
+    animation: none;
+  }
+}
+
+/* ───────── Bandeau cookies : carte flottante discrète ───────── */
+.cookie-notice {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  left: 16px;
+  z-index: 80;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 560px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgb(255 255 255 / 0.97);
+  box-shadow: 0 18px 48px rgb(var(--navy-rgb) / 0.2);
+  backdrop-filter: blur(12px);
+  animation: cookie-in 0.5s var(--ease-out) 0.6s both;
+}
+
+.cookie-notice p {
+  display: flex;
+  flex: 1 1 260px;
+  gap: 10px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.cookie-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--accent-ink);
+}
+
+.cookie-notice .btn {
+  min-height: 36px;
+  padding: 0 16px;
+}
+
+body:has(.tabbar) .cookie-notice {
+  bottom: calc(82px + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 768px) {
+  body:has(.tabbar) .cookie-notice {
+    bottom: 24px;
+  }
+
+  .cookie-notice {
+    right: auto;
+    bottom: 24px;
+    left: 24px;
+  }
+}
+
+@keyframes cookie-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cookie-notice {
     animation: none;
   }
 }

@@ -1032,3 +1032,15 @@ a.vz-contact-line:hover .vz-ico {
     transform: none !important;
   }
 }
+
+@media (max-width: 767px) {
+  /* Le repère « Défiler » chevauchait les drapeaux sur petit écran. */
+  .vz-scroll-hint {
+    display: none;
+  }
+
+  .vz-chapter-copy .vz-lead,
+  .vz-hero .vz-lead {
+    text-shadow: 0 2px 14px rgb(var(--abyss-rgb) / 0.95);
+  }
+}
