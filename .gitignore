@@ -22,3 +22,5 @@ tmp-avi-ref/
 
 # Client Prisma généré (prisma generate au postinstall)
 src/generated/
+prisma/test.db
+prisma/test.db-journal

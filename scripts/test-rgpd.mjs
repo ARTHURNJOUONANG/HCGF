@@ -31,7 +31,7 @@ chargerEnv();
 
 const prisma = new PrismaClient();
 const BASE = process.env.BASE_URL ?? "http://localhost:3010";
-const SECRET = new TextEncoder().encode(process.env.AUTH_SECRET ?? "avi-dev-secret");
+const SECRET = new TextEncoder().encode(process.env.AUTH_SECRET || "avi-dev-secret-change-in-production-2026");
 
 function ok(label, cond, detail = "") {
   if (cond) console.log(`  OK  ${label}${detail ? ` — ${detail}` : ""}`);

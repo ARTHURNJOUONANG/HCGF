@@ -15,7 +15,8 @@
     "postinstall": "prisma generate",
     "typecheck": "next typegen && tsc --noEmit",
     "db:migrate:pg": "node scripts/migrer-postgres.mjs",
-    "db:migration:pg": "node scripts/nouvelle-migration-postgres.mjs"
+    "db:migration:pg": "node scripts/nouvelle-migration-postgres.mjs",
+    "test": "vitest run"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
@@ -45,6 +46,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.4"
   }
 }

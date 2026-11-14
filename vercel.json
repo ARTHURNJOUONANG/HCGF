@@ -1,4 +1,18 @@
 {
   "framework": "nextjs",
-  "buildCommand": "node scripts/prisma-postgres-schema.mjs && prisma generate --schema=prisma/postgres/schema.prisma && next build"
+  "buildCommand": "node scripts/prisma-postgres-schema.mjs && prisma generate --schema=prisma/postgres/schema.prisma && next build",
+  "crons": [
+    {
+      "path": "/api/cron/relances",
+      "schedule": "17 6 * * *"
+    },
+    {
+      "path": "/api/cron/reprise-api",
+      "schedule": "43 9 * * *"
+    },
+    {
+      "path": "/api/cron/maintenance",
+      "schedule": "11 2 * * *"
+    }
+  ]
 }

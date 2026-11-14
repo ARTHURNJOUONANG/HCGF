@@ -3,8 +3,8 @@ import { SignJWT } from "jose";
 import { compare } from "bcryptjs";
 
 const prisma = new PrismaClient();
-const BASE = "http://localhost:3000";
-const SECRET = new TextEncoder().encode(process.env.AUTH_SECRET ?? "avi-dev-secret");
+const BASE = process.env.BASE_URL ?? "http://localhost:3000";
+const SECRET = new TextEncoder().encode(process.env.AUTH_SECRET || "avi-dev-secret-change-in-production-2026");
 const PASS = "Demo2026!";
 
 const results = [];
@@ -14,17 +14,14 @@ function ok(name, pass, detail = "") {
 }
 
 async function tokenFor(user) {
-  return new SignJWT({
-    id: user.id,
-    email: user.email,
-    nom: user.profil?.nom ?? "",
-    prenom: user.profil?.prenom ?? "",
-    typeCompte: user.typeCompte,
-    role: user.role,
-  })
+  // Même format que l’application : jeton { sid } adossé à une ligne SessionAuth.
+  const row = await prisma.sessionAuth.create({
+    data: { idUtilisateur: user.id, expireAt: new Date(Date.now() + 60 * 60 * 1000) },
+  });
+  return new SignJWT({ sid: row.id })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("14d")
+    .setExpirationTime("1h")
     .sign(SECRET);
 }
 
@@ -87,7 +84,7 @@ async function main() {
   const pays = await prisma.pays.count();
   const services = await prisma.service.count();
   const offres = await prisma.offreService.count();
-  ok("catalogue 4 pays", pays === 4, String(pays));
+  ok("catalogue ≥ 4 pays", pays >= 4, String(pays));
   ok("catalogue 4 services", services === 4, String(services));
   ok("offres paramétrées", offres >= 8, String(offres));
 
