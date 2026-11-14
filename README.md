@@ -71,18 +71,18 @@ DUFFEL_VERSION=v2
 - signature / identité / suppression **non déléguables**
 - espaces `/delegations` et `/delegue`
 
+## LOT 7 — Hébergement
+
+- matching sur le **temps en transports ≤ 40 min** (voiture informative)
+- choix de logement, coordonnées bailleur masquées
+- liste d’attente s’il n’y a aucun compatible
+
 ## LOT 8 — Relances et exploitation
 
 - SLA Standard / Prioritaire / Urgent
 - relances J+2, J+5, J+7 puis tâche à J+10
 - échéances et réclamations SAV
 - file `/bureau/exploitation`
-
-## LOT 7 — Hébergement
-
-- matching sur le **temps en transports ≤ 40 min** (voiture informative)
-- choix de logement, coordonnées bailleur masquées
-- liste d’attente s’il n’y a aucun compatible
 
 ## LOT 9 — Fraude et contrôle renforcé
 
@@ -92,17 +92,17 @@ DUFFEL_VERSION=v2
 - balayage cron via maintenance ; analyse manuelle dossier
 - file `/bureau/fraude` : confirmer, lever, filtres
 
-## Démarrer
+## Démarrer (développement, SQLite)
 
 ```bash
-cd plateforme-avi
-npm install
-npx prisma migrate dev
-npx prisma db seed
+npm install            # génère aussi le client Prisma (postinstall)
+cp .env.example .env
+npx prisma migrate deploy
+npx prisma db seed     # catalogue + comptes démo (SQLite uniquement par défaut)
 npm run dev
 ```
 
-Ouvrir http://localhost:3000
+Ouvrir http://localhost:3000 — le code PD de l’équipe est écrit dans `prisma/code-acces-pd.txt`.
 
 Mot de passe démo : `Demo2026!`
 
@@ -112,4 +112,51 @@ Mot de passe démo : `Demo2026!`
 | Contrôleur | `conseiller.demo@avi.test` |
 | Administrateur | `signataire.demo@avi.test` |
 | Partenaire | `partenaire.demo@avi.test` |
-| Délégataire | `delegue.demo@avi.test` |
+| Délégataire | `delegue.demo@avi.test` (délégation active du candidat démo) |
+
+Docker (Postgres 16) : `npm run docker:up` puis http://localhost:3010.
+
+## Qualité
+
+| Commande | Rôle |
+|---|---|
+| `npm run lint` | ESLint |
+| `npm run typecheck` | Types Next + TypeScript (le build échoue aussi sur une erreur de type) |
+| `npm test` | Vitest sur une base SQLite dédiée (`prisma/test.db`) |
+| `npm run build` | Build de production |
+
+La CI GitHub (`.github/workflows/ci.yml`) enchaîne ces étapes et vérifie les migrations Postgres sur une base vide.
+
+## Base de données
+
+- **SQLite (dev)** : `prisma/schema.prisma`, migrations dans `prisma/migrations`.
+- **PostgreSQL (prod)** : schéma dérivé dans `prisma/postgres/schema.prisma` (généré), migrations versionnées dans `prisma/postgres/migrations`.
+
+Après une modification de `prisma/schema.prisma` :
+
+```bash
+npx prisma migrate dev --name ma_modif                                  # SQLite
+SHADOW_DATABASE_URL=postgresql://…/shadow npm run db:migration:pg -- ma_modif   # Postgres
+```
+
+Appliquer en production : `npm run db:migrate:pg` (ou `npm run db:prod` avec `.env.vercel`).
+Une base créée autrefois par `db push` est rattachée automatiquement à la migration `0_init`
+si, et seulement si, elle correspond exactement au schéma ; sinon le script s’arrête sans rien modifier.
+`--accept-data-loss` n’est plus utilisé.
+
+## Production — variables obligatoires
+
+| Variable | Pourquoi |
+|---|---|
+| `AUTH_SECRET` | 32 caractères minimum, jamais une valeur d’exemple (`openssl rand -hex 32`) |
+| `DATABASE_URL` | PostgreSQL |
+| `BLOB_READ_WRITE_TOKEN` | Stockage privé des pièces sur Vercel Blob (le disque Vercel est éphémère) |
+| `CRON_SECRET` | Tâches planifiées de `vercel.json` (relances, reprise API, maintenance) |
+
+Garde-fous :
+
+- **Paiements démo** (encaissement sans argent réel) interdits en production ; les moyens sans clés
+  sont masqués. `PAIEMENT_DEMO=1` les réactive pour une preview client uniquement.
+- **Comptes démo** non créés sur Postgres sauf `SEED_DEMO=1`.
+- **Webhooks de paiement** : seule une opération ouverte par le serveur, sur le même dossier, le même
+  moyen et le montant exact peut être confirmée ; un webhook rejoué n’est compté qu’une fois.

@@ -24,3 +24,4 @@ tmp-avi-ref/
 src/generated/
 prisma/test.db
 prisma/test.db-journal
+prisma/test-code-acces-pd.txt
