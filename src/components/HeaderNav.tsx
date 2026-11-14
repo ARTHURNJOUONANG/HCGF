@@ -18,6 +18,7 @@ import {
 import { deconnecter } from "@/lib/action-binds";
 import type { SessionUser } from "@/lib/auth";
 import { OrbitMenu, type OrbitItem } from "./OrbitMenu";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 export function HeaderNav({ user, unread = 0 }: { user: SessionUser; unread?: number }) {
   const initial = (user.prenom?.[0] ?? user.email[0] ?? "A").toUpperCase();
@@ -51,6 +52,7 @@ export function HeaderNav({ user, unread = 0 }: { user: SessionUser; unread?: nu
         <OrbitMenu items={items} label="Navigation" />
       </div>
       <div className="topbar-cluster">
+        <ThemeSwitcher />
         <Link href="/notifications" className="icon-btn" aria-label="Notifications" title="Notifications">
           <Bell size={18} strokeWidth={1.75} />
           {unread > 0 ? <span className="badge">{unread > 9 ? "9+" : unread}</span> : null}

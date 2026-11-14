@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import { Inter, Newsreader } from "next/font/google";
 import { Ambient } from "@/components/Surface";
 import { ToastHost } from "@/components/Feedback";
 import { InstallerApp } from "@/components/InstallerApp";
 import { CookieNotice } from "@/components/CookieNotice";
+import { COOKIE_THEME, themeParId, themeValide } from "@/lib/theme";
 import "./globals.css";
 
 const sans = Inter({
@@ -38,16 +40,29 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = {
-  themeColor: "#0055a4",
-  width: "device-width",
-  initialScale: 1,
-  viewportFit: "cover",
-};
+async function themeCourant() {
+  return themeValide((await cookies()).get(COOKIE_THEME)?.value);
+}
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export async function generateViewport(): Promise<Viewport> {
+  return {
+    themeColor: themeParId(await themeCourant()).couleurNavigateur,
+    width: "device-width",
+    initialScale: 1,
+    viewportFit: "cover",
+  };
+}
+
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Thème rendu côté serveur depuis le cookie : aucun flash de couleur au chargement.
+  const theme = await themeCourant();
   return (
-    <html lang="fr" className={`${sans.variable} ${display.variable} h-full`} suppressHydrationWarning>
+    <html
+      lang="fr"
+      data-theme={theme}
+      className={`${sans.variable} ${display.variable} h-full`}
+      suppressHydrationWarning
+    >
       <body className="min-h-full antialiased" suppressHydrationWarning>
         <Ambient />
         {children}

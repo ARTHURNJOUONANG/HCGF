@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Mark } from "./Surface";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 const NAV = [
   { href: "/", label: "Accueil" },
@@ -63,6 +64,7 @@ export function SiteHeader({ current = "/" }: { current?: string }) {
           <Link href="/connexion" onClick={() => setOpen(false)}>
             Connexion
           </Link>
+          <ThemeSwitcher />
           <Link href="/inscription" className="vitrine-cta" onClick={() => setOpen(false)}>
             Ouvrir un espace
           </Link>

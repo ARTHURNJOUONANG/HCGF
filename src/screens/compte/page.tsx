@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Shield } from "lucide-react";
 import { AppHeader, PageIntro } from "@/components/Chrome";
 import { FermerCompteForm, RevoquerSessionsForm } from "@/components/LotCompte";
+import { ThemeChoix } from "@/components/ThemeSwitcher";
 import { getSession } from "@/lib/auth";
 import { listerSessionsActives } from "@/lib/rgpd";
 import { unreadCount } from "@/lib/shell";
@@ -42,6 +43,13 @@ export default async function ComptePage() {
                 Politique &amp; mentions
               </Link>
             </p>
+          </section>
+
+          <section className="card p-4 sm:p-5 lg:col-span-2">
+            <p className="kicker">Apparence</p>
+            <h2 className="form-desk-title">Thème de l’interface</h2>
+            <p className="muted mt-1 mb-4 text-sm">Votre choix est mémorisé sur cet appareil.</p>
+            <ThemeChoix />
           </section>
 
           <section className="card p-4 sm:p-5">

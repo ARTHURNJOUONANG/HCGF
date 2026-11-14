@@ -1,6 +1,15 @@
 "use client";
 
 import { useEffect, useRef, type MutableRefObject } from "react";
+import { EVENEMENT_THEME } from "@/lib/theme";
+import { couleursDuTheme, creerTerre } from "./terre3d";
+
+/** Fond de scène : bleu abysse du thème courant. */
+function couleurFond() {
+  const rgb = getComputedStyle(document.documentElement).getPropertyValue("--abyss-rgb").trim() || "4 24 48";
+  const [r, g, b] = rgb.split(/\s+/).map(Number);
+  return (r << 16) | (g << 8) | b;
+}
 
 type Mode = "journey" | "ambience";
 
@@ -40,34 +49,6 @@ function samplePath(t: number) {
   };
 }
 
-function earthTexture(THREE: typeof import("three")) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 1024;
-  canvas.height = 512;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return null;
-  const sky = ctx.createLinearGradient(0, 0, 0, 512);
-  sky.addColorStop(0, "#0b3a7a");
-  sky.addColorStop(0.45, "#1a6fd4");
-  sky.addColorStop(1, "#06244a");
-  ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, 1024, 512);
-  ctx.fillStyle = "#b8a07a";
-  const land = (x: number, y: number, rx: number, ry: number) => {
-    ctx.beginPath();
-    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
-    ctx.fill();
-  };
-  land(540, 210, 78, 48);
-  land(590, 258, 48, 78);
-  land(210, 200, 96, 58);
-  land(840, 310, 64, 36);
-  land(400, 320, 40, 22);
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  return texture;
-}
-
 export function VitrineWorld({
   mode = "journey",
   progressRef,
@@ -100,38 +81,21 @@ export function VitrineWorld({
 
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setClearColor(0x041830, 1);
+      renderer.setClearColor(couleurFond(), 1);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.12;
       const scene = new THREE.Scene();
-      scene.fog = new THREE.Fog(0x041830, 14, 52);
+      scene.fog = new THREE.Fog(couleurFond(), 14, 52);
       const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 120);
 
-      const map = earthTexture(THREE);
-      const globe = new THREE.Mesh(
-        new THREE.SphereGeometry(1.28, 64, 64),
-        new THREE.MeshStandardMaterial({
-          map,
-          roughness: 0.48,
-          metalness: 0.08,
-          emissive: new THREE.Color("#0d4a9c"),
-          emissiveIntensity: 0.14,
-        }),
-      );
-      const ring = new THREE.Mesh(
-        new THREE.TorusGeometry(1.62, 0.028, 10, 80),
-        new THREE.MeshStandardMaterial({
-          color: 0xe30613,
-          emissive: 0xe30613,
-          emissiveIntensity: 0.35,
-          roughness: 0.4,
-          metalness: 0.45,
-        }),
-      );
-      ring.rotation.x = 1.12;
-      const world = new THREE.Group();
-      world.add(globe, ring);
+      const mobile = window.innerWidth < 768;
+      const terre = await creerTerre(THREE, 1.28, couleursDuTheme(), mobile);
+      if (disposed) {
+        terre.liberer();
+        return;
+      }
+      const world = terre.objet;
       world.position.set(1.6, 0.2, 3.8);
       scene.add(world);
 
@@ -164,7 +128,12 @@ export function VitrineWorld({
       );
 
       const guideGeo = new THREE.CylinderGeometry(0.012, 0.012, 2.4, 8);
-      const guideMat = new THREE.MeshBasicMaterial({ color: 0x1a6fd4, transparent: true, opacity: 0.22 });
+      const couleursInitiales = couleursDuTheme();
+      const guideMat = new THREE.MeshBasicMaterial({
+        color: new THREE.Color(couleursInitiales.atmosphere),
+        transparent: true,
+        opacity: 0.22,
+      });
       for (let i = 0; i < 8; i += 1) {
         const post = new THREE.Mesh(guideGeo, guideMat);
         post.position.set(i % 2 === 0 ? -2.8 : 2.8, -0.5, 2 - i * 5.4);
@@ -201,10 +170,10 @@ export function VitrineWorld({
         roughness: 0.36,
       });
       const brass = new THREE.MeshStandardMaterial({
-        color: 0xe30613,
+        color: new THREE.Color(couleursInitiales.accent),
         metalness: 0.55,
         roughness: 0.32,
-        emissive: 0xe30613,
+        emissive: new THREE.Color(couleursInitiales.accent),
         emissiveIntensity: 0.18,
       });
       const colGeo = new THREE.BoxGeometry(0.18, 3.5, 0.22);
@@ -270,8 +239,7 @@ export function VitrineWorld({
       const tick = () => {
         if (disposed) return;
         const t = performance.now() * 0.001;
-        globe.rotation.y = t * 0.12;
-        ring.rotation.z = t * 0.18;
+        terre.animer(t);
 
         const target =
           mode === "journey" ? (progressRef?.current ?? 0) : 0.05 + (Math.sin(t * 0.12) * 0.5 + 0.5) * 0.1;
@@ -289,20 +257,46 @@ export function VitrineWorld({
         warm.intensity = 12 + open * 18;
 
         renderer.render(scene, camera);
-        raf = requestAnimationFrame(tick);
+        cancelAnimationFrame(raf);
+        if (visible && !document.hidden) raf = requestAnimationFrame(tick);
       };
+      // Le thème change : la scène suit sans rechargement.
+      const surTheme = () => {
+        const c = couleursDuTheme();
+        terre.recolorer(c);
+        guideMat.color.set(c.atmosphere);
+        brass.color.set(c.accent);
+        brass.emissive.set(c.accent);
+        renderer.setClearColor(couleurFond(), 1);
+        scene.fog?.color.setHex(couleurFond());
+      };
+      window.addEventListener(EVENEMENT_THEME, surTheme);
+
+      // Pas de rendu quand la scène est hors écran ou l’onglet masqué (batterie, CPU).
+      let visible = true;
+      const io = new IntersectionObserver(([entree]) => {
+        const avant = visible;
+        visible = entree.isIntersecting;
+        if (visible && !avant && !document.hidden) raf = requestAnimationFrame(tick);
+      });
+      io.observe(canvas);
+      const surVisibilite = () => {
+        if (!document.hidden && visible) raf = requestAnimationFrame(tick);
+      };
+      document.addEventListener("visibilitychange", surVisibilite);
       tick();
 
       cleanup = () => {
         cancelAnimationFrame(raf);
         ro.disconnect();
+        io.disconnect();
+        window.removeEventListener(EVENEMENT_THEME, surTheme);
+        document.removeEventListener("visibilitychange", surVisibilite);
         renderer.dispose();
-        globe.geometry.dispose();
-        ring.geometry.dispose();
+        terre.liberer();
         colGeo.dispose();
         guideGeo.dispose();
         starGeo.dispose();
-        map?.dispose();
       };
     };
 
