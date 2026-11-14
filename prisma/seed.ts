@@ -1,3 +1,4 @@
+import { DROITS_DELEGABLES } from "../src/lib/droits";
 import { existsSync } from "fs";
 import { PrismaClient } from "../src/generated/prisma";
 import { hash } from "bcryptjs";
@@ -549,6 +550,42 @@ async function assurerComptesDemo() {
     idPartenaire: partenaire.id,
   });
   console.log("Compte partenaire partenaire.demo@avi.test");
+
+  await assurerCompte({
+    email: "delegue.demo@avi.test",
+    typeCompte: "delegataire",
+    role: "delegataire",
+    nom: "Diallo",
+    prenom: "Awa",
+    motDePasseHash,
+  });
+  const [mandant, mandataire] = await Promise.all([
+    prisma.utilisateur.findUnique({ where: { email: "candidat.demo@avi.test" } }),
+    prisma.utilisateur.findUnique({ where: { email: "delegue.demo@avi.test" } }),
+  ]);
+  if (mandant && mandataire) {
+    const active = await prisma.delegation.findFirst({
+      where: { idMandant: mandant.id, idMandataire: mandataire.id, statut: "active" },
+    });
+    if (!active) {
+      await prisma.delegation.create({
+        data: {
+          idMandant: mandant.id,
+          idMandataire: mandataire.id,
+          dateDebut: new Date().toISOString().slice(0, 10),
+          droits: { create: DROITS_DELEGABLES.map(([codeDroit]) => ({ codeDroit })) },
+        },
+      });
+    }
+  }
+  console.log("Compte délégataire delegue.demo@avi.test");
+}
+
+/** Comptes démo (mot de passe public) : jamais sur Postgres sans SEED_DEMO=1. */
+function comptesDemoAutorises() {
+  if (process.env.SEED_DEMO === "1") return true;
+  if (process.env.SEED_DEMO === "0") return false;
+  return !estPostgres();
 }
 
 async function main() {
@@ -635,7 +672,11 @@ async function main() {
       }
     }
   }
-  await assurerComptesDemo();
+  if (comptesDemoAutorises()) {
+    await assurerComptesDemo();
+  } else {
+    console.log("Comptes démo ignorés (Postgres). SEED_DEMO=1 pour les créer.");
+  }
 
   // Migration des anciens rôles (conseiller → contrôleur, signataire → administrateur).
   const migControleur = await prisma.utilisateur.updateMany({

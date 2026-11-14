@@ -11,7 +11,9 @@
     "db:setup": "prisma migrate dev --name init && prisma db seed",
     "db:status": "node scripts/db-status.mjs",
     "db:prod": "node scripts/sync-prod-schema.mjs",
-    "docker:up": "docker compose up --build"
+    "docker:up": "docker compose up --build",
+    "postinstall": "prisma generate",
+    "typecheck": "tsc --noEmit"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"

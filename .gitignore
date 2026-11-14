@@ -18,3 +18,6 @@ skills-lock.json
 data/code-acces-pd.txt
 data/*.txt
 tmp-avi-ref/
+
+# Client Prisma généré (prisma generate au postinstall)
+src/generated/
