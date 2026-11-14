@@ -641,6 +641,9 @@ a.vitrine-cta:hover {
 }
 
 .vz-catalog li {
+  /* Au-dessus du canvas 3D fixe de la page. */
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 20px;
   padding: 20px;

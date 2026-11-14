@@ -158,7 +158,9 @@ async function connecterCompte(identifiants: {
   codeAcces: string;
   acceptConfidentialite?: boolean;
 }) {
-  const quota = await limiterAction("connexion", 25);
+  // Plafond global par IP (réseaux partagés : bureaux, campus). Une connexion équipe compte
+  // 2 soumissions (code), les échecs restent limités à part (20 / IP, verrou après 5 / compte).
+  const quota = await limiterAction("connexion", 60);
   if ("error" in quota) return quota;
 
   const email = identifiants.email.trim().toLowerCase();
