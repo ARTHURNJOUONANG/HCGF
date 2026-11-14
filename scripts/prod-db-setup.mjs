@@ -39,12 +39,12 @@ function run(cmd, args) {
 }
 
 run("node", ["scripts/prisma-postgres-schema.mjs"]);
-run("npx", ["prisma", "generate", "--schema=prisma/schema.postgres.prisma"]);
-run("npx", ["prisma", "db", "push", "--schema=prisma/schema.postgres.prisma", "--accept-data-loss"]);
+run("npx", ["prisma", "generate", "--schema=prisma/postgres/schema.prisma"]);
+run("node", ["scripts/migrer-postgres.mjs"]);
 run("npx", ["tsx", "prisma/seed.ts"]);
 run("npx", ["prisma", "generate"]);
 
-const vercel = join(root, "node_modules", ".bin", "vercel.cmd");
+const vercel = join(root, "node_modules", ".bin", process.platform === "win32" ? "vercel.cmd" : "vercel");
 const secret = randomBytes(32).toString("hex");
 const envTargets = "production,preview,development";
 const auth = spawnSync(

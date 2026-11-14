@@ -14,7 +14,7 @@ RUN npm install --include=dev
 
 COPY . .
 RUN node scripts/prisma-postgres-schema.mjs \
-  && npx prisma generate --schema=prisma/schema.postgres.prisma \
+  && npx prisma generate --schema=prisma/postgres/schema.prisma \
   && npm run build
 
 ENV NODE_ENV=production

@@ -13,7 +13,9 @@
     "db:prod": "node scripts/sync-prod-schema.mjs",
     "docker:up": "docker compose up --build",
     "postinstall": "prisma generate",
-    "typecheck": "next typegen && tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "db:migrate:pg": "node scripts/migrer-postgres.mjs",
+    "db:migration:pg": "node scripts/nouvelle-migration-postgres.mjs"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"

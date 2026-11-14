@@ -38,7 +38,7 @@ function run(cmd, args) {
 }
 
 run("node", ["scripts/prisma-postgres-schema.mjs"]);
-run("npx", ["prisma", "generate", "--schema=prisma/schema.postgres.prisma"]);
+run("npx", ["prisma", "generate", "--schema=prisma/postgres/schema.prisma"]);
 
 const { PrismaClient } = await import("../src/generated/prisma/index.js");
 const prisma = new PrismaClient();

@@ -10,6 +10,7 @@ storage/mail-journal.jsonl
 
 .vercel
 prisma/schema.postgres.prisma
+prisma/postgres/schema.prisma
 .env.local
 .env.vercel
 src/generated/prisma/*.tmp*
