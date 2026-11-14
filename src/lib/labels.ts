@@ -64,7 +64,7 @@ export function libelleEcheance(type: string) {
     reponse_dossier: "Réponse dossier",
     paiement: "Paiement",
     document: "Document",
-    hold: "Hold",
+    hold: "Réservation",
     sla: "SLA",
   };
   return labels[type] ?? type;

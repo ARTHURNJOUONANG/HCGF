@@ -36,7 +36,7 @@ export function SiteHeader({ current = "/" }: { current?: string }) {
     <header className={`vitrine-header${open ? " is-open" : ""}`}>
       <div className="vitrine-shell vitrine-header-row">
         <Link href="/" aria-label="Accueil HCGF" className="brand-link" onClick={() => setOpen(false)}>
-          <Mark light />
+          <Mark />
         </Link>
         <button
           type="button"

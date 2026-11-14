@@ -24,7 +24,7 @@ const notes: Record<string, string> = {
   AVI: "Justificatif financier",
   ASSURANCE: "Couverture du séjour",
   HEBERGEMENT: "Attestation de logement",
-  VOL: "Hold / Pay Later",
+  VOL: "Réserver sans payer tout de suite",
 };
 
 export function NouvelleDemandeForm({

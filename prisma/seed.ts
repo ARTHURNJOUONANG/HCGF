@@ -281,7 +281,7 @@ const offres: {
   {
     pays: "FR",
     service: "VOL",
-    texte: "Vol Hold Afrique ↔ France (CDG/ORY). Compagnies : Air France, Brussels Airlines, Royal Air Maroc…",
+    texte: "Réservation de vol sans paiement immédiat, Afrique ↔ France (CDG/ORY). Compagnies : Air France, Brussels Airlines, Royal Air Maroc…",
     etapes: ["recherche", "passager", "hold", "justificatif"],
     champs: [
       ...champsIdentite(),
@@ -295,7 +295,7 @@ const offres: {
   {
     pays: "DE",
     service: "VOL",
-    texte: "Vol Hold Afrique ↔ Allemagne (FRA, BER, MUC). Lufthansa, Ethiopian, EgyptAir…",
+    texte: "Réservation de vol sans paiement immédiat, Afrique ↔ Allemagne (FRA, BER, MUC). Lufthansa, Ethiopian, EgyptAir…",
     etapes: ["recherche", "passager", "hold", "justificatif"],
     champs: [
       ...champsIdentite(),
@@ -309,7 +309,7 @@ const offres: {
   {
     pays: "BE",
     service: "VOL",
-    texte: "Vol Hold Afrique ↔ Belgique (BRU). Brussels Airlines, Air France…",
+    texte: "Réservation de vol sans paiement immédiat, Afrique ↔ Belgique (BRU). Brussels Airlines, Air France…",
     etapes: ["recherche", "passager", "hold", "justificatif"],
     champs: [
       ...champsIdentite(),
@@ -323,7 +323,7 @@ const offres: {
   {
     pays: "IT",
     service: "VOL",
-    texte: "Vol Hold Afrique ↔ Italie (FCO, MXP, LIN). ITA Airways, Air France, Ethiopian…",
+    texte: "Réservation de vol sans paiement immédiat, Afrique ↔ Italie (FCO, MXP, LIN). ITA Airways, Air France, Ethiopian…",
     etapes: ["recherche", "passager", "hold", "justificatif"],
     champs: [
       ...champsIdentite(),
@@ -337,7 +337,7 @@ const offres: {
   {
     pays: "CA",
     service: "VOL",
-    texte: "Vol Hold Afrique / Europe ↔ Canada (YUL, YYZ). Air Canada, Air France…",
+    texte: "Réservation de vol sans paiement immédiat, Afrique / Europe ↔ Canada (YUL, YYZ). Air Canada, Air France…",
     etapes: ["recherche", "passager", "hold", "justificatif"],
     champs: [
       ...champsIdentite(),

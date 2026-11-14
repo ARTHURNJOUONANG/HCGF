@@ -80,7 +80,7 @@ export const SERVICES = [
     slug: "vol",
     image: "/hcgf/vol.jpg",
     title: "Réservation du billet d’avion",
-    text: "Hold / Pay Later, PNR et justificatif « réservation confirmée — billet non émis ».",
+    text: "Place réservée sans payer tout de suite, numéro de réservation et justificatif « réservation confirmée — billet non émis ».",
   },
 ];
 

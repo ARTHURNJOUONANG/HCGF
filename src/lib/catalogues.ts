@@ -261,8 +261,8 @@ export function chercherVols(depart: string, arrivee: string) {
 export function libelleStatutVol(statut: string) {
   const labels: Record<string, string> = {
     SEARCHED: "Recherché",
-    HOLD_PENDING: "Hold en cours",
-    HELD: "Hold confirmé",
+    HOLD_PENDING: "Réservation en cours",
+    HELD: "Place réservée",
     EXPIRING_SOON: "Expire bientôt",
     EXPIRED: "Expiré",
     CANCELLED: "Annulé",

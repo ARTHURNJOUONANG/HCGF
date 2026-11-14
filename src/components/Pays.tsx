@@ -50,12 +50,13 @@ function FlagSvg({ code }: { code: string }) {
       );
     case "CA":
       return (
-        <svg viewBox="0 0 36 24" aria-hidden>
-          <rect width="36" height="24" fill="#d52b1e" />
-          <rect x="9" width="18" height="24" fill="#fff" />
+        <svg viewBox="0 0 9600 4800" preserveAspectRatio="xMidYMid slice" aria-hidden>
+          <rect width="9600" height="4800" fill="#d52b1e" />
+          <rect x="2400" width="4800" height="4800" fill="#fff" />
+          {/* Feuille d’érable : géométrie officielle du drapeau canadien. */}
           <path
             fill="#d52b1e"
-            d="M18 5.2 19.1 9.6l4.6-1.6-3 3.6 4.8 1.3-5.4 1.4 1.3 4.3L18 16.2l-3.4 2.4 1.3-4.3-5.4-1.4 4.8-1.3-3-3.6 4.6 1.6Z"
+            d="m4890 4430-45-863a95 95 0 0 1 111-98l859 151-116-320a65 65 0 0 1 20-73l941-762-212-99a65 65 0 0 1-34-79l186-572-542 115a65 65 0 0 1-73-38l-105-247-423 454a65 65 0 0 1-111-57l204-1052-327 189a65 65 0 0 1-91-27l-332-652-332 652a65 65 0 0 1-91 27l-327-189 204 1052a65 65 0 0 1-111 57l-423-454-105 247a65 65 0 0 1-73 38l-542-115 186 572a65 65 0 0 1-34 79l-212 99 941 762a65 65 0 0 1 20 73l-116 320 859-151a95 95 0 0 1 111 98l-45 863z"
           />
         </svg>
       );

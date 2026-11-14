@@ -93,7 +93,7 @@ const OFFRES_IT = [
   },
   {
     service: "VOL",
-    texte: "Vol Hold Afrique ↔ Italie (FCO, MXP, LIN). ITA Airways, Air France, Ethiopian…",
+    texte: "Réservation de vol sans paiement immédiat, Afrique ↔ Italie (FCO, MXP, LIN). ITA Airways, Air France, Ethiopian…",
     etapes: ["recherche", "passager", "hold", "justificatif"],
     montant: 3900,
     champs: [

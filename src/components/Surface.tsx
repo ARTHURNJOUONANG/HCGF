@@ -35,7 +35,12 @@ export function Mark({ light = false }: { light?: boolean }) {
   return (
     <span className={light ? "brand-mark brand-mark-on-dark" : "brand-mark"}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/hcgf/logo.png?v=4" alt="HCGF — Horizon Caution & Garantie Financière" />
+      <img
+        src="/hcgf/logo-transparent.webp"
+        width={480}
+        height={199}
+        alt="HCGF — Horizon Caution & Garantie Financière"
+      />
     </span>
   );
 }

@@ -195,7 +195,7 @@ export async function creerHoldDuffel(opts: {
     idDemande: opts.demandeId,
     appeler: async () => {
       if (opts.offre.hold === false) {
-        return { ok: false as const, erreur: "Hold interdit : paiement immédiat exigé." };
+        return { ok: false as const, erreur: "Cette offre doit être payée immédiatement : réservation sans paiement impossible." };
       }
 
       const offreLive = opts.offre.code.startsWith("off_");

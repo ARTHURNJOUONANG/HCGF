@@ -29,7 +29,7 @@ export default async function NouvelleDemandePage() {
         <PageIntro
           kicker="Nouvelle demande"
           title="Quel service ouvrez-vous ?"
-          text="Le pays détermine ensuite le formulaire, les pièces et les règles. Rien n’est figé dans le code."
+          text="Choisissez le service puis le pays : le formulaire et la liste des pièces s’adaptent automatiquement."
         />
         <NouvelleDemandeForm
           pays={pays}

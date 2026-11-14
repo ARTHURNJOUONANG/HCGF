@@ -158,10 +158,6 @@ async function connecterCompte(identifiants: {
   codeAcces: string;
   acceptConfidentialite?: boolean;
 }) {
-  if (!identifiants.acceptConfidentialite) {
-    return { error: "Acceptez la politique de confidentialité pour continuer." };
-  }
-
   const quota = await limiterAction("connexion", 25);
   if ("error" in quota) return quota;
 
@@ -172,11 +168,20 @@ async function connecterCompte(identifiants: {
   const resultat = await tenterConnexion(email, password);
   if ("error" in resultat) return { error: resultat.error };
 
+  // Étapes supplémentaires demandées seulement quand elles s’appliquent à ce compte.
   if (resultat.user.typeCompte === "collaborateur") {
+    if (!identifiants.codeAcces.trim()) {
+      return { etape: "code" as const };
+    }
     const codeOk = await verifierCodeAccesRoles(identifiants.codeAcces);
     if (!codeOk) {
-      return { error: "Le code d’accès n’est pas reconnu. Recopiez-le depuis le champ sous le mot de passe." };
+      return { etape: "code" as const, error: "Ce code d’accès n’est pas reconnu. Vérifiez-le auprès de votre administrateur." };
     }
+  }
+
+  const { aAccepteVersionsActives, politiqueActive } = await import("./lot6");
+  if (!identifiants.acceptConfidentialite && !(await aAccepteVersionsActives(resultat.user.id))) {
+    return { etape: "politique" as const, politique: await politiqueActive() };
   }
 
   await prisma.utilisateur.update({

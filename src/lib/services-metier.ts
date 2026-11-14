@@ -367,7 +367,7 @@ export async function emettreJustificatifVol(formData: FormData) {
     where: { id, idUtilisateur: user.id },
     include: { segments: { orderBy: { ordre: "asc" } }, passagers: true, demande: true },
   });
-  if (!reservation || reservation.statut !== "HELD") return { error: "Hold non confirmé." };
+  if (!reservation || reservation.statut !== "HELD") return { error: "La réservation n’est pas encore confirmée." };
 
   const segs = reservation.segments
     .map((s) => `<tr><td>${s.aeroportDepart} → ${s.aeroportArrivee}</td><td>${s.depart}–${s.arrivee}</td><td>${s.transporteurCommercial}</td></tr>`)

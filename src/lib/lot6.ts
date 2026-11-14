@@ -91,6 +91,20 @@ function ipDepuis(h: Headers) {
   return h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "";
 }
 
+/** Vrai si l’utilisateur a déjà accepté les versions en vigueur des CGV et de la politique. */
+export async function aAccepteVersionsActives(userId: string) {
+  const docs = (await documentsActifs()).filter((d) => d.type === "cgv" || d.type === "confidentialite");
+  const acceptees = await prisma.acceptation.count({
+    where: { idUtilisateur: userId, idDemande: null, idDocumentContractuel: { in: docs.map((d) => d.id) } },
+  });
+  return acceptees >= docs.length;
+}
+
+export async function politiqueActive() {
+  const politique = (await documentsActifs()).find((d) => d.type === "confidentialite");
+  return { version: politique?.numeroVersion ?? "2026.2", contenu: politique?.contenu ?? "" };
+}
+
 export async function enregistrerAcceptations(userId: string, idDemande?: string) {
   const docs = (await documentsActifs()).filter((d) => d.type === "cgv" || d.type === "confidentialite");
   const h = await headers();

@@ -43,7 +43,7 @@ const etapeLabel: Record<string, string> = {
   signature: "Signature",
   recherche: "Recherche",
   passager: "Passager",
-  hold: "Hold",
+  hold: "Réservation",
   justificatif: "Justificatif",
 };
 

@@ -39,7 +39,7 @@ export default async function VolsPage() {
       <AppHeader user={session} unread={unread} />
       <main className="shell py-6 sm:py-8">
         <PageIntro
-          kicker="Hold / Pay Later"
+          kicker="Réservation sans paiement immédiat"
           title="Mes vols"
           text="Posez un Hold, puis payez avant la date limite pour émettre le billet."
         />

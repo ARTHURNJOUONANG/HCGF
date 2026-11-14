@@ -3992,3 +3992,129 @@ body:has(.vitrine-header.is-open) {
     transition: none;
   }
 }
+
+/* ───────── Connexion ───────── */
+.password-wrap {
+  position: relative;
+  display: block;
+}
+
+.password-wrap input {
+  width: 100%;
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.password-toggle:hover {
+  background: rgb(var(--blue-rgb) / 0.08);
+  color: var(--ink);
+}
+
+.login-step {
+  animation: step-in 0.35s var(--ease-out) both;
+}
+
+.login-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.login-policy {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid rgb(var(--accent-rgb) / 0.3);
+  border-radius: 12px;
+  background: rgb(var(--accent-rgb) / 0.05);
+}
+
+.login-policy-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.login-policy summary {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+
+.login-policy-body {
+  max-height: 180px;
+  margin-top: 8px;
+  overflow-y: auto;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: var(--muted);
+}
+
+.form-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgb(var(--accent-rgb) / 0.08);
+  color: var(--accent-ink);
+  font-size: 14px;
+  animation: shake 0.4s var(--ease) both;
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes shake {
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-step,
+  .form-error,
+  .spin {
+    animation: none;
+  }
+}
