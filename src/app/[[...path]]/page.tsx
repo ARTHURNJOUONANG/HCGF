@@ -42,7 +42,7 @@ export default async function CatchAllPage({
   searchParams,
 }: {
   params: Promise<{ path?: string[] }>;
-  searchParams: Promise<{ role?: string; onglet?: string; pay?: string; filtre?: string }>;
+  searchParams: Promise<{ role?: string; onglet?: string; pay?: string; filtre?: string; service?: string }>;
 }) {
   const { path = [] } = await params;
   const sp = searchParams;
@@ -64,7 +64,7 @@ export default async function CatchAllPage({
   if (path.length === 1 && a === "vols") return VolsPage();
   if (path.length === 1 && a === "delegue") return DelegueHomePage();
   if (path.length === 1 && a === "delegations") return DelegationsPage();
-  if (path.length === 2 && a === "demandes" && b === "nouvelle") return NouvelleDemandePage();
+  if (path.length === 2 && a === "demandes" && b === "nouvelle") return NouvelleDemandePage({ searchParams: sp });
   if (path.length === 2 && a === "demandes" && b) {
     return DemandePage({ params: asParams({ id: b }), searchParams: sp });
   }

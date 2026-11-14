@@ -28,15 +28,17 @@ const notes: Record<string, string> = {
 };
 
 export function NouvelleDemandeForm({
+  serviceInitial,
   pays,
   services,
   offres,
 }: {
+  serviceInitial?: string;
   pays: { code: string; libelle: string }[];
   services: { code: string; libelle: string }[];
   offres: OffreLite[];
 }) {
-  const [service, setService] = useState("AVI");
+  const [service, setService] = useState(serviceInitial ?? "AVI");
   const [paysCode, setPaysCode] = useState("FR");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);

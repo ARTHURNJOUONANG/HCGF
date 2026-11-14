@@ -5,7 +5,12 @@ import { prisma } from "@/lib/prisma";
 import { NouvelleDemandeForm } from "./ui";
 import { assurerPaysOuverts } from "@/lib/ouvrir-catalogue";
 
-export default async function NouvelleDemandePage() {
+export default async function NouvelleDemandePage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ service?: string }>;
+} = {}) {
+  const serviceDemande = (await searchParams)?.service;
   const session = await getSession();
   if (!session) redirect("/connexion");
   if (session.typeCompte === "partenaire") redirect("/partenaire/nouvelle");
@@ -32,6 +37,7 @@ export default async function NouvelleDemandePage() {
           text="Choisissez le service puis le pays : le formulaire et la liste des pièces s’adaptent automatiquement."
         />
         <NouvelleDemandeForm
+          serviceInitial={services.some((s) => s.code === serviceDemande) ? serviceDemande : undefined}
           pays={pays}
           services={services}
           offres={offres.map((o) => ({

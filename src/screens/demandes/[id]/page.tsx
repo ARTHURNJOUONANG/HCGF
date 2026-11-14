@@ -1,3 +1,4 @@
+import { EtapesDossier, prochaineAction } from "@/components/EspaceCandidat";
 import { notFound, redirect } from "next/navigation";
 import {
   CreditCard,
@@ -31,21 +32,6 @@ import { FormulaireDynamique } from "./ui";
 import { ContratBoard } from "./contrat";
 import { htmlContratAvi } from "@/lib/contrat-avi";
 
-const etapeLabel: Record<string, string> = {
-  formulaire: "Formulaire",
-  contrat: "Contrat",
-  documents: "Documents",
-  paiement: "Paiement",
-  validation: "Validation",
-  tarification: "Tarif",
-  attestation: "Attestation",
-  matching: "Matching",
-  signature: "Signature",
-  recherche: "Recherche",
-  passager: "Passager",
-  hold: "Réservation",
-  justificatif: "Justificatif",
-};
 
 export default async function DemandePage({
   params,
@@ -139,13 +125,17 @@ export default async function DemandePage({
           aside={<StatusPill statut={demande.statut} />}
         />
 
-        <ol className="step-list">
-          {etapes.map((etape, i) => (
-            <li key={etape} className={`step-chip${i + 1 === index ? " is-on" : ""}`}>
-              {etapeLabel[etape] ?? etape}
-            </li>
-          ))}
-        </ol>
+        <EtapesDossier etapes={etapes} courante={etapes[index - 1] ?? demande.etapeCourante} />
+        {(() => {
+          const suite = prochaineAction(demande.etapeCourante);
+          return (
+            <p className={`next-step next-step-banner is-${suite.ton}`}>
+              <span className="next-step-dot" aria-hidden />
+              {suite.ton === "action" ? "Prochaine étape : " : ""}
+              {suite.texte}
+            </p>
+          );
+        })()}
 
         <BanniereCroisee demandeId={demande.id} service={service} />
 

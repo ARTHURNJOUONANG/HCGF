@@ -63,7 +63,6 @@ export default async function ComptePage() {
               {session.role ? ` · ${session.role}` : ""}
             </p>
             {/* Téléchargement d’API : un <Link> préchargerait l’export. */}
-            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/api/compte/export" download className="btn btn-primary mt-6 inline-flex">
               Télécharger mes données
             </a>

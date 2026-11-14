@@ -19,6 +19,7 @@ import { deconnecter } from "@/lib/action-binds";
 import type { SessionUser } from "@/lib/auth";
 import { OrbitMenu, type OrbitItem } from "./OrbitMenu";
 import { ThemeSwitcher } from "./ThemeSwitcher";
+import { LiensEntete } from "./NavActive";
 
 export function HeaderNav({ user, unread = 0 }: { user: SessionUser; unread?: number }) {
   const initial = (user.prenom?.[0] ?? user.email[0] ?? "A").toUpperCase();
@@ -35,18 +36,7 @@ export function HeaderNav({ user, unread = 0 }: { user: SessionUser; unread?: nu
   return (
     <div className="topbar-actions">
       <div className="header-linear">
-        {items.map((item) =>
-          item.compact ? (
-            <Link key={item.href} href={item.href} className="icon-btn" aria-label={item.label} title={item.label}>
-              {item.icon}
-            </Link>
-          ) : (
-            <Link key={item.href} href={item.href} className="icon-nav" title={item.label}>
-              {item.icon}
-              <span>{item.label}</span>
-            </Link>
-          ),
-        )}
+        <LiensEntete items={items} />
       </div>
       <div className="header-orbit">
         <OrbitMenu items={items} label="Navigation" />
@@ -70,17 +60,28 @@ export function HeaderNav({ user, unread = 0 }: { user: SessionUser; unread?: nu
   );
 }
 
+/** Onglets de la barre mobile (candidat). */
+export function ongletsMobileCandidat(unread: number) {
+  return [
+    { href: "/tableau-de-bord", label: "Dossiers", icon: <FolderOpen size={21} strokeWidth={1.75} /> },
+    { href: "/demandes/nouvelle", label: "Nouvelle", icon: <Plus size={21} strokeWidth={2} /> },
+    { href: "/vols", label: "Vols", icon: <Plane size={21} strokeWidth={1.75} /> },
+    { href: "/notifications", label: "Alertes", icon: <Bell size={21} strokeWidth={1.75} />, badge: unread },
+    { href: "/compte", label: "Compte", icon: <UserRound size={21} strokeWidth={1.75} /> },
+  ];
+}
+
 function liensPour(user: SessionUser): (OrbitItem & { compact?: boolean })[] {
   if (user.typeCompte === "collaborateur") {
     return [
       { href: "/bureau", label: "Dossiers", icon: <FolderOpen size={20} strokeWidth={1.75} /> },
       { href: "/bureau/taches", label: "Tâches", icon: <ClipboardList size={20} strokeWidth={1.75} /> },
       { href: "/bureau/finance", label: "Finance", icon: <Wallet size={20} strokeWidth={1.75} /> },
-      { href: "/bureau/fraude", label: "Fraude", icon: <ShieldAlert size={20} strokeWidth={1.75} />, compact: true },
-      { href: "/bureau/equipe", label: "Équipe", icon: <Users size={20} strokeWidth={1.75} />, compact: true },
-      { href: "/bureau/partenaires", label: "Partenaires", icon: <Handshake size={20} strokeWidth={1.75} />, compact: true },
-      { href: "/bureau/exploitation", label: "Exploitation", icon: <LifeBuoy size={20} strokeWidth={1.75} />, compact: true },
-      { href: "/bureau/audit", label: "Audit", icon: <ScrollText size={20} strokeWidth={1.75} />, compact: true },
+      { href: "/bureau/fraude", label: "Fraude", icon: <ShieldAlert size={20} strokeWidth={1.75} /> },
+      { href: "/bureau/equipe", label: "Équipe", icon: <Users size={20} strokeWidth={1.75} /> },
+      { href: "/bureau/partenaires", label: "Partenaires", icon: <Handshake size={20} strokeWidth={1.75} /> },
+      { href: "/bureau/exploitation", label: "Exploitation", icon: <LifeBuoy size={20} strokeWidth={1.75} /> },
+      { href: "/bureau/audit", label: "Audit", icon: <ScrollText size={20} strokeWidth={1.75} /> },
     ];
   }
   if (user.typeCompte === "delegataire") {
@@ -88,14 +89,16 @@ function liensPour(user: SessionUser): (OrbitItem & { compact?: boolean })[] {
   }
   if (user.typeCompte === "partenaire") {
     return [
-      { href: "/partenaire/nouvelle", label: "Initier", icon: <Plus size={18} strokeWidth={2} />, compact: true },
+      { href: "/partenaire", label: "Apports", icon: <FolderOpen size={20} strokeWidth={1.75} /> },
+      { href: "/partenaire/nouvelle", label: "Initier", icon: <Plus size={20} strokeWidth={2} /> },
       { href: "/partenaire/commissions", label: "Commissions", icon: <Percent size={20} strokeWidth={1.75} /> },
-      { href: "/partenaire/statuts", label: "Statuts", icon: <ScrollText size={20} strokeWidth={1.75} />, compact: true },
+      { href: "/partenaire/statuts", label: "Statuts", icon: <ScrollText size={20} strokeWidth={1.75} /> },
     ];
   }
   return [
-    { href: "/demandes/nouvelle", label: "Nouvelle", icon: <Plus size={18} strokeWidth={2} />, compact: true },
-    { href: "/delegations", label: "Délégations", icon: <Users size={20} strokeWidth={1.75} />, compact: true },
-    { href: "/vols", label: "Vols", icon: <Plane size={20} strokeWidth={1.75} />, compact: true },
+    { href: "/tableau-de-bord", label: "Dossiers", icon: <FolderOpen size={20} strokeWidth={1.75} /> },
+    { href: "/demandes/nouvelle", label: "Nouvelle", icon: <Plus size={20} strokeWidth={2} /> },
+    { href: "/vols", label: "Vols", icon: <Plane size={20} strokeWidth={1.75} /> },
+    { href: "/delegations", label: "Délégations", icon: <Users size={20} strokeWidth={1.75} /> },
   ];
 }

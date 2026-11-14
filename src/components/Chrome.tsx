@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import type { SessionUser } from "@/lib/auth";
-import { HeaderNav } from "./HeaderNav";
+import { HeaderNav, ongletsMobileCandidat } from "./HeaderNav";
+import { BarreMobile } from "./NavActive";
 import { Mark, StatusPill } from "./Surface";
 import { SiteHeader } from "./SiteHeader";
 
@@ -27,14 +28,18 @@ export function AppHeader({
           ? "/delegue"
           : "/tableau-de-bord";
   return (
-    <header className="topbar">
-      <div className="shell flex min-w-0 items-center justify-between gap-3 py-3">
-        <Link href={home} aria-label="Accueil" className="shrink-0">
-          <Mark />
-        </Link>
-        <HeaderNav user={user} unread={unread} />
-      </div>
-    </header>
+    <>
+      <header className="topbar">
+        <div className="shell flex min-w-0 items-center justify-between gap-3 py-3">
+          <Link href={home} aria-label="Accueil" className="shrink-0">
+            <Mark />
+          </Link>
+          <HeaderNav user={user} unread={unread} />
+        </div>
+      </header>
+      {/* Hors de l’en-tête : son backdrop-filter piégerait le position: fixed. */}
+      {user.typeCompte === "candidat" ? <BarreMobile items={ongletsMobileCandidat(unread)} /> : null}
+    </>
   );
 }
 

@@ -161,6 +161,7 @@ export function DossierTile({
   statut,
   pill,
   progress,
+  nextStep,
 }: {
   href: string;
   reference: string;
@@ -171,6 +172,7 @@ export function DossierTile({
   statut?: string;
   pill?: ReactNode;
   progress?: number;
+  nextStep?: { texte: string; ton: "action" | "attente" | "fini" };
 }) {
   return (
     <Link href={href} className="dossier card lift" data-service={service ?? ""}>
@@ -186,6 +188,13 @@ export function DossierTile({
           <ChevronRight size={18} className="dossier-chevron" />
         </div>
       </div>
+      {nextStep ? (
+        <p className={`next-step is-${nextStep.ton}`}>
+          <span className="next-step-dot" aria-hidden />
+          {nextStep.ton === "action" ? "À faire : " : ""}
+          {nextStep.texte}
+        </p>
+      ) : null}
       {typeof progress === "number" ? (
         <div className="dossier-progress">
           <div className="progress flex-1">

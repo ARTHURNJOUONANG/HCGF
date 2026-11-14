@@ -2,7 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Plus } from "lucide-react";
 import { AppHeader, PageIntro } from "@/components/Chrome";
-import { DossierTile, EmptyHint, StatTile } from "@/components/Surface";
+import { DossierTile, StatTile } from "@/components/Surface";
+import { BienvenueCandidat, prochaineAction } from "@/components/EspaceCandidat";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { SERVICES } from "@/lib/metier";
@@ -33,34 +34,32 @@ export default async function TableauDeBordPage() {
       <main className="shell py-6 sm:py-8">
         <PageIntro
           kicker={`Bonjour ${session.prenom || ""}`.trim()}
-          title="Mes demandes"
-          text="Chaque dossier reste isolé. Documents et historique ne se mélangent jamais."
+          title={demandes.length === 0 ? "Bienvenue dans votre espace" : "Mes demandes"}
+          text={
+            demandes.length === 0
+              ? "Préparez votre départ étape par étape. Chaque démarche a son propre dossier, sécurisé et suivi par notre équipe."
+              : "Chaque dossier reste isolé. Documents et historique ne se mélangent jamais."
+          }
           action={
-            <Link href="/demandes/nouvelle" className="btn btn-primary">
-              <Plus size={16} />
-              Nouvelle
-            </Link>
+            demandes.length === 0 ? undefined : (
+              <Link href="/demandes/nouvelle" className="btn btn-primary">
+                <Plus size={16} />
+                Nouvelle demande
+              </Link>
+            )
           }
         />
 
-        <section className="stagger mt-6 grid gap-3 sm:grid-cols-3">
-          <StatTile label="Dossiers" value={String(demandes.length)} hint="Tous services confondus" />
-          <StatTile label="Brouillons" value={String(brouillons)} hint="À compléter" />
-          <StatTile label="En cours" value={String(enCours)} hint="Chez l’équipe AVI" />
+        {demandes.length === 0 ? (
+          <BienvenueCandidat />
+        ) : (
+          <>
+        <section className="stagger stat-row mt-6">
+          <StatTile label="Dossiers" value={String(demandes.length)} hint="Tous services" />
+          <StatTile label="À compléter" value={String(brouillons)} hint="Brouillons" />
+          <StatTile label="En cours" value={String(enCours)} hint="Chez l’équipe" />
         </section>
 
-        {demandes.length === 0 ? (
-          <EmptyHint
-            title="Aucun dossier"
-            text="Choisissez un service et un pays. Le formulaire s’ouvre tout de suite."
-            action={
-              <Link href="/demandes/nouvelle" className="btn btn-primary mt-6">
-                <Plus size={16} />
-                Ouvrir
-              </Link>
-            }
-          />
-        ) : (
           <ul className="stagger mt-8 space-y-3">
             {demandes.map((d) => (
               <li key={d.id}>
@@ -81,10 +80,12 @@ export default async function TableauDeBordPage() {
                   }
                   statut={d.statut}
                   progress={d.pourcentageAvancement}
+                  nextStep={prochaineAction(d.etapeCourante)}
                 />
               </li>
             ))}
           </ul>
+          </>
         )}
       </main>
     </div>
