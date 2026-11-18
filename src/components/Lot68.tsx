@@ -30,13 +30,14 @@ export function DelegationForm({
         setPending(true);
         setError(null);
         setOk(false);
-        const result = await ouvrirDelegation(new FormData(event.currentTarget));
+        const form = event.currentTarget;
+        const result = await ouvrirDelegation(new FormData(form));
         if (result?.error) {
           setError(result.error);
           pushToast(result.error, "hot");
         } else {
           setOk(true);
-          event.currentTarget.reset();
+          form.reset();
           pushToast("Délégation ouverte");
         }
         setPending(false);

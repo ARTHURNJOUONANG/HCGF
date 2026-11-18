@@ -152,7 +152,7 @@ export default async function BureauDemandePage({
               </section>
             ) : null}
             <section className="rail-card card">
-              <p className="kicker">LOT 9</p>
+              <p className="kicker">Contrôle</p>
               <h2 className="rail-title">Fraude</h2>
               <p className="muted mt-2 text-sm">
                 {demande.controleRenforce

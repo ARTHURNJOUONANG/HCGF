@@ -37,7 +37,8 @@ export function UploadPiece({
         event.preventDefault();
         setPending(true);
         setEtat("");
-        const result = await deposerDocument(new FormData(event.currentTarget));
+        const form = event.currentTarget;
+        const result = await deposerDocument(new FormData(form));
         setEtat(result.error ?? "Déposé");
         setPending(false);
         if (!result.error) {
@@ -47,7 +48,7 @@ export function UploadPiece({
           } else {
             pushToast("Pièce déposée");
           }
-          event.currentTarget.reset();
+          form.reset();
           setFichier("");
           router.refresh();
         } else {
@@ -199,9 +200,10 @@ export function TacheForm({ demandeId }: { demandeId: string }) {
       onSubmit={async (event) => {
         event.preventDefault();
         setPending(true);
-        await creerTache(new FormData(event.currentTarget));
+        const form = event.currentTarget;
+        await creerTache(new FormData(form));
         setPending(false);
-        event.currentTarget.reset();
+        form.reset();
         router.refresh();
       }}
     >

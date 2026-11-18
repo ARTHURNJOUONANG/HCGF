@@ -72,7 +72,7 @@ export default async function BureauFraudePage({
       <AppHeader user={session} unread={unread} />
       <main className="shell py-6 sm:py-8">
         <PageIntro
-          kicker="LOT 9 · Back-office"
+          kicker="Back-office"
           title="Fraude"
           text="Signaux automatiques (pièce partagée, identité, paiement). Une alerte active le contrôle renforcé sans rejeter le dossier."
         />

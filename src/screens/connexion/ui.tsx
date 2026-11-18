@@ -19,6 +19,8 @@ export function LoginForm({ roleInitial }: { roleInitial?: string }) {
     roleInitial && roleExigeCode(roleInitial) ? "code" : "identifiants",
   );
   const [politique, setPolitique] = useState<Politique | null>(null);
+  // Une fois demandé, le code reste affiché (et envoyé) aux étapes suivantes, dont la politique.
+  const [codeRequis, setCodeRequis] = useState(etape === "code");
   const [accepte, setAccepte] = useState(false);
   const [voirMotDePasse, setVoirMotDePasse] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,6 +55,7 @@ export function LoginForm({ roleInitial }: { roleInitial?: string }) {
         if (!result) return;
         if ("etape" in result && result.etape === "code") {
           setEtape("code");
+          setCodeRequis(true);
           setError(result.error ?? null);
           requestAnimationFrame(() => champCode.current?.focus());
           return;
@@ -89,7 +92,7 @@ export function LoginForm({ roleInitial }: { roleInitial?: string }) {
         </span>
       </label>
 
-      {etape === "code" ? (
+      {etape === "code" || codeRequis ? (
         <label className="field login-step">
           <span className="inline-flex items-center gap-1.5">
             <KeyRound size={14} /> Code d’accès équipe
